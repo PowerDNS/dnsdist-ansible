@@ -1,0 +1,14 @@
+---
+dnsdist_repo_provider: 'powerdns'
+dnsdist_repo_branch: 'master'
+dnsdist_version: 'latest'
+dnsdist_locals: ['127.0.0.1:5300']
+dnsdist_servers: []
+dnsdist_acls: []
+dnsdist_setkey: ""
+dnsdist_controlsocket: "127.0.0.1"
+dnsdist_webserver_address: "127.0.0.1:8083"
+dnsdist_webserver_password: ""
+dnsdist_carbonserver: ""
+dnsdist_config: ""
+

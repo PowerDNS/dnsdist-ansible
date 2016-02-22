@@ -1,0 +1,14 @@
+---
+- include: install.packages-debian.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - packages
+    - install
+
+- include: configure.yml
+  tags:
+    - config
+    - configure
+
+- name: Start and enable the dnsdist service
+  service: name=dnsdist state=started enabled=true

@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - {role: dnsdist, dnsdist_servers: ["8.8.8.8"]}

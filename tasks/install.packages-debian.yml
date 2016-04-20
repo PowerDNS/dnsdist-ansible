@@ -16,7 +16,7 @@
   when: dnsdist_repo_provider == "powerdns"
 
 - name: Add the dnsdist repository
-  apt_repository: repo="deb http://repo.powerdns.com/{{ansible_distribution | lower}} {{ansible_distribution_release|lower}}-dnsdist-{{dnsdist_repo_branch}} main"
+  apt_repository: repo="deb http://repo.powerdns.com/{{ansible_lsb.id | lower}} {{ansible_distribution_release|lower}}-dnsdist-{{dnsdist_repo_branch}} main"
   when: dnsdist_repo_provider == "powerdns"
 
 - name: Install the latest dnsdist package

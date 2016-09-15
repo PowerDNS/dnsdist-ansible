@@ -6,11 +6,15 @@
 - name: Add the dnsdist YUM repository
   get_url:
     url: https://repo.powerdns.com/repo-files/{{ ansible_distribution | lower() }}-dnsdist-{{ dnsdist_repo_branch }}.repo
-    dest: /etc/yum.repos.d/dnsdist-{{ pdns_rec_repo_branch }}.repo
+    dest: /etc/yum.repos.d/dnsdist-{{ dnsdist_repo_branch }}.repo
+  when: dnsdist_repo_provider == "powerdns"
+
+- name: Install epel-release
+  yum: name=epel-release state=latest
   when: dnsdist_repo_provider == "powerdns"
 
 - name: Install the latest dnsdist package
-  yum: name=dnsdist state=latest update_cache=yes
+  yum: name=dnsdist state=latest
   when: dnsdist_version == 'latest'
 
 - name: Install the dnsdist package version {{dnsdist_version}}

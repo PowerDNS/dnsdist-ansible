@@ -1,6 +1,5 @@
 ---
-- include: install.packages-debian.yml
-  when: ansible_os_family == "Debian"
+- include: "install.packages-{{ansible_os_family}}.yml"
   tags:
     - packages
     - install

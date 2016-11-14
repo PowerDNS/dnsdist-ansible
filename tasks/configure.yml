@@ -1,4 +1,0 @@
----
-- name: Add dnsdist.conf
-  template: src=dnsdist.conf.j2 dest=/etc/dnsdist/dnsdist.conf validate='dnsdist -C %s --check-config 2>&1'
-  notify: restart dnsdist

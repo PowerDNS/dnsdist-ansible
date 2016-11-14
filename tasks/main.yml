@@ -1,13 +1,36 @@
 ---
-- include: "install.packages-{{ansible_os_family}}.yml"
+
+- include: "repo-{{ ansible_os_family }}.yml"
+  when: dnsdist_install_repo
   tags:
-    - packages
+    - install
+    - repository
+
+- include: install-epel.yml
+  when: ansible_os_family == 'RedHat' and dnsdist_install_epel
+  tags:
     - install
 
-- include: configure.yml
+- name: Install dnsdist
+  package:
+    name: dnsdist
+    state: present
   tags:
-    - config
+    - install
+
+- name: Add the dnsdist configuration
+  template:
+    src: dnsdist.conf.j2
+    dest: /etc/dnsdist/dnsdist.conf
+    validate: 'dnsdist -C %s --check-config 2>&1'
+  notify: restart dnsdist
+  tags:
     - configure
 
 - name: Start and enable the dnsdist service
-  service: name=dnsdist state=started enabled=true
+  service:
+    name: dnsdist
+    state: started
+    enabled: true
+  tags:
+    - service

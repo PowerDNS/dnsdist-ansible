@@ -63,7 +63,7 @@ If targeting only a specific platform (e.g. Debian) it's not needed to provide o
 By default the role installs also the EPEL repository.
 EPEL is needed to satisfy some dnsdist dependencies like `lidsodium`.
 If these dependencies are included into other repositories already configured in the
-or in a custom `dnsdist_install_repo` override this variable to `False` to skip
+host or in the custom `dnsdist_install_repo`, set this variable to `False` to skip
 EPEL installation.
 
     dnsdist_acls: []

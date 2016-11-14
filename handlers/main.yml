@@ -1,9 +1,5 @@
 ---
 
-- name: check config and restart dnsdist
-  command: dnsdist --check-config -C /etc/dnsdist/dnsdist.conf
-  notify: restart dnsdist
-
 - name: restart dnsdist
   service:
     name: dnsdist

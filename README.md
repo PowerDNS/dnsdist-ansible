@@ -20,27 +20,27 @@ Available variables are listed below, along with default values (see `defaults/m
 
     dnsdist_install_repo: False
 
-By default the PowerDNS Recursor is installed from the os default repositories.
-You can install the PowerDNS Recursor package from official PowerDNS repository
-overriding the `dnsdist_install_repo` variable value as follows:
+By default dnsdist is installed from the os default repositories.
+You can install dnsdist from the official PowerDNS repository overriding
+the `dnsdist_install_repo` variable value as follows:
 
     # Install dnsdist from the master branch
     - hosts: pdns-dnsdists
       roles:
       - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_official_dnsdist_master }}"
+          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 
     # Install dnsdist 1.0.x
     - hosts: pdns-dnsdists
       roles:
       - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_official_dnsdist_10 }}"
+          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_10 }}"
 
     # Install dnsdist 1.1.x
     - hosts: pdns-dnsdists
       roles:
       - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_official_dnsdist_11 }}"
+          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_11 }}"
 
 The roles also supports custom repositories
 
@@ -57,6 +57,14 @@ The roles also supports custom repositories
       - { role: PowerDNS.dnsdist }
 
 If targeting only a specific platform (e.g. Debian) it's not needed to provide other platform (e.g. yum) repositories informations.
+
+    dnsdist_install_epel: True
+
+By default the role installs also the EPEL repository.
+EPEL is needed to satisfy some dnsdist dependencies like `lidsodium`.
+If these dependencies are included into other repositories already configured in the
+or in a custom `dnsdist_install_repo` override this variable to `False` to skip
+EPEL installation.
 
     dnsdist_acls: []
 

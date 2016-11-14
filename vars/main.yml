@@ -1,6 +1,6 @@
 ---
 
-dnsdist_official_dnsdist_master:
+dnsdist_powerdns_repo_master:
   apt_repo_origin: "repo.powerdns.com"
   apt_repo: "deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-master main"
   gpg_key: "http://repo.powerdns.com/CBC8B383-pub.asc"
@@ -8,7 +8,7 @@ dnsdist_official_dnsdist_master:
   yum_repo_baseurl: "http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-master"
   yum_repo_name: "powerdns-dnsdist"
 
-dnsdist_official_dnsdist_10:
+dnsdist_powerdns_repo_10:
   apt_repo_origin: "repo.powerdns.com"
   apt_repo: "deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-10 main"
   gpg_key: "http://repo.powerdns.com/FD380FBB-pub.asc"
@@ -16,7 +16,7 @@ dnsdist_official_dnsdist_10:
   yum_repo_baseurl: "http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-10"
   yum_repo_name: "powerdns-dnsdist"
 
-dnsdist_official_dnsdist_11:
+dnsdist_powerdns_repo_11:
   apt_repo_origin: "repo.powerdns.com"
   apt_repo: "deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-11 main"
   gpg_key: "http://repo.powerdns.com/FD380FBB-pub.asc"

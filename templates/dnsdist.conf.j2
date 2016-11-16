@@ -1,5 +1,9 @@
 {% for local in dnsdist_locals %}
+{% if loop.first %}
 setLocal("{{local}}")
+{% else %}
+addLocal("{{local}}")
+{% endif %}
 {% endfor %}
 
 {% for acl in dnsdist_acls %}

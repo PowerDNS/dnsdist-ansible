@@ -1,7 +1,7 @@
 ---
 
 - include: "repo-{{ ansible_os_family }}.yml"
-  when: dnsdist_install_repo
+  when: dnsdist_install_repo != ""
   tags:
     - install
     - repository

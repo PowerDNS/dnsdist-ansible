@@ -18,7 +18,7 @@ Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    dnsdist_install_repo: False
+    dnsdist_install_repo: "" 
 
 By default dnsdist is installed from the os default repositories.
 You can install dnsdist from the official PowerDNS repository overriding

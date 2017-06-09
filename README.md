@@ -128,10 +128,4 @@ Configure dnsdist provide custom configuration directives
 License
 -------
 
-GPLv2
-
-Author Information
-------------------
-
-- Pieter Lexis <pieter.lexis@powerdns.com>
-- Andrea Tosatto <andrea.tosatto@open-xchange.com>
+MIT

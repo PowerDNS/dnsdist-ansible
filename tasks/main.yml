@@ -22,6 +22,7 @@
   template:
     src: dnsdist.conf.j2
     dest: /etc/dnsdist/dnsdist.conf
+    mode: '0640'
     validate: 'dnsdist -C %s --check-config 2>&1'
   notify: restart dnsdist
   tags:

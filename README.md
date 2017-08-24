@@ -42,6 +42,12 @@ the `dnsdist_install_repo` variable value as follows:
       - { role: PowerDNS.dnsdist,
           dnsdist_install_repo: "{{ dnsdist_powerdns_repo_11 }}"
 
+    # Install dnsdist 1.2.x
+    - hosts: pdns-dnsdists
+      roles:
+      - { role: PowerDNS.dnsdist,
+          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_12 }}"
+
 The roles also supports custom repositories
 
     - hosts: all

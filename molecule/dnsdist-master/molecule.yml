@@ -46,5 +46,7 @@ lint:
 
 verifier:
   name: testinfra
+  additional_files_or_dirs:
+    - ../common/tests/
   lint:
     name: flake8

@@ -1,0 +1,15 @@
+---
+
+# Molecule
+molecule_file: "{{ lookup('env', 'MOLECULE_FILE') }}"
+molecule_ephemeral_directory: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}"
+molecule_scenario_directory: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}"
+molecule_yml: "{{ lookup('file', molecule_file) | from_yaml }}"
+
+# Docker
+docker_host: "{{ lookup('env', 'DOCKER_HOST') }}"
+docker_cert_path: "{{ lookup('env', 'DOCKER_CERT_PATH') }}"
+docker_tls_ca_cert: "{% if docker_cert_path %}{{ docker_cert_path }}/ca.pem{% endif %}"
+docker_tls_client_key: "{% if docker_cert_path %}{{ docker_cert_path }}/key.pem{% endif %}"
+docker_tls_client_cert: "{% if docker_cert_path %}{{ docker_cert_path }}/cert.pem{% endif %}"
+docker_tls_verify: "{{ lookup('env', 'DOCKER_TLS_VERIFY') }}"

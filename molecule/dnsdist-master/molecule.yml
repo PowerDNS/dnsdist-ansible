@@ -1,0 +1,50 @@
+---
+
+scenario:
+  name: dnsdist-master
+
+driver:
+  name: docker
+
+platforms:
+  - name: centos-7
+    image: centos:7
+    image_tpl: centos-systemd
+  - name: centos-6
+    image: centos:6
+  - name: debian-9
+    image: debian:9
+    image_tpl: debian-systemd
+    command: /lib/systemd/systemd
+  - name: debian-8
+    image: debian:8
+    image_tpl: debian-systemd
+  - name: ubuntu-17.04
+    image: ubuntu:17.04
+    image_tpl: debian-systemd
+  - name: ubuntu-16.04
+    image: ubuntu:16.04
+    image_tpl: debian-systemd
+
+provisioner:
+  name: ansible
+  options:
+    diff: True
+    v: True
+  playbooks:
+    create: ../common/create.yml
+    converge: ../common/playbook.yml
+    destroy: ../common/destroy.yml
+  lint:
+    name: ansible-lint
+
+dependency:
+  name: galaxy
+
+lint:
+  name: yamllint
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

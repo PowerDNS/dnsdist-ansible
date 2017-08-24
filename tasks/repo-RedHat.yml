@@ -7,7 +7,7 @@
 
 - name: Add the dnsdist YUM Repository
   yum_repository:
-    name: "{{ dnsdist_install_repo['yum_repo_name'] }}"
+    name: "{{ dnsdist_install_repo['name'] }}"
     description: DNSDist Repository
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"

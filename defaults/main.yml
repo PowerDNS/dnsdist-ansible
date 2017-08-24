@@ -1,7 +1,7 @@
 ---
 
 # By default no additional repository is added to the hosts to install dnsdist
-dnsdist_install_repo: "" 
+dnsdist_install_repo: ""
 
 # Install the EPEL repository.
 # EPEL is needed to satisfy some dnsdist dependencies like lidsodium

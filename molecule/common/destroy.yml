@@ -1,0 +1,20 @@
+---
+
+- name: Destroy molecule Docker instance(s)
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_files:
+    - molecule-vars.yml
+  tasks:
+    - name: Destroy molecule instance(s)
+      docker_container:
+        name: "{{ item.name }}"
+        state: absent
+        force_kill: "{{ item.force_kill | default(True) }}"
+        docker_host: "{{ docker_host | default(omit) }}"
+        cacert_path: "{{ docker_tls_ca_cert | default(omit) }}"
+        cert_path: "{{ docker_tls_client_cert | default(omit) }}"
+        key_path: "{{ docker_tls_client_key | default(omit) }}"
+        tls_verify: "{{ docker_tls_verify | default(omit) }}"
+      with_items: "{{ molecule_yml.platforms }}"

@@ -1,0 +1,2 @@
+molecule==2.0.0.0rc16
+docker==2.4.2

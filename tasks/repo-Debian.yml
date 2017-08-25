@@ -8,6 +8,7 @@
 
 - name: Add the dnsdist APT Repository
   apt_repository:
+    filename: "{{ dnsdist_install_repo['name'] }}.list"
     repo: "{{ dnsdist_install_repo['apt_repo'] }}"
     state: present
 

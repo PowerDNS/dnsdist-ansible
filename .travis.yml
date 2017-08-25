@@ -1,29 +1,28 @@
 ---
+
 language: python
 python: "2.7"
 
-# Use the new container infrastructure
-sudo: false
+sudo: required
 
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
+# Enable the docker service
+services:
+  - docker
 
+# Replace aufs with the vfs docker storage driver
+# to prevent systemd to fail starting docker in docker.
+before_install:
+  - sudo sed -i 's|DOCKER_OPTS=.*|DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock --storage-driver vfs"|g' /etc/default/docker
+  - sudo service docker restart
+  - docker info
+
+# Install molecule
 install:
-  # Install ansible
-  - pip install ansible
+  - pip install -r test-requirements.txt
 
-  # Check ansible version
-  - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
+# Tests all the scenarios
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - molecule test --all
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

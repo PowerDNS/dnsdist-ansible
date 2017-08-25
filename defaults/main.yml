@@ -12,21 +12,28 @@ dnsdist_install_epel: True
 # - hosts: all
 #   roles:
 #    - { role: PowerDNS.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_official_dnsdist_master }}"
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 #
 # To install the 1.0.x release of dnsdist from the PowerDNS official repository
 # use the following playbook
 # - hosts: all
 #   roles:
 #    - { role: PowerDNS.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_official_dnsdist_10 }}"
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_10 }}"
 #
-# To install the 1.1.x release of the PowerDNS official repository
+# To install the 1.1.x release of the powerdns official repository
 # use the following playbook
 # - hosts: all
 #   roles:
-#    - { role: PowerDNS.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_official_dnsdist_11 }}"
+#    - { role: powerdns.dnsdist,
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_11 }}"
+#
+# To install the 1.2.x release of the powerdns official repository
+# use the following playbook
+# - hosts: all
+#   roles:
+#    - { role: powerdns.dnsdist,
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_12 }}"
 #
 # To install dnsdist from a custom repository
 # override the `dnsdist_install_install_repo` default value in your playbook.

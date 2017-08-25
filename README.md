@@ -1,6 +1,8 @@
 PowerDNS dnsdist Role
 =====================
 
+[![Build Status](https://travis-ci.org/PowerDNS/dnsdist-ansible.svg?branch=master)](https://travis-ci.org/PowerDNS/dnsdist-ansible)
+
 An Ansible role create by the folks behind PowerDNS to set up dnsdist.
 
 Requirements
@@ -53,12 +55,12 @@ The roles also supports custom repositories
     - hosts: all
       vars:
         dnsdist_install_repo:
+          name: "dnsdist" # the repository name
           apt_repo_origin: "my.repo.com"  # used to pin dnsdist to the provided repository
           apt_repo: "deb http://my.repo.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}/dnsdist main"
           gpg_key: "http://my.repo.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
           gpg_key_id: "MYREPOGPGPUBKEYID" # to avoid to reimport the key each time the role is executed
           yum_repo_baseurl: "http://my.repo.com/centos/$basearch/$releasever/dnsdist"
-          yum_repo_name: "dnsdist"   # used to select only dnsdist packages coming from this repo
       roles:
       - { role: PowerDNS.dnsdist }
 

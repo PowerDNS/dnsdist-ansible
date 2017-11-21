@@ -1,12 +1,12 @@
 ---
 
-- include: "repo-{{ ansible_os_family }}.yml"
+- include_tasks: "repo-{{ ansible_os_family }}.yml"
   when: dnsdist_install_repo != ""
   tags:
     - install
     - repository
 
-- include: install-epel.yml
+- import_tasks: install-epel.yml
   when: ansible_os_family == 'RedHat' and dnsdist_install_epel
   tags:
     - install

@@ -61,6 +61,7 @@ The roles also supports custom repositories
           gpg_key: "http://my.repo.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
           gpg_key_id: "MYREPOGPGPUBKEYID" # to avoid to reimport the key each time the role is executed
           yum_repo_baseurl: "http://my.repo.com/centos/$basearch/$releasever/dnsdist"
+          yum_debug_symbols_repo_baseurl: "http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist/debug"
       roles:
       - { role: PowerDNS.dnsdist }
 
@@ -73,6 +74,24 @@ EPEL is needed to satisfy some dnsdist dependencies like `lidsodium`.
 If these dependencies are included into other repositories already configured in the
 host or in the custom `dnsdist_install_repo`, set this variable to `False` to skip
 EPEL installation.
+
+    dnsdist_package_name: "{{ default_dnsdist_package_name }}"
+
+The name of the dnsdist package: "dnsdist" on both RHEL and Debian derivates distributions.
+
+    dnsdist_package_version: ""
+
+Install a specific version of dnsdist
+NB: The usage of this variable makes only sense on RedHat-like systems,
+    where each YUM repository can contains multiple versions of the same package.
+
+    dnsdist_install_debug_symbols_package: False
+
+Install dnsdist debug symbols package.
+
+    dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
+
+The name of the dnsdist debug symbols package.
 
     dnsdist_acls: []
 

@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-master
+  name: dnsdist-13
 
 driver:
   name: docker
@@ -55,6 +55,6 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-master/
+    - ../repo-13/
   lint:
     name: flake8

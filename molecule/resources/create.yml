@@ -53,6 +53,7 @@
         hostname: "{{ item.name }}"
         image: "molecule_dnsdist/{{ item.image }}"
         links: "{{ molecule_service_instances | map(attribute='name') | list }}"
+        command: "{{ item.command | default(omit) }}"
         state: started
         recreate: False
         privileged: "yes"

@@ -24,11 +24,13 @@ platforms:
 
   - name: ubuntu-1710
     image: ubuntu:17.10
+    dockerfile_tpl: debian-systemd
     groups:
       - dnsdist
 
   - name: debian-9
     image: debian:9
+    dockerfile_tpl: debian-systemd
     groups:
       - dnsdist
 

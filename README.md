@@ -2,13 +2,14 @@ PowerDNS dnsdist Role
 =====================
 
 [![Build Status](https://travis-ci.org/PowerDNS/dnsdist-ansible.svg?branch=master)](https://travis-ci.org/PowerDNS/dnsdist-ansible)
+[![Galaxy](http://img.shields.io/badge/galaxy-PowerDNS.pdns-dnsdist.svg?style=flat-square)](https://galaxy.ansible.com/PowerDNS/dnsdist)
 
 An Ansible role create by the folks behind PowerDNS to set up dnsdist.
 
 Requirements
 ------------
 
-An Ansible 2.0 or higher installation.
+An Ansible 2.3 or higher installation.
 
 Dependencies
 ------------

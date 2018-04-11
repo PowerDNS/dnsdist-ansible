@@ -91,6 +91,6 @@ dnsdist_webserver_password: ""
 # See https://dnsdist.org/guides/carbon.html for more details.
 dnsdist_carbonserver: ""
 
-# Additional Dnsdist configuration to be 
+# Additional Dnsdist configuration to be
 # injected into Dnsdist's configuration file.
 dnsdist_config: ""

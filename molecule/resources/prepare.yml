@@ -1,0 +1,5 @@
+---
+
+- name: Prepare the Molecule Test Resources
+  hosts: dnsdist
+  tasks: []

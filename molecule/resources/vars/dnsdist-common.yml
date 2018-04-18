@@ -1,0 +1,7 @@
+---
+
+##
+# Dnsdist Configuration
+##
+
+dnsdist_install_debug_symbols_package: True

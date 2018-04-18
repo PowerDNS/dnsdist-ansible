@@ -1,0 +1,7 @@
+---
+
+# The name of the dnsdist package
+default_dnsdist_package_name: "dnsdist"
+
+# The name of the dnsdist debug package
+default_dnsdist_debug_symbols_package_name: "dnsdist-debuginfo"

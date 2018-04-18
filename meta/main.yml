@@ -2,10 +2,10 @@
 
 galaxy_info:
   author: PowerDNS Engineering Team
-  description: dnsdist is a highly scriptable and DDoS aware DNS loadbalancer
+  description: Dnsdist is a highly scriptable and DDoS aware DNS loadbalancer
   company: PowerDNS.COM BV
   license: MIT
-  min_ansible_version: 2.0
+  min_ansible_version: 2.3
   platforms:
     - name: EL
       versions:

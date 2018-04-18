@@ -1,7 +1,7 @@
 ---
 
 language: python
-python: "2.7"
+python: 2.7
 
 sudo: required
 
@@ -9,20 +9,22 @@ sudo: required
 services:
   - docker
 
-# Replace aufs with the vfs docker storage driver
-# to prevent systemd to fail starting docker in docker.
-before_install:
-  - sudo sed -i 's|DOCKER_OPTS=.*|DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock --storage-driver vfs"|g' /etc/default/docker
-  - sudo service docker restart
-  - docker info
+# Parallel testing of the supported
+# Ansible versions
+env:
+  matrix:
+    - ANSIBLE=2.2
+    - ANSIBLE=2.3
+    - ANSIBLE=2.4
+    - ANSIBLE=2.5
 
-# Install molecule
+# Install tox
 install:
-  - pip install -r test-requirements.txt
+  - pip install tox-travis
 
-# Tests all the scenarios
+# Test the current Dnsdist stable release
 script:
-  - molecule test --all
+  - tox -- molecule test -s dnsdist-13
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

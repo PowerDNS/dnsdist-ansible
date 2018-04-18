@@ -1,20 +1,17 @@
 ---
 
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - always
+
 - include: "repo-{{ ansible_os_family }}.yml"
   when: dnsdist_install_repo != ""
   tags:
     - install
     - repository
 
-- include: install-epel.yml
-  when: ansible_os_family == 'RedHat' and dnsdist_install_epel
-  tags:
-    - install
-
-- name: Install dnsdist
-  package:
-    name: dnsdist
-    state: present
+- include: install.yml
   tags:
     - install
 
@@ -22,8 +19,10 @@
   template:
     src: dnsdist.conf.j2
     dest: /etc/dnsdist/dnsdist.conf
-    mode: '0640'
-    validate: 'dnsdist -C %s --check-config 2>&1'
+    owner: "root"
+    group: "root"
+    mode: 0640
+    validate: dnsdist -C %s --check-config 2>&1
   notify: restart dnsdist
   tags:
     - configure

@@ -1,2 +1,2 @@
-molecule==2.0.0.0rc16
-docker==2.4.2
+molecule==2.11.0
+docker-py==1.10.6

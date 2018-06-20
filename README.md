@@ -25,7 +25,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 By default dnsdist is installed from the os default repositories.
 You can install dnsdist from the official PowerDNS repository overriding
-the `dnsdist_install_repo` variable value as follows:
+the `dnsdist_install_repo` variable value as follows
+(for the complete list of pre-defined repos see `vars/main.yml`):
 
     # Install dnsdist from the master branch
     - hosts: pdns-dnsdists
@@ -33,23 +34,11 @@ the `dnsdist_install_repo` variable value as follows:
       - { role: PowerDNS.dnsdist,
           dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 
-    # Install dnsdist 1.0.x
+    # Install dnsdist 1.3.x
     - hosts: pdns-dnsdists
       roles:
       - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_10 }}"
-
-    # Install dnsdist 1.1.x
-    - hosts: pdns-dnsdists
-      roles:
-      - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_11 }}"
-
-    # Install dnsdist 1.2.x
-    - hosts: pdns-dnsdists
-      roles:
-      - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_12 }}"
+          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
 
 The roles also supports custom repositories
 

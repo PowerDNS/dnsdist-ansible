@@ -2,6 +2,7 @@
 
 IMPROVEMENTS:
 - Upgrade molecule to 2.14.0 ([\#10](https://github.com/PowerDNS/dnsdist-ansible/pull/10))
+- Improved README file ([\#12](https://github.com/PowerDNS/dnsdist-ansible/pull/12))
 
 BUG FIXES:
 - Make sure the `dnsdist_package_version` variable is set correctly ([\#11](https://github.com/PowerDNS/dnsdist-ansible/pull/11))

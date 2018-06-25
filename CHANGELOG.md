@@ -1,4 +1,4 @@
-## To be releases
+## v1.1.0 (2018-06-25)
 
 IMPROVEMENTS:
 - Upgrade molecule to 2.14.0 ([\#10](https://github.com/PowerDNS/dnsdist-ansible/pull/10))

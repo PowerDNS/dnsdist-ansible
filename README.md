@@ -23,11 +23,7 @@ Available variables are listed below, along with default values (see `defaults/m
 dnsdist_install_repo: ""
 ```
 
-By default dnsdist is installed from the software repositories availableavailable  on the target hosts.
-
-To install dnsdist from the official PowerDNS repositories,
-override the `dnsdist_install_repo` variable value as follow
-(see the complete list of pre-defined repos in `vars/main.yml`):
+By default, dnsdist is installed from the software repositories installed on the target hosts.
 
 ```yaml
 # Install dnsdist from the master branch
@@ -43,7 +39,8 @@ override the `dnsdist_install_repo` variable value as follow
       dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
 ```
 
-The install dnsdist from a custom repository set the `dnsdist_install_repo` variable as shown below:
+The examples above, show how to install dnsdist from the official PowerDNS repositories
+(see the complete list of pre-defined repos in `vars/main.yml`):
 
 ```yaml
 - hosts: all
@@ -60,13 +57,13 @@ The install dnsdist from a custom repository set the `dnsdist_install_repo` vari
   - { role: PowerDNS.dnsdist }
 ```
 
-Note that when targeting only a specific platform (e.g. Debian) it's not needed to provide other platform (e.g. yum) repositories information.
+It is also possible to install dnsdist from custom repositories as demonstated in the example above.
 
 ```yaml
 dnsdist_install_epel: True
 ```
 
-By defaul, install EPEL to satisfy some dnsdist dependencies like `lidsodium`.
+By default, install EPEL to satisfy some dnsdist dependencies like `lidsodium`.
 To skip the installtion of EPEL set the `dnsdist_install_epel` variable to `False`.
 
 ```yaml
@@ -79,7 +76,7 @@ The name of the dnsdist package: "dnsdist" on both RHEL and Debian derivates dis
 dnsdist_package_version: ""
 ```
 
-Install a specific version of dnsdist
+Optionally, allow to set a specific version of the dnsdist package to be installed.
 
 ```yaml
 dnsdist_install_debug_symbols_package: False
@@ -97,19 +94,19 @@ The name of the dnsdist debug symbols package to be installed when `dnsdist_inst
 dnsdist_acls: []
 ```
 
-A list of dnsdist ACLS (netmasks) to add to the configuration.
+Configures the dnsdist ACLS (netmasks).
 
 ```yaml
 dnsdist_locals: ['127.0.0.1:5300']
 ```
 
-A list of IP addresses dnsdist should listen on.
+Configure dnsdist's listen addresses.
 
 ```yaml
 dnsdist_servers: []
 ```
 
-A list of IP addresses of the downstream DNS servers in the default pool.
+The list of IP addresses of the downstream DNS servers dnsdist should be send traffic to.
 
 ```yaml
 dnsdist_carbonserver: ""
@@ -121,31 +118,31 @@ The IP address of the Carbon server that should receive dnsdist metrics.
 dnsdist_controlsocket: "127.0.0.1"
 ```
 
-The IP address to listen on for the control socket connections.
+The listen IP address of the dnsdist's TCP control socket.
 
 ```yaml
 dnsdist_setkey: ""
 ```
 
-A string that has the key for the dnsdist client.
+Encryption key for the dnsdist's TCP control socket.
 
 ```yaml
 dnsdist_webserver_address: ""
 ```
 
-The IP address where the built-in webserver should listen, empty thus disabled by default.
+The listen IP address of the built-in webserver, empty thus disable by default.
 
 ```yaml
 dnsdist_webserver_password: ""
 ```
 
-The password for the webserver. Must be set when `dnsdist_webserver_address` is set.
+The authentication credentials fro the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
 
-```
+```yaml
 dnsdist_config: ""
 ```
 
-A string containing additional configuration for dnsdist to be copied verbatim to the `dnsdist.conf` file.
+Additional configuration for dnsdist to be injected verbatim in the `dnsdist.conf` file.
 
 ## Example Playbook
 

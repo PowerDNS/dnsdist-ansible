@@ -1,148 +1,166 @@
-PowerDNS dnsdist Role
-=====================
+# Ansible Role: dnsdist
 
 [![Build Status](https://travis-ci.org/PowerDNS/dnsdist-ansible.svg?branch=master)](https://travis-ci.org/PowerDNS/dnsdist-ansible)
-[![Galaxy](http://img.shields.io/badge/galaxy-PowerDNS.pdns-dnsdist.svg?style=flat-square)](https://galaxy.ansible.com/PowerDNS/dnsdist)
+[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Ansible Role](https://img.shields.io/badge/ansible%20role-PowerDNS.dnsdist-blue.svg)](https://galaxy.ansible.com/PowerDNS/dnsdist)
+[![GitHub tag](https://img.shields.io/github/tag/PowerDNS/dnsdist-ansible.svg)](https://github.com/PowerDNS/dnsdist-ansible/tags)
 
-An Ansible role create by the folks behind PowerDNS to set up dnsdist.
+An Ansible role create by the folks behind PowerDNS to set up [dnsdist](https://dnsdist.org/).
 
-Requirements
-------------
+## Requirements
 
 An Ansible 2.3 or higher installation.
 
-Dependencies
-------------
+## Dependencies
 
 None.
 
-Role Variables
---------------
+## Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    dnsdist_install_repo: "" 
+```yaml
+dnsdist_install_repo: ""
+```
 
-By default dnsdist is installed from the os default repositories.
-You can install dnsdist from the official PowerDNS repository overriding
-the `dnsdist_install_repo` variable value as follows
-(for the complete list of pre-defined repos see `vars/main.yml`):
+By default, dnsdist is installed from the software repositories installed on the target hosts.
 
-    # Install dnsdist from the master branch
-    - hosts: pdns-dnsdists
-      roles:
-      - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
+```yaml
+# Install dnsdist from the master branch
+- hosts: dnsdist
+  roles:
+  - { role: PowerDNS.dnsdist,
+      dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 
-    # Install dnsdist 1.3.x
-    - hosts: pdns-dnsdists
-      roles:
-      - { role: PowerDNS.dnsdist,
-          dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
+# Install dnsdist 1.3.x
+- hosts: dnsdist
+  roles:
+  - { role: PowerDNS.dnsdist,
+      dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
+```
 
-The roles also supports custom repositories
+The examples above, show how to install dnsdist from the official PowerDNS repositories
+(see the complete list of pre-defined repos in `vars/main.yml`):
 
-    - hosts: all
-      vars:
-        dnsdist_install_repo:
-          name: "dnsdist" # the repository name
-          apt_repo_origin: "my.repo.com"  # used to pin dnsdist to the provided repository
-          apt_repo: "deb http://my.repo.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}/dnsdist main"
-          gpg_key: "http://my.repo.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
-          gpg_key_id: "MYREPOGPGPUBKEYID" # to avoid to reimport the key each time the role is executed
-          yum_repo_baseurl: "http://my.repo.com/centos/$basearch/$releasever/dnsdist"
-          yum_debug_symbols_repo_baseurl: "http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist/debug"
-      roles:
-      - { role: PowerDNS.dnsdist }
+```yaml
+- hosts: all
+  vars:
+    dnsdist_install_repo:
+      name: "dnsdist" # the repository name
+      apt_repo_origin: "example.com"  # used to pin dnsdist to the provided repository
+      apt_repo: "deb http://example.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}/dnsdist main"
+      gpg_key: "http://example.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
+      gpg_key_id: "MYREPOGPGPUBKEYID" # to avoid to reimport the key each time the role is executed
+      yum_repo_baseurl: "http://example.com/centos/$basearch/$releasever/dnsdist"
+      yum_debug_symbols_repo_baseurl: "http://example.com/centos/$basearch/$releasever/dnsdist/debug"
+  roles:
+  - { role: PowerDNS.dnsdist }
+```
 
-If targeting only a specific platform (e.g. Debian) it's not needed to provide other platform (e.g. yum) repositories informations.
+It is also possible to install dnsdist from custom repositories as demonstated in the example above.
 
-    dnsdist_install_epel: True
+```yaml
+dnsdist_install_epel: True
+```
 
-By default the role installs also the EPEL repository.
-EPEL is needed to satisfy some dnsdist dependencies like `lidsodium`.
-If these dependencies are included into other repositories already configured in the
-host or in the custom `dnsdist_install_repo`, set this variable to `False` to skip
-EPEL installation.
+By default, install EPEL to satisfy some dnsdist dependencies like `lidsodium`.
+To skip the installtion of EPEL set the `dnsdist_install_epel` variable to `False`.
 
-    dnsdist_package_name: "{{ default_dnsdist_package_name }}"
+```yaml
+dnsdist_package_name: "{{ default_dnsdist_package_name }}"
+```
 
 The name of the dnsdist package: "dnsdist" on both RHEL and Debian derivates distributions.
 
-    dnsdist_package_version: ""
+```yaml
+dnsdist_package_version: ""
+```
 
-Install a specific version of dnsdist
-NB: The usage of this variable makes only sense on RedHat-like systems,
-    where each YUM repository can contains multiple versions of the same package.
+Optionally, allow to set a specific version of the dnsdist package to be installed.
 
-    dnsdist_install_debug_symbols_package: False
+```yaml
+dnsdist_install_debug_symbols_package: False
+```
 
 Install dnsdist debug symbols package.
 
-    dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
+```yaml
+dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
+```
 
-The name of the dnsdist debug symbols package.
+The name of the dnsdist debug symbols package to be installed when `dnsdist_install_debug_symbols_package` is `True`.
 
-    dnsdist_acls: []
+```yaml
+dnsdist_acls: []
+```
 
-A list of dnsdist ACLS (netmasks) to add to the configuration.
+Configures the dnsdist ACLS (netmasks).
 
-    dnsdist_carbonserver: ""
+```yaml
+dnsdist_locals: ['127.0.0.1:5300']
+```
+
+Configure dnsdist's listen addresses.
+
+```yaml
+dnsdist_servers: []
+```
+
+The list of IP addresses of the downstream DNS servers dnsdist should be send traffic to.
+
+```yaml
+dnsdist_carbonserver: ""
+```
 
 The IP address of the Carbon server that should receive dnsdist metrics.
 
-    dnsdist_controlsocket: "127.0.0.1"
+```yaml
+dnsdist_controlsocket: "127.0.0.1"
+```
 
-The IP address to listen on for the control socket.
+The listen IP address of the dnsdist's TCP control socket.
 
-    dnsdist_locals: ['127.0.0.1:5300']
+```yaml
+dnsdist_setkey: ""
+```
 
-A list of IP addresses dnsdist should listen on.
+Encryption key for the dnsdist's TCP control socket.
 
-    dnsdist_servers: []
+```yaml
+dnsdist_webserver_address: ""
+```
 
-A list of IP addresses denoting the downstream DNS servers in the default pool.
+The listen IP address of the built-in webserver, empty thus disable by default.
 
-    dnsdist_setkey: ""
+```yaml
+dnsdist_webserver_password: ""
+```
 
-A string that has the key for the dnsdist client.
+The authentication credentials fro the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
 
-    dnsdist_webserver_address: ""
+```yaml
+dnsdist_config: ""
+```
 
-The IP address where the built-in webserver should listen, empty thus disabled by default.
+Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
-    dnsdist_webserver_password: ""
+## Example Playbook
 
-The password for the webserver. Must be set when `dnsdist_webserver_address` is set.
+Deploy dnsdist in front of Quad9 and enable the web monitoring interface
 
-    dnsdist_config: ""
+```yaml
+- hosts: dnsdist
+  roles:
+    - { role: PowerDNS.dnsdist,
+        dnsdist_servers: ['9.9.9.9'],
+        dnsdist_webserver_address: "{{ ansible_default_ipv4['address']:8083 }}",
+        dnsdist_webserver_password: 'geheim' }
+```
 
-A string containing the full config for dnsdist. This is copied verbatim to the `dnsdist.conf` file.
+## Changelog
 
+A detailed changelog of all the changes applied to the role is available [here](./CHANGELOG.md).
 
-Example Playbook
-----------------
-
-Deploy dnsdist in front of Google DNS and enable the web monitoring interface
-
-    - hosts: pdns-dnsdists
-      roles:
-        - { role: PowerDNS.dnsdist,
-            dnsdist_servers: ['8.8.8.8', '8.8.4.4'],
-            dnsdist_webserver_address: "{{ ansible_default_ipv4['address']:8083 }}",
-            dnsdist_webserver_password: 'geheim' }
-
-Configure dnsdist provide custom configuration directives
-
-    - hosts: pdns-dnsdists
-      roles:
-        - { role: PowerDNS.dnsdist,
-            dnsdist_config: |
-              setACL("127.0.0.1/8")
-              newServer("192.0.2.53")
-          }
-
-License
--------
+## License
 
 MIT

@@ -10,26 +10,19 @@ dnsdist_install_repo: ""
 #    - { role: PowerDNS.dnsdist,
 #        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 #
-# To install the 1.0.x release of dnsdist from the PowerDNS official repository
-# use the following playbook
-# - hosts: all
-#   roles:
-#    - { role: PowerDNS.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_10 }}"
-#
-# To install the 1.1.x release of the powerdns official repository
-# use the following playbook
-# - hosts: all
-#   roles:
-#    - { role: powerdns.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_11 }}"
-#
 # To install the 1.2.x release of the powerdns official repository
 # use the following playbook
 # - hosts: all
 #   roles:
 #    - { role: powerdns.dnsdist,
 #        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_12 }}"
+#
+# To install the 1.3.x release of the powerdns official repository
+# use the following playbook
+# - hosts: all
+#   roles:
+#    - { role: powerdns.dnsdist,
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
 #
 # To install dnsdist from a custom repository
 # override the `dnsdist_install_install_repo` default value in your playbook.
@@ -65,20 +58,20 @@ dnsdist_install_debug_symbols_package: False
 # The name of the dnsdist debug symbols package
 dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
 
-# Dnsdist listen addresses
+# dnsdist listen addresses
 dnsdist_locals: ['127.0.0.1:5300']
 
-# Dnsdist backend servers
+# dnsdist backend servers
 dnsdist_servers: []
 
 # Access Control List
 dnsdist_acls: []
 
-# Dnsdist's control socket encryption key.
+# dnsdist's control socket encryption key.
 # See https://dnsdist.org/reference/config.html#setKey for more information.
 dnsdist_setkey: ""
 
-# Dnsdist's control socket list address.
+# dnsdist's control socket list address.
 dnsdist_controlsocket: "127.0.0.1"
 
 # Embedded webserver listen address.
@@ -91,6 +84,6 @@ dnsdist_webserver_password: ""
 # See https://dnsdist.org/guides/carbon.html for more details.
 dnsdist_carbonserver: ""
 
-# Additional Dnsdist configuration to be
-# injected into Dnsdist's configuration file.
+# Additional dnsdist configuration to be
+# injected into dnsdist's configuration file.
 dnsdist_config: ""

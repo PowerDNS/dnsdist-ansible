@@ -142,7 +142,7 @@ The authentication credentials fro the build-in webserver. Must be set when `dns
 dnsdist_config: ""
 ```
 
-Additional configuration for dnsdist to be injected verbatim in the `dnsdist.conf` file.
+Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
 ## Example Playbook
 
@@ -156,6 +156,10 @@ Deploy dnsdist in front of Quad9 and enable the web monitoring interface
         dnsdist_webserver_address: "{{ ansible_default_ipv4['address']:8083 }}",
         dnsdist_webserver_password: 'geheim' }
 ```
+
+## Changelog
+
+A detailed changelog of all the changes applied to the role is available [here](./CHANGELOG.md).
 
 ## License
 

@@ -9,7 +9,7 @@ An Ansible role create by the folks behind PowerDNS to set up [dnsdist](https://
 
 ## Requirements
 
-An Ansible 2.3 or higher installation.
+An Ansible 2.2 or higher installation.
 
 ## Dependencies
 
@@ -23,7 +23,7 @@ Available variables are listed below, along with default values (see `defaults/m
 dnsdist_install_repo: ""
 ```
 
-By default, dnsdist is installed from the software repositories installed on the target hosts.
+By default, dnsdist is installed from the software repositories configured on the target hosts.
 
 ```yaml
 # Install dnsdist from the master branch
@@ -40,7 +40,7 @@ By default, dnsdist is installed from the software repositories installed on the
 ```
 
 The examples above, show how to install dnsdist from the official PowerDNS repositories
-(see the complete list of pre-defined repos in `vars/main.yml`):
+(see the complete list of pre-defined repos in `vars/main.yml`).
 
 ```yaml
 - hosts: all
@@ -57,7 +57,7 @@ The examples above, show how to install dnsdist from the official PowerDNS repos
   - { role: PowerDNS.dnsdist }
 ```
 
-It is also possible to install dnsdist from custom repositories as demonstated in the example above.
+It is also possible to install dnsdist from custom repositories as demonstrated in the example above.
 
 ```yaml
 dnsdist_install_epel: True
@@ -160,6 +160,20 @@ Deploy dnsdist in front of Quad9 and enable the web monitoring interface
 ## Changelog
 
 A detailed changelog of all the changes applied to the role is available [here](./CHANGELOG.md).
+
+## Testing
+
+Tests are performed by [Molecule](http://molecule.readthedocs.org/en/latest/).
+
+    $ pip install tox
+
+To test all the scenarios run
+
+    $ tox
+
+To run a custom molecule command
+
+    $ tox -e py27-ansible22 -- molecule test -s dnsdist-13
 
 ## License
 

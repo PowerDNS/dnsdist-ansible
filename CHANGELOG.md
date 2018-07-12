@@ -29,6 +29,8 @@ IMPROVEMENTS:
 
 ## v0.1.0 (2017-06-12)
 
+Initial release.
+
 IMPROVEMENTS:
 - Switch to the MIT License ([\#4](https://github.com/PowerDNS/dnsdist-ansible/pull/4))
 - Improved installation procedure ([\#3](https://github.com/PowerDNS/dnsdist-ansible/pull/3))

@@ -28,6 +28,12 @@ platforms:
     groups:
       - dnsdist
 
+  - name: ubuntu-1804
+    image: ubuntu:18.04
+    dockerfile_tpl: debian-systemd
+    groups:
+      - dnsdist
+
   - name: debian-9
     image: debian:9
     dockerfile_tpl: debian-systemd
@@ -45,6 +51,9 @@ provisioner:
     prepare: ../resources/prepare.yml
   lint:
     name: ansible-lint
+    options:
+      # excludes "systemctl used in place of systemd module"
+      x: ["ANSIBLE0006"]
 
 lint:
   name: yamllint

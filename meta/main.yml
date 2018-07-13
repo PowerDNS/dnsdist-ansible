@@ -20,6 +20,7 @@ galaxy_info:
         - vivid
         - wily
         - xenial
+        - bionic
   galaxy_tags:
     - dnsdist
     - dns

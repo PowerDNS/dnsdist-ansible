@@ -144,6 +144,13 @@ dnsdist_config: ""
 
 Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
+```yaml
+pdns_service_overrides: {}
+```
+
+Dict with overrides for the service (systemd only).
+This can be used to change any systemd settings in the `[Service]` category.
+
 ## Example Playbook
 
 Deploy dnsdist in front of Quad9 and enable the web monitoring interface

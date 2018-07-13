@@ -5,3 +5,6 @@
 ##
 
 dnsdist_install_debug_symbols_package: True
+
+dnsdist_service_overrides:
+  LimitCORE: infinity

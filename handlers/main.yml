@@ -4,3 +4,7 @@
   service:
     name: dnsdist
     state: restarted
+
+- name: reload systemd and restart dnsdist
+  command: systemctl daemon-reload
+  notify: restart dnsdist

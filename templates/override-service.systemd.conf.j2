@@ -1,0 +1,4 @@
+[Service]
+{% for k, v in dnsdist_service_overrides.items() %}
+{{ k }}={{ v }}
+{% endfor %}

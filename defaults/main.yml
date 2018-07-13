@@ -87,3 +87,8 @@ dnsdist_carbonserver: ""
 # Additional dnsdist configuration to be
 # injected into dnsdist's configuration file.
 dnsdist_config: ""
+
+# Dict with overrides for the service (systemd only)
+dnsdist_service_overrides: {}
+# dnsdist_service_overrides:
+#   LimitNOFILE: 10000

@@ -145,7 +145,7 @@ dnsdist_config: ""
 Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
 ```yaml
-pdns_service_overrides: {}
+dnsdist_service_overrides: {}
 ```
 
 Dict with overrides for the service (systemd only).

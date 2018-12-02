@@ -1,4 +1,4 @@
-## v1.1.1 (To be released)
+## v1.2.0 (2018-12-02)
 
 NEW FEATURES:
 - Allow to manage systemd overrides ([\#13](https://github.com/PowerDNS/pdns-ansible/pull/13))

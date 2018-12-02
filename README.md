@@ -151,6 +151,12 @@ dnsdist_service_overrides: {}
 Dict with overrides for the service (systemd only).
 This can be used to change any systemd settings in the `[Service]` category.
 
+```yaml
+dnsdist_disable_handlers: False
+```
+
+Disable automated service restart on configuration changes.
+
 ## Example Playbook
 
 Deploy dnsdist in front of Quad9 and enable the web monitoring interface

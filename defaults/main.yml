@@ -92,3 +92,6 @@ dnsdist_config: ""
 dnsdist_service_overrides: {}
 # dnsdist_service_overrides:
 #   LimitNOFILE: 10000
+
+# When True, disable the automated restart of the dnsdist service
+dnsdist_disable_handlers: False

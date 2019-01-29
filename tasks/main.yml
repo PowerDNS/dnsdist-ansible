@@ -19,10 +19,10 @@
   tags:
     - configure
 
-- name: Start and enable the dnsdist service
+- name: Set the status of the dnsdist service
   service:
     name: dnsdist
-    state: started
-    enabled: true
+    state: "{{ dnsdist_service_state }}"
+    enabled: "{{ dnsdist_service_enabled }}"
   tags:
     - service

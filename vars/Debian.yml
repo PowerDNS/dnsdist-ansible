@@ -4,4 +4,4 @@
 default_dnsdist_package_name: "dnsdist"
 
 # The name of the dnsdist debug package
-default_dnsdist_debug_symbols_package_name: "dnsdist-dbg"
+default_dnsdist_debug_symbols_package_name: "{% if ansible_distribution == 'Debian' and ansible_distribution_version | int < 9 or ansible_distribution == 'Ubuntu' and ansible_distribution_version <= '16.04' %}dnsdist-dbg{% else %}dnsdist-dbgsym{% endif %}"

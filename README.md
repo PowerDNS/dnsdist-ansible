@@ -152,6 +152,14 @@ Dict with overrides for the service (systemd only).
 This can be used to change any systemd settings in the `[Service]` category.
 
 ```yaml
+dnsdist_service_state: "started"
+dnsdist_service_enabled: "yes"
+```
+
+Allow to specify the desired state of the DNSdist service.
+E.g. This allows to install and configure DNSdist without automatically starting the service.
+
+```yaml
 dnsdist_disable_handlers: False
 ```
 

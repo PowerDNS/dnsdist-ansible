@@ -93,5 +93,9 @@ dnsdist_service_overrides: {}
 # dnsdist_service_overrides:
 #   LimitNOFILE: 10000
 
+# State of the DNSdist service
+dnsdist_service_state: "started"
+dnsdist_service_enabled: "yes"
+
 # When True, disable the automated restart of the dnsdist service
 dnsdist_disable_handlers: False

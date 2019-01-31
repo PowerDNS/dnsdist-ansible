@@ -1,11 +1,14 @@
 ---
 
+# the sleep in the restart dnsdist handler
+# is needed to make sure the service has been
+# correctly stopped before being started again during restarts
+
 - name: restart dnsdist
   service:
     name: dnsdist
     state: restarted
-    sleep: 1                          # the sleep is needed to make sure the service has been
-                                      # correctly started after being stopped during restarts
+    sleep: 1
   when: dnsdist_service_state != 'stopped' and
     not dnsdist_disable_handlers
 

@@ -1,6 +1,8 @@
-## v1.3.0 (To be released)
+## v1.2.1 (2019-02-19)
 
+NEW FEATURES:
 - Add some options (`dnsdist_service_state` and `dnsdist_service_enabled`) to configure the status of the dnsdist service ([\#15](https://github.com/PowerDNS/dnsdist-ansible/pull/15))
+
 ## v1.2.0 (2018-12-02)
 
 NEW FEATURES:

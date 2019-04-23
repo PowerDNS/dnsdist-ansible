@@ -1,0 +1,65 @@
+---
+
+scenario:
+  name: dnsdist-14
+
+driver:
+  name: docker
+
+dependency:
+  name: galaxy
+
+platforms:
+  - name: centos-7
+    image: centos:7
+    dockerfile_tpl: centos-systemd
+    groups:
+      - dnsdist
+
+  - name: ubuntu-1604
+    image: ubuntu:16.04
+    dockerfile_tpl: debian-systemd
+    groups:
+      - dnsdist
+
+  - name: ubuntu-1804
+    image: ubuntu:18.04
+    dockerfile_tpl: debian-systemd
+    groups:
+      - dnsdist
+
+  - name: debian-9
+    image: debian:9
+    dockerfile_tpl: debian-systemd
+    groups:
+      - dnsdist
+
+provisioner:
+  name: ansible
+  options:
+    diff: True
+    v: True
+  playbooks:
+    create: ../resources/create.yml
+    destroy: ../resources/destroy.yml
+    prepare: ../resources/prepare.yml
+  lint:
+    name: ansible-lint
+    options:
+      # excludes "systemctl used in place of systemd module"
+      x: ["ANSIBLE0006"]
+
+lint:
+  name: yamllint
+
+verifier:
+  name: testinfra
+  options:
+    hosts: "dnsdist"
+    vvv: True
+  directory: ../resources/tests/all
+  additional_files_or_dirs:
+    # path relative to 'directory'
+    - ../repo-14/
+  lint:
+    name: flake8

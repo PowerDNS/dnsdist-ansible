@@ -1,3 +1,4 @@
+import re
 
 debian_os = ['debian', 'ubuntu']
 rhel_os = ['redhat', 'centos']
@@ -41,9 +42,12 @@ def systemd_override(host):
     smgr = host.ansible("setup")["ansible_facts"]["ansible_service_mgr"]
     if smgr == 'systemd':
         fname = '/etc/systemd/system/pdns.service.d/override.conf'
+        exec_start = 'ExecStart=/usr/bin/dnsdist --supervised --disable-syslog'
         f = host.file(fname)
 
         assert f.exists
         assert f.user == 'root'
         assert f.group == 'root'
         assert 'LimitCORE=infinity' in f.content
+        assert re.match(r'^ExecStart=$', f.content)
+        assert exec_start in f.content

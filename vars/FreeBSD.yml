@@ -1,0 +1,10 @@
+---
+
+# The name of the dnsdist package
+default_dnsdist_package_name: "dnsdist"
+
+default_dnsdist_config_location: "/usr/local/etc/dnsdist.conf"
+
+# The default owner/group of the process and files
+default_dnsdist_owner: "root"
+default_dnsdist_group: "wheel"

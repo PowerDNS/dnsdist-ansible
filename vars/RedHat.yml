@@ -5,3 +5,11 @@ default_dnsdist_package_name: "dnsdist"
 
 # The name of the dnsdist debug package
 default_dnsdist_debug_symbols_package_name: "dnsdist-debuginfo"
+
+# The default location of the config file
+default_dnsdist_config_location: "/etc/dnsdist/dnsdist.conf"
+
+# The default owner/group of the process and files
+default_dnsdist_owner: "root"
+default_dnsdist_group: "root"
+

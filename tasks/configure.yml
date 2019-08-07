@@ -23,7 +23,7 @@
 - name: Add the dnsdist configuration
   template:
     src: dnsdist.conf.j2
-    dest: "{{ default_dnsdist_config_location }}" 
+    dest: "{{ default_dnsdist_config_location }}"
     owner: "{{ default_dnsdist_owner }}"
     group: "{{ default_dnsdist_group }}"
     mode: 0640

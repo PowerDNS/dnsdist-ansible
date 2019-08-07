@@ -29,4 +29,8 @@ webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}")
 carbonServer("{{dnsdist_carbonserver}}")
 {% endif %}
 
+{% for tlslocal in dnsdist_tlslocals %}
+addTLSLocal({{tlslocal}})
+{% endfor %}
+
 {{ dnsdist_config }}

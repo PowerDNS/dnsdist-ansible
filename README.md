@@ -165,6 +165,11 @@ dnsdist_disable_handlers: False
 
 Disable automated service restart on configuration changes.
 
+```yaml
+dnsdist_tlslocals: []
+```
+Configures DNS over TLS listeners. The entries are copied verbatim entry-by-entry.
+
 ## Example Playbook
 
 Deploy dnsdist in front of Quad9 and enable the web monitoring interface

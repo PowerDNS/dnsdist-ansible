@@ -139,6 +139,13 @@ dnsdist_webserver_password: ""
 The authentication credentials fro the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
 
 ```yaml
+dnsdist_webserver_apikey: ""
+```
+
+The authentication credentials for the built-in API. 
+
+
+```yaml
 dnsdist_config: ""
 ```
 

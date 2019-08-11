@@ -136,7 +136,7 @@ The listen IP address of the built-in webserver, empty thus disable by default.
 dnsdist_webserver_password: ""
 ```
 
-The authentication credentials fro the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
+The authentication credentials for the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
 
 ```yaml
 dnsdist_webserver_apikey: ""

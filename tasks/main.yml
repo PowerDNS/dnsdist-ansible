@@ -15,6 +15,20 @@
   tags:
     - install
 
+- name: Create encryption key
+  block:
+#    shell: "{{ ansible_python_interpreter }} -c 'import base64; import secrets; print(\"{}\".format(base64.b64encode(secrets.token_bytes(32)).decode(\"utf-8\")))'"
+    - name: Generate encryption key
+      shell: head -c 32 /dev/urandom | base64
+      register: dnsdist_setkey_cmd
+    - name: base64 encode encyption key
+      set_fact:
+        dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
+  when: dnsdist_setkey == ""
+  tags:
+    - install
+    - configure
+
 - include: configure.yml
   tags:
     - configure

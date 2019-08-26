@@ -80,6 +80,9 @@ dnsdist_webserver_address: ""
 # Embedded webserver authentication password.
 dnsdist_webserver_password: ""
 
+# Embedded webserver authentication API-key.
+dnsdist_webserver_apikey: ""
+
 # Remote Carbon server for metrics exporting.
 # See https://dnsdist.org/guides/carbon.html for more details.
 dnsdist_carbonserver: ""

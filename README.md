@@ -152,6 +152,13 @@ dnsdist_config: ""
 Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
 ```yaml
+dnsdist_config_owner: 'root'
+dnsdist_config_group: 'root'
+```
+
+User and Group that own the `dnsdist.conf` file.
+
+```yaml
 dnsdist_service_overrides: {}
 ```
 

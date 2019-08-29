@@ -24,8 +24,8 @@
   template:
     src: dnsdist.conf.j2
     dest: /etc/dnsdist/dnsdist.conf
-    owner: "root"
-    group: "root"
+    owner: '{{ dnsdist_config_owner }}'
+    group: '{{ dnsdist_config_group }}'
     mode: 0640
     validate: dnsdist -C %s --check-config 2>&1
   notify: restart dnsdist

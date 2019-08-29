@@ -23,4 +23,4 @@
   package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
-  when: dnsdist_install_debug_symbols_package
+  when: dnsdist_install_debug_symbols_package | bool

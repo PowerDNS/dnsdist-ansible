@@ -91,6 +91,10 @@ dnsdist_carbonserver: ""
 # injected into dnsdist's configuration file.
 dnsdist_config: ""
 
+# Owner and group for /etc/dnsdist/dnsdist.conf
+dnsdist_config_owner: 'root'
+dnsdist_config_group: 'root'
+
 # Dict with overrides for the service (systemd only)
 dnsdist_service_overrides: {}
 # dnsdist_service_overrides:

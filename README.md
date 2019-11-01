@@ -136,13 +136,27 @@ The listen IP address of the built-in webserver, empty thus disable by default.
 dnsdist_webserver_password: ""
 ```
 
-The authentication credentials fro the build-in webserver. Must be set when `dnsdist_webserver_address` is set.
+The authentication credentials for the built-in webserver. Must be set when `dnsdist_webserver_address` is set.
+
+```yaml
+dnsdist_webserver_apikey: ""
+```
+
+The authentication credentials for the built-in API. 
+
 
 ```yaml
 dnsdist_config: ""
 ```
 
 Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
+
+```yaml
+dnsdist_config_owner: 'root'
+dnsdist_config_group: 'root'
+```
+
+User and Group that own the `dnsdist.conf` file.
 
 ```yaml
 dnsdist_service_overrides: {}

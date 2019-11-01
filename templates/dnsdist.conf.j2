@@ -22,7 +22,11 @@ setKey("{{dnsdist_setkey}}")
 {% endif %}
 
 {% if dnsdist_webserver_address != "" and dnsdist_webserver_password != "" %}
+{% if dnsdist_webserver_apikey == "" %}
 webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}")
+{% else %}
+webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}", "{{ dnsdist_webserver_apikey }}")
+{% endif %}
 {% endif %}
 
 {% if dnsdist_carbonserver != "" %}

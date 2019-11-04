@@ -6,15 +6,15 @@
     file:
       name: "/etc/systemd/system/dnsdist.service.d"
       state: directory
-      owner: root
-      group: root
+      owner: "{{ default_dnsdist_owner }}"
+      group: "{{ default_dnsdist_group }}"
 
   - name: Override the dnsdist unit (systemd)
     template:
       src: "override-service.systemd.conf.j2"
       dest: "/etc/systemd/system/dnsdist.service.d/override.conf"
-      owner: root
-      group: root
+      owner: "{{ default_dnsdist_owner }}"
+      group: "{{ default_dnsdist_group }}"
     notify: reload systemd and restart dnsdist
 
   when: dnsdist_service_overrides != {}
@@ -23,9 +23,9 @@
 - name: Add the dnsdist configuration
   template:
     src: dnsdist.conf.j2
-    dest: /etc/dnsdist/dnsdist.conf
-    owner: '{{ dnsdist_config_owner }}'
-    group: '{{ dnsdist_config_group }}'
+    dest: "{{ default_dnsdist_config_location }}"
+    owner: "{{ default_dnsdist_owner }}"
+    group: "{{ default_dnsdist_group }}"
     mode: 0640
     validate: dnsdist -C %s --check-config 2>&1
   notify: restart dnsdist

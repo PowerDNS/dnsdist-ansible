@@ -124,7 +124,7 @@ The listen IP address of the dnsdist's TCP control socket.
 dnsdist_setkey: ""
 ```
 
-Encryption key for the dnsdist's TCP control socket.
+Encryption key for the dnsdist's TCP control socket. If it is empty, a random key will be generated. If a key is already present in the file, it will be kept.
 
 ```yaml
 dnsdist_webserver_address: ""

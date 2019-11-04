@@ -15,6 +15,34 @@
   tags:
     - install
 
+- name: Create encryption key
+  block:
+    - name: Check if the key is already present in the DNSdist configuration file
+      shell: fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
+      register: dnsdist_grepkey_cmd
+      changed_when: false
+      failed_when: false
+
+    - block:
+        - name: Generate encryption key
+          shell: head -c 32 /dev/urandom | base64
+          register: dnsdist_setkey_cmd
+
+        - name: base64 encode encyption key
+          set_fact:
+            dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
+      # if the config file does not contains a key already
+      when: "dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0"
+    - block:
+        - name: Set old encryption key
+          set_fact:
+            dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
+      when: "dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0"
+  when: dnsdist_generatekey
+  tags:
+    - install
+    - configure
+
 - include: configure.yml
   tags:
     - configure

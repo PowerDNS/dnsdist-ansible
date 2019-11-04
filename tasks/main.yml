@@ -31,7 +31,8 @@
         - name: base64 encode encyption key
           set_fact:
             dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
-      when: "dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0" # if the config file does not contains a key already
+      # if the config file does not contains a key already
+      when: "dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0"
     - block:
         - name: Set old encryption key
           set_fact:

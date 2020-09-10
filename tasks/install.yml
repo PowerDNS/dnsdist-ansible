@@ -14,6 +14,18 @@
 
   when: dnsdist_package_version != ''
 
+- name: Remove dnsdist
+  package:
+    name: "{{ dnsdist_package_name }}"
+    state: absent
+  when: dnsdist_force_reinstall | bool
+
+- name: Remove dnsdist debug symbols
+  package:
+    name: "{{ dnsdist_debug_symbols_package_name }}"
+    state: absent
+  when: dnsdist_force_reinstall | bool
+
 - name: Install dnsdist
   package:
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"

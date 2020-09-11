@@ -110,6 +110,8 @@ dnsdist_disable_handlers: False
 # When set, adds a DNS over TLS frontend
 dnsdist_tlslocals: []
 
-# When set to True, remove dnsdist packages and force an install
-# Allows for rollbacks to previous versions using Ansible's generic 'package' module
+# When set to True, remove dnsdist packages and force a reinstall
+# Not recommended for regular usage; Primarily intended for 2 scenario's:
+# - Force a downgrade
+# - Automation of test scenario's where switching between versions on the same server is necessary
 dnsdist_force_reinstall: False

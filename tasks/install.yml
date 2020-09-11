@@ -14,13 +14,13 @@
 
   when: dnsdist_package_version != ''
 
-- name: Remove dnsdist
+- name: Remove dnsdist if reinstall is forced
   package:
     name: "{{ dnsdist_package_name }}"
     state: absent
   when: dnsdist_force_reinstall | bool
 
-- name: Remove dnsdist debug symbols
+- name: Remove dnsdist debug symbols if reinstall is forced
   package:
     name: "{{ dnsdist_debug_symbols_package_name }}"
     state: absent

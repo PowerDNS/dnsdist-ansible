@@ -20,7 +20,7 @@
   package:
     name: yum-plugin-priorities
     state: present
-  when: ansible_distribution in [ 'CentOS' ]
+  when: ansible_distribution in [ 'CentOS' ] and ansible_pkg_mgr in [ 'yum' ]
 
 - name: Add the dnsdist YUM Repository
   yum_repository:
@@ -30,7 +30,7 @@
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
     gpgcheck: yes
-    priority: 90
+    priority: "90"
     state: present
 
 - name: Add the dnsdist debug symbols YUM Repository
@@ -41,6 +41,6 @@
     baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
     gpgcheck: yes
-    priority: 90
+    priority: "90"
     state: present
   when: dnsdist_install_debug_symbols_package

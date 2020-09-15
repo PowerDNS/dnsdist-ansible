@@ -5,5 +5,3 @@
 ##
 
 dnsdist_install_repo: "{{ dnsdist_powerdns_repo_15 }}"
-
-dnsdist_install_debug_symbols_package: False

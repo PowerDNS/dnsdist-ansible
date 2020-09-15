@@ -1,3 +1,4 @@
+import re
 
 debian_os = ['debian', 'ubuntu']
 rhel_os = ['redhat', 'centos']
@@ -29,4 +30,4 @@ def test_dnsdist_repo(host):
 def test_dnsdist_version(host):
     cmd = host.run('/usr/bin/dnsdist --version')
 
-    assert 'dnsdist 0.0.' in cmd.stdout
+    assert re.match('dnsdist \d\.\d\.', cmd.stdout)

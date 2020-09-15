@@ -213,7 +213,7 @@ To test all the scenarios run
 
 To run a custom molecule command
 
-    $ tox -e py27-ansible22 -- molecule test -s dnsdist-13
+    $ tox -e py36-ansible29 -- molecule test -s dnsdist-15
 
 ## License
 

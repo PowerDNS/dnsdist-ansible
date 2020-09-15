@@ -25,7 +25,7 @@ dnsdist_install_repo: ""
 #        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
 #
 # To install dnsdist from a custom repository
-# override the `dnsdist_install_install_repo` default value in your playbook.
+# override the `dnsdist_install_repo` default value in your playbook.
 # e.g.
 # - hosts: all
 #   vars:
@@ -92,8 +92,8 @@ dnsdist_carbonserver: ""
 dnsdist_config: ""
 
 # Owner and group for /etc/dnsdist/dnsdist.conf
-dnsdist_config_owner: 'root'
-dnsdist_config_group: 'root'
+dnsdist_config_owner: ""
+dnsdist_config_group: ""
 
 # Dict with overrides for the service (systemd only)
 dnsdist_service_overrides: {}

@@ -1,6 +1,4 @@
 [Service]
 {% for k, v in dnsdist_service_overrides.items() %}
-{% if k == 'ExecStart' %}ExecStart=
-{% endif %}
 {{ k }}={{ v }}
 {% endfor %}

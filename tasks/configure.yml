@@ -1,20 +1,21 @@
 ---
 
+
 - block:
 
   - name: Ensure the override directory exists (systemd)
     file:
       name: "/etc/systemd/system/dnsdist.service.d"
       state: directory
-      owner: "{{ default_dnsdist_owner }}"
-      group: "{{ default_dnsdist_group }}"
+      owner: "{{ _dnsdist_owner }}"
+      group: "{{ _dnsdist_group }}"
 
   - name: Override the dnsdist unit (systemd)
     template:
       src: "override-service.systemd.conf.j2"
       dest: "/etc/systemd/system/dnsdist.service.d/override.conf"
-      owner: "{{ default_dnsdist_owner }}"
-      group: "{{ default_dnsdist_group }}"
+      owner: "{{ _dnsdist_owner }}"
+      group: "{{ _dnsdist_group }}"
     notify: reload systemd and restart dnsdist
 
   when: dnsdist_service_overrides != {}
@@ -24,8 +25,8 @@
   template:
     src: dnsdist.conf.j2
     dest: "{{ default_dnsdist_config_location }}"
-    owner: "{{ default_dnsdist_owner }}"
-    group: "{{ default_dnsdist_group }}"
+    owner: "{{ _dnsdist_owner }}"
+    group: "{{ _dnsdist_group }}"
     mode: 0640
     validate: dnsdist -C %s --check-config 2>&1
   notify: restart dnsdist

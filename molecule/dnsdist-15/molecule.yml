@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-14
+  name: dnsdist-15
 
 driver:
   name: docker
@@ -14,16 +14,24 @@ platforms:
     image: centos:7
     dockerfile_tpl: centos-systemd
 
-  - name: ubuntu-1604
-    image: ubuntu:16.04
-    dockerfile_tpl: debian-systemd
+  - name: centos-8
+    image: centos:8
+    dockerfile_tpl: centos-systemd
 
   - name: ubuntu-1804
     image: ubuntu:18.04
     dockerfile_tpl: debian-systemd
 
+  - name: ubuntu-2004
+    image: ubuntu:20.04
+    dockerfile_tpl: debian-systemd
+
   - name: debian-9
     image: debian:9
+    dockerfile_tpl: debian-systemd
+
+  - name: debian-10
+    image: debian:10
     dockerfile_tpl: debian-systemd
 
 provisioner:
@@ -49,5 +57,5 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-14/
+    - ../repo-15/
   lint: flake8

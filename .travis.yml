@@ -1,21 +1,43 @@
 ---
 
+os: linux
+dist: focal
 language: python
-python: 2.7
-
-sudo: required
+python: 3.6
 
 # Enable the docker service
 services:
   - docker
 
+# Replace aufs with the vfs docker storage driver
+# to prevent systemd to fail starting docker in docker.
+before_install:
+  - sudo sed -i 's|DOCKER_OPTS=.*|DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock --storage-driver vfs"|g' /etc/default/docker
+  - sudo service docker restart
+  - docker info
+
 # Parallel testing of the supported
 # Ansible versions
 env:
-  matrix:
-    - ANSIBLE=2.5
-    - ANSIBLE=2.6
-    - ANSIBLE=2.7
+  jobs:
+    - ANSIBLE=2.7 DNSDIST_VERSION=13
+    - ANSIBLE=2.7 DNSDIST_VERSION=14
+    - ANSIBLE=2.7 DNSDIST_VERSION=15
+    - ANSIBLE=2.7 DNSDIST_VERSION=master
+
+    - ANSIBLE=2.8 DNSDIST_VERSION=13
+    - ANSIBLE=2.8 DNSDIST_VERSION=14
+    - ANSIBLE=2.8 DNSDIST_VERSION=15
+    - ANSIBLE=2.8 DNSDIST_VERSION=master
+
+    - ANSIBLE=2.9 DNSDIST_VERSION=13
+    - ANSIBLE=2.9 DNSDIST_VERSION=14
+    - ANSIBLE=2.9 DNSDIST_VERSION=15
+    - ANSIBLE=2.9 DNSDIST_VERSION=master
+
+jobs:
+  allow_failures:
+    - env: DNSDIST_VERSION=master
 
 # Install tox
 install:
@@ -23,7 +45,7 @@ install:
 
 # Test the current Dnsdist stable release
 script:
-  - tox -- molecule test -s dnsdist-13
+  - tox -- molecule test -s dnsdist-${DNSDIST_VERSION}
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

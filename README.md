@@ -184,6 +184,12 @@ dnsdist_tlslocals: []
 ```
 Configures DNS over TLS listeners. The entries are copied verbatim entry-by-entry.
 
+```yaml
+dnsdist_force_reinstall: False
+```
+
+Force reinstall of dnsdist packages by performing a removal prior to the package installation steps. Intended for usage where a downgrade of dnsdist needs to be performed.
+
 ## Example Playbook
 
 Deploy dnsdist in front of Quad9 and enable the web monitoring interface

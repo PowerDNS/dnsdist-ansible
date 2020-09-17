@@ -1,3 +1,13 @@
+## v1.3.0 (2020-09-17)
+
+NEW FEATURES:
+- `dnsdist_force_reinstall` flag added to allow a forced downgrade/reinstall ([\#26](https://github.com/PowerDNS/dnsdist-ansible/pull/26))
+
+IMPROVEMENTS:
+- Repositories for PowerDNS dnsdist 1.5 added by @xgin ([\#25](https://github.com/PowerDNS/dnsdist-ansible/pull/25))
+- Backwards compatibility introduced for dnsdist PR [\#7820](https://github.com/PowerDNS/pdns/pull/7820) ([\#27](https://github.com/PowerDNS/dnsdist-ansible/pull/27))
+- Updated Ansible dependency to 2.5 ([\#28](https://github.com/PowerDNS/dnsdist-ansible/pull/28))
+
 ## v1.2.1 (2019-02-19)
 
 NEW FEATURES:

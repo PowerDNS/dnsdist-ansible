@@ -17,6 +17,7 @@ jobs:
           - dnsdist-13
           - dnsdist-14
           - dnsdist-15
+          - dnsdist-16
           - dnsdist-master
     steps:
       - name: checkout

@@ -199,7 +199,7 @@ Deploy dnsdist in front of Quad9 and enable the web monitoring interface
   roles:
     - { role: PowerDNS.dnsdist,
         dnsdist_servers: ['9.9.9.9'],
-        dnsdist_webserver_address: "{{ ansible_default_ipv4['address']:8083 }}",
+        dnsdist_webserver_address: "{{ ansible_default_ipv4['address'] }}:8083",
         dnsdist_webserver_password: 'geheim' }
 ```
 

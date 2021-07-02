@@ -14,7 +14,6 @@ jobs:
           - '2.10'
           - '2.11'
         scenario:
-          - dnsdist-13
           - dnsdist-14
           - dnsdist-15
           - dnsdist-16

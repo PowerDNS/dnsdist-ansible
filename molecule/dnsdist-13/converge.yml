@@ -1,8 +1,0 @@
----
-
-- hosts: all
-  vars_files:
-    - ../resources/vars/dnsdist-common.yml
-    - ../resources/vars/dnsdist-repo-13.yml
-  roles:
-    - { role: dnsdist-ansible }

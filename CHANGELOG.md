@@ -1,3 +1,14 @@
+## v1.4.0 (2021-07-02)
+
+NEW FEATURES:
+- Add 1.6 repositories ([\#32](https://github.com/PowerDNS/dnsdist-ansible/pull/32))
+
+IMPROVEMENTS:
+- The `dnsdist_setkey` variable is now Ansible Vault-safe ([\#31](https://github.com/PowerDNS/dnsdist-ansible/pull/31))
+
+REMOVED FEATURES:
+- EOL version repositories (1.0, 1.1, 1.2, 1.3) have been removed ([\#35](https://github.com/PowerDNS/dnsdist-ansible/pull/35))
+
 ## v1.3.0 (2020-09-17)
 
 NEW FEATURES:

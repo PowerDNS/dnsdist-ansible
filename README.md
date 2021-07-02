@@ -1,6 +1,6 @@
 # Ansible Role: dnsdist
 
-[![Build Status](https://travis-ci.org/PowerDNS/dnsdist-ansible.svg?branch=master)](https://travis-ci.org/PowerDNS/dnsdist-ansible)
+[![Build Status](https://github.com/PowerDNS/dnsdist-ansible/actions/workflows/main.yml/badge.svg)](https://github.com/PowerDNS/dnsdist-ansible)
 [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Ansible Role](https://img.shields.io/badge/ansible%20role-PowerDNS.dnsdist-blue.svg)](https://galaxy.ansible.com/PowerDNS/dnsdist)
 [![GitHub tag](https://img.shields.io/github/tag/PowerDNS/dnsdist-ansible.svg)](https://github.com/PowerDNS/dnsdist-ansible/tags)
@@ -9,7 +9,7 @@ An Ansible role create by the folks behind PowerDNS to set up [dnsdist](https://
 
 ## Requirements
 
-An Ansible 2.2 or higher installation.
+An Ansible 2.9 or higher installation.
 
 ## Dependencies
 
@@ -219,7 +219,7 @@ To test all the scenarios run
 
 To run a custom molecule command
 
-    $ tox -e py36-ansible29 -- molecule test -s dnsdist-15
+    $ tox -e ansible29 -- molecule test -s dnsdist-15
 
 ## License
 

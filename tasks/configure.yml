@@ -7,15 +7,15 @@
     file:
       name: "/etc/systemd/system/dnsdist.service.d"
       state: directory
-      owner: "{{ _dnsdist_owner }}"
-      group: "{{ _dnsdist_group }}"
+      owner: "root"
+      group: "root"
 
   - name: Override the dnsdist unit (systemd)
     template:
       src: "override-service.systemd.conf.j2"
       dest: "/etc/systemd/system/dnsdist.service.d/override.conf"
-      owner: "{{ _dnsdist_owner }}"
-      group: "{{ _dnsdist_group }}"
+      owner: "root"
+      group: "root"
     notify: reload systemd and restart dnsdist
 
   when: dnsdist_service_overrides != {}

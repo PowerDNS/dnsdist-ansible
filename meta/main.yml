@@ -1,6 +1,8 @@
 ---
 
 galaxy_info:
+  role_name: dnsdist
+  namespace: powerdns
   author: PowerDNS Engineering Team
   description: Dnsdist is a highly scriptable and DDoS aware DNS loadbalancer
   company: PowerDNS.COM BV

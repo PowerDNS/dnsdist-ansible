@@ -1,5 +1,4 @@
 ---
-
 - name: Install gnupg
   package:
     name: gnupg
@@ -21,8 +20,8 @@
 
 - name: Update the APT cache
   apt:
-    update_cache: yes
-  when: "_dnsdist_apt_key.changed or _dnsdist_apt_repo.changed"
+    update_cache: true
+  when: _dnsdist_apt_key.changed or _dnsdist_apt_repo.changed
 
 - name: Pin the dnsdist APT Repository
   template:

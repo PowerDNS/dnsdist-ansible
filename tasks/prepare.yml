@@ -13,8 +13,10 @@
 # Load the default user & group for the dnsdist version
 - name: Get dnsdist user & group ownership defaults
   set_fact:
-    _default_dnsdist_owner: "{{ default_dnsdist_owner_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')) else default_dnsdist_owner }}"
-    _default_dnsdist_group: "{{ default_dnsdist_group_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')) else default_dnsdist_group }}"
+    _default_dnsdist_owner: "{{ default_dnsdist_owner_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt'))\
+      \ else default_dnsdist_owner }}"
+    _default_dnsdist_group: "{{ default_dnsdist_group_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt'))\
+      \ else default_dnsdist_group }}"
 
 # Use user & group overrides if present, else use the version-specific defaults
 - name: Get dnsdist user & group ownership overrides
@@ -53,4 +55,5 @@
 - name: Override default ExecStart on Debian OS family for dnsdist < 1.5
   set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog' } ) }}"
-  when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'Debian' and _dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')
+  when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'Debian' and _dnsdist_installed_version is defined
+    and _dnsdist_installed_version is version('1.5', operator='lt')

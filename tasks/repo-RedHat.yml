@@ -1,18 +1,16 @@
 ---
-
 - block:
+    - name: Install epel-release on CentOS
+      package:
+        name: epel-release
+        state: present
+      when: ansible_distribution in [ 'CentOS' ]
 
-  - name: Install epel-release on CentOS
-    package:
-      name: epel-release
-      state: present
-    when: ansible_distribution in [ 'CentOS' ]
-
-  - name: Install epel-release on RHEL/OracleLinux
-    package:
-      name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
-      state: present
-    when: ansible_distribution in [ 'RedHat', 'OracleLinux' ]
+    - name: Install epel-release on RHEL/OracleLinux
+      package:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
+      when: ansible_distribution in [ 'RedHat', 'OracleLinux' ]
 
   when: dnsdist_install_epel
 
@@ -29,7 +27,7 @@
     description: PowerDNS dnsdist Repository
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
-    gpgcheck: yes
+    gpgcheck: true
     priority: "90"
     state: present
 
@@ -40,7 +38,7 @@
     description: PowerDNS dnsdist Repository - debug symbols
     baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
-    gpgcheck: yes
+    gpgcheck: true
     priority: "90"
     state: present
   when: dnsdist_install_debug_symbols_package

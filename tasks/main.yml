@@ -1,11 +1,10 @@
 ---
-
 - name: Include OS-specific variables
   include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - always
 
-- include: "repo-{{ ansible_os_family }}.yml"
+- include: repo-{{ ansible_os_family }}.yml
   when: dnsdist_install_repo != ""
   tags:
     - install
@@ -32,12 +31,12 @@
           set_fact:
             dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
       # if the config file does not contains a key already
-      when: "dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0"
+      when: dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0
     - block:
         - name: Set old encryption key
           set_fact:
             dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
-      when: "dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0"
+      when: dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0
   when: dnsdist_generatekey
   tags:
     - install

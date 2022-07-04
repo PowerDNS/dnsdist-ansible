@@ -1,5 +1,4 @@
 ---
-
 galaxy_info:
   role_name: dnsdist
   namespace: powerdns

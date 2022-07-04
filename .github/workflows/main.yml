@@ -1,7 +1,5 @@
 ---
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   Lint:
@@ -17,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - '2.11'
-          - '2.12'
-          - '2.13'
+          - "2.11"
+          - "2.12"
+          - "2.13"
         scenario:
           - dnsdist-14
           - dnsdist-15

@@ -1,13 +1,14 @@
 ---
-- block:
+- name: Set up EPEL
+  block:
     - name: Install epel-release on CentOS
-      package:
+      ansible.builtin.package:
         name: epel-release
         state: present
       when: ansible_distribution in [ 'CentOS' ]
 
     - name: Install epel-release on RHEL/OracleLinux
-      package:
+      ansible.builtin.package:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
       when: ansible_distribution in [ 'RedHat', 'OracleLinux' ]
@@ -15,13 +16,13 @@
   when: dnsdist_install_epel
 
 - name: Install yum-plugin-priorities
-  package:
+  ansible.builtin.package:
     name: yum-plugin-priorities
     state: present
   when: ansible_distribution in [ 'CentOS' ] and ansible_pkg_mgr in [ 'yum' ]
 
 - name: Add the dnsdist YUM Repository
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: "{{ dnsdist_install_repo['name'] }}"
     file: "{{ dnsdist_install_repo['name'] }}"
     description: PowerDNS dnsdist Repository
@@ -32,7 +33,7 @@
     state: present
 
 - name: Add the dnsdist debug symbols YUM Repository
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: "{{ dnsdist_install_repo['name'] }}-debuginfo"
     file: "{{ dnsdist_install_repo['name'] }}"
     description: PowerDNS dnsdist Repository - debug symbols

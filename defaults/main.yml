@@ -58,14 +58,14 @@ dnsdist_install_debug_symbols_package: false
 dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
 
 # dnsdist listen addresses
-dnsdist_locals: [127.0.0.1:5300]
+dnsdist_locals: ["127.0.0.1:5300"]
 # dnsdist backend servers
 dnsdist_servers: []
 # Access Control List
 dnsdist_acls: []
 # dnsdist's control socket encryption key.
 # See https://dnsdist.org/reference/config.html#setKey for more information.
-dnsdist_generatekey: "{{ (dnsdist_setkey is defined)|bool and (dnsdist_setkey != '' )|bool }}"
+dnsdist_generatekey: "{{ (dnsdist_setkey is defined) | bool and (dnsdist_setkey != '' ) | bool }}"
 
 # dnsdist's control socket list address.
 dnsdist_controlsocket: 127.0.0.1

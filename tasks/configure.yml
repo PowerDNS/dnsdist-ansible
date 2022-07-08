@@ -9,6 +9,7 @@
       state: directory
       owner: "{{ _dnsdist_owner }}"
       group: "{{ _dnsdist_group }}"
+      mode: '0644'
 
   - name: Override the dnsdist unit (systemd)
     template:
@@ -16,6 +17,7 @@
       dest: "/etc/systemd/system/dnsdist.service.d/override.conf"
       owner: "{{ _dnsdist_owner }}"
       group: "{{ _dnsdist_group }}"
+      mode: '0644'
     notify: reload systemd and restart dnsdist
 
   when: dnsdist_service_overrides != {}

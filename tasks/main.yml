@@ -5,13 +5,13 @@
   tags:
     - always
 
-- include: "repo-{{ ansible_os_family }}.yml"
+- include_tasks: "repo-{{ ansible_os_family }}.yml"
   when: dnsdist_install_repo != ""
   tags:
     - install
     - repository
 
-- include: install.yml
+- include_tasks: install.yml
   tags:
     - install
 
@@ -27,6 +27,7 @@
         - name: Generate encryption key
           shell: head -c 32 /dev/urandom | base64
           register: dnsdist_setkey_cmd
+          changed_when: true
 
         - name: base64 encode encyption key
           set_fact:
@@ -43,11 +44,11 @@
     - install
     - configure
 
-- include: prepare.yml
+- include_tasks: prepare.yml
   tags:
     - configure
 
-- include: configure.yml
+- include_tasks: configure.yml
   tags:
     - configure
 

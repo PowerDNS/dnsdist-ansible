@@ -1,56 +1,59 @@
 ---
 # Version-related steps regarding user & group ownership to ensure reverse compatibility for https://github.com/PowerDNS/pdns/pull/7820
 - name: Get installed packages facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 # Grab the version of dnsdist
 - name: Get dnsdist package version
-  set_fact:
+  ansible.builtin.set_fact:
     _dnsdist_installed_version: "{{ ansible_facts.packages[dnsdist_package_name][0].version }}"
   when: dnsdist_package_name in ansible_facts.packages
 
 # Load the default user & group for the dnsdist version
 - name: Get dnsdist user & group ownership defaults
-  set_fact:
-    _default_dnsdist_owner: "{{ default_dnsdist_owner_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')) else default_dnsdist_owner }}"
-    _default_dnsdist_group: "{{ default_dnsdist_group_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')) else default_dnsdist_group }}"
+  ansible.builtin.set_fact:
+    _default_dnsdist_owner: "{{ default_dnsdist_owner_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt'))\
+      \ else default_dnsdist_owner }}"
+    _default_dnsdist_group: "{{ default_dnsdist_group_pre15 if (_dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt'))\
+      \ else default_dnsdist_group }}"
 
 # Use user & group overrides if present, else use the version-specific defaults
 - name: Get dnsdist user & group ownership overrides
-  set_fact:
+  ansible.builtin.set_fact:
     _dnsdist_owner: "{{ dnsdist_config_owner if dnsdist_config_owner | length > 0 else _default_dnsdist_owner }}"
     _dnsdist_group: "{{ dnsdist_config_group if dnsdist_config_group | length > 0 else _default_dnsdist_group }}"
 
 # Ensure user override is present in the systemd overrides if a dnsdist_config_owner has been specified
 - name: Override systemd User
-  set_fact:
+  ansible.builtin.set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'User': dnsdist_config_owner } ) }}"
   when: dnsdist_config_owner | length > 0
 
 # Ensure group override is present in the systemd overrides if a dnsdist_config_group has been specified
 - name: Override systemd Group
-  set_fact:
+  ansible.builtin.set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'Group': dnsdist_config_group } ) }}"
   when: dnsdist_config_group | length > 0
 
 # Override default ExecStart on RedHat OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStart=/usr/bin/dnsdist -u dnsdist -g dnsdist --supervised --disable-syslog
 - name: Override default ExecStart on RedHat OS family
-  set_fact:
+  ansible.builtin.set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog' } ) }}"
   when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'RedHat'
 
 # Override default ExecStartPre on RedHat OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStartPre=/usr/bin/dnsdist -u dnsdist -g dnsdist --check-config
 - name: Override default ExecStartPre on RedHat OS family
-  set_fact:
+  ansible.builtin.set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'ExecStartPre': '/usr/bin/dnsdist --check-config' } ) }}"
   when: dnsdist_config_owner | length > 0 and 'ExecStartPre' not in dnsdist_service_overrides and ansible_os_family == 'RedHat'
 
 # Override default ExecStart on Debian OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStart=/usr/bin/dnsdist --supervised --disable-syslog -u _dnsdist -g _dnsdist
 - name: Override default ExecStart on Debian OS family for dnsdist < 1.5
-  set_fact:
+  ansible.builtin.set_fact:
     dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine( { 'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog' } ) }}"
-  when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'Debian' and _dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt')
+  when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'Debian' and _dnsdist_installed_version is defined
+    and _dnsdist_installed_version is version('1.5', operator='lt')

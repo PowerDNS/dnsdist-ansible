@@ -1,18 +1,17 @@
 ---
-
 # The name of the dnsdist package
-default_dnsdist_package_name: "dnsdist"
+default_dnsdist_package_name: dnsdist
 
 # The name of the dnsdist debug package
-default_dnsdist_debug_symbols_package_name: "dnsdist-debuginfo"
+default_dnsdist_debug_symbols_package_name: dnsdist-debuginfo
 
 # The default location of the config file
-default_dnsdist_config_location: "/etc/dnsdist/dnsdist.conf"
+default_dnsdist_config_location: /etc/dnsdist/dnsdist.conf
 
 # The default owner/group of the process and files: 1.5 and beyond
-default_dnsdist_owner: "dnsdist"
-default_dnsdist_group: "dnsdist"
+default_dnsdist_owner: dnsdist
+default_dnsdist_group: dnsdist
 
 # The default owner/group of the process and files: 1.4 and earlier
-default_dnsdist_owner_pre15: "root"
-default_dnsdist_group_pre15: "root"
+default_dnsdist_owner_pre15: root
+default_dnsdist_group_pre15: root

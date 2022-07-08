@@ -1,11 +1,10 @@
 ---
-
 - name: Include OS-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - always
 
-- include: "repo-{{ ansible_os_family }}.yml"
+- include: repo-{{ ansible_os_family }}.yml
   when: dnsdist_install_repo != ""
   tags:
     - install
@@ -18,26 +17,26 @@
 - name: Create encryption key
   block:
     - name: Check if the key is already present in the DNSdist configuration file
-      shell: fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
+      ansible.builtin.shell: fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
       register: dnsdist_grepkey_cmd
       changed_when: false
       failed_when: false
 
-    - block:
-        - name: Generate encryption key
-          shell: head -c 32 /dev/urandom | base64
+    - name: Set up new encryption key
+      block:
+        - name: Generate encryption key  # noqa no-changed-when
+          ansible.builtin.shell: head -c 32 /dev/urandom | base64
           register: dnsdist_setkey_cmd
 
         - name: base64 encode encyption key
-          set_fact:
+          ansible.builtin.set_fact:
             dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
       # if the config file does not contains a key already
-      when: "dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0"
-    - block:
-        - name: Set old encryption key
-          set_fact:
-            dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
-      when: "dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0"
+      when: dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0
+    - name: Set old encryption key
+      ansible.builtin.set_fact:
+        dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
+      when: dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0
   when: dnsdist_generatekey
   tags:
     - install
@@ -52,7 +51,7 @@
     - configure
 
 - name: Set the status of the dnsdist service
-  service:
+  ansible.builtin.service:
     name: dnsdist
     state: "{{ dnsdist_service_state }}"
     enabled: "{{ dnsdist_service_enabled }}"

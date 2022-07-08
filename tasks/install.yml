@@ -1,38 +1,37 @@
 ---
+- name: Set up version seperator
+  block:
+    - name: Prefix the version with the correct separator on RedHat
+      ansible.builtin.set_fact:
+        _dnsdist_package_version: -{{ dnsdist_package_version }}
+      when: ansible_os_family == 'RedHat'
 
-- block:
-
-  - name: Prefix the version with the correct separator on RedHat
-    set_fact:
-      _dnsdist_package_version: "-{{ dnsdist_package_version }}"
-    when: ansible_os_family == 'RedHat'
-
-  - name: Prefix the version with the correct separator on Debian
-    set_fact:
-      _dnsdist_package_version: "={{ dnsdist_package_version }}"
-    when: ansible_os_family == 'Debian'
+    - name: Prefix the version with the correct separator on Debian
+      ansible.builtin.set_fact:
+        _dnsdist_package_version: ={{ dnsdist_package_version }}
+      when: ansible_os_family == 'Debian'
 
   when: dnsdist_package_version != ''
 
 - name: Remove dnsdist if reinstall is forced
-  package:
+  ansible.builtin.package:
     name: "{{ dnsdist_package_name }}"
     state: absent
   when: dnsdist_force_reinstall | bool
 
 - name: Remove dnsdist debug symbols if reinstall is forced
-  package:
+  ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}"
     state: absent
   when: dnsdist_force_reinstall | bool
 
 - name: Install dnsdist
-  package:
+  ansible.builtin.package:
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
 
 - name: Install dnsdist debug symbols
-  package:
+  ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
   when: dnsdist_install_debug_symbols_package | bool

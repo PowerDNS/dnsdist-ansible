@@ -5,4 +5,4 @@
     - ../resources/vars/dnsdist-common.yml
     - ../resources/vars/dnsdist-repo-16.yml
   roles:
-    - { role: dnsdist-ansible }
+    - { role: powerdns.dnsdist }

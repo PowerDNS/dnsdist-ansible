@@ -106,7 +106,8 @@ Configure dnsdist's listen addresses.
 dnsdist_servers: []
 ```
 
-The list of IP addresses of the downstream DNS servers dnsdist should be send traffic to.
+The list of IP addresses of the downstream DNS servers dnsdist should be send traffic to
+OR of Lua tables that the newServer function ( https://dnsdist.org/reference/config.html#newServer ) can parse.
 
 ```yaml
 dnsdist_carbonserver: ""

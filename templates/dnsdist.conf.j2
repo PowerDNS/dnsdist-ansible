@@ -11,7 +11,11 @@ addACL("{{acl}}")
 {% endfor %}
 
 {% for server in dnsdist_servers %}
+{% if "{" in server %}
+newServer({{server}})
+{% else %}
 newServer("{{server}}")
+{% endif %}
 {% endfor %}
 
 {% if dnsdist_controlsocket != "" %}

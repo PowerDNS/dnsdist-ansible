@@ -6,7 +6,7 @@ rhel_os = ['redhat', 'centos']
 def test_repo_file(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-16.list')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-17.list')
     if host.system_info.distribution.lower() in rhel_os:
         f = host.file('/etc/yum.repos.d/powerdns-dnsdist-17.repo')
 
@@ -23,7 +23,7 @@ def test_pdns_repo(host):
         f = host.file('/etc/yum.repos.d/powerdns-dnsdist-17.repo')
 
     assert f.exists
-    assert f.contains('dnsdist-16')
+    assert f.contains('dnsdist-17')
 
 
 def test_pdns_version(host):

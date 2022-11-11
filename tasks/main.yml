@@ -4,13 +4,15 @@
   tags:
     - always
 
-- include_tasks: "repo-{{ ansible_os_family }}.yml"
+- name: Setup repository
+  ansible.builtin.include_tasks: "repo-{{ ansible_os_family }}.yml"
   when: dnsdist_install_repo != ""
   tags:
     - install
     - repository
 
-- include_tasks: install.yml
+- name: Install dnsdist
+  ansible.builtin.include_tasks: install.yml
   tags:
     - install
 
@@ -43,11 +45,13 @@
     - install
     - configure
 
-- include_tasks: prepare.yml
+- name: Prepare facts for config file
+  ansible.builtin.include_tasks: prepare.yml
   tags:
     - configure
 
-- include_tasks: configure.yml
+- name: Build config file
+  ansible.builtin.include_tasks: configure.yml
   tags:
     - configure
 

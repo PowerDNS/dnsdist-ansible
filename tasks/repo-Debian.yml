@@ -1,30 +1,27 @@
 ---
-
 - name: Install gnupg
-  package:
+  ansible.builtin.package:
     name: gnupg
     state: present
 
 - name: Import the dnsdist APT Repository key
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ dnsdist_install_repo['gpg_key'] }}"
     id: "{{ dnsdist_install_repo['gpg_key_id'] | default('') }}"
     state: present
   register: _dnsdist_apt_key
+  notify: Update the APT cache
 
 - name: Add the dnsdist APT Repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     filename: "{{ dnsdist_install_repo['name'] }}"
     repo: "{{ dnsdist_install_repo['apt_repo'] }}"
     state: present
   register: _dnsdist_apt_repo
-
-- name: Update the APT cache
-  apt:
-    update_cache: yes
-  when: "_dnsdist_apt_key.changed or _dnsdist_apt_repo.changed"
+  notify: Update the APT cache
 
 - name: Pin the dnsdist APT Repository
-  template:
+  ansible.builtin.template:
     src: dnsdist.pin.j2
     dest: /etc/apt/preferences.d/dnsdist
+    mode: u=rw,g=r,o=r

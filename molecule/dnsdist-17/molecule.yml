@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-16
+  name: dnsdist-17
 
 driver:
   name: docker
@@ -42,7 +42,7 @@ provisioner:
     create: ../resources/create.yml
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
-  lint: ansible-lint -x ANSIBLE0006 ANSIBLE0016
+  lint: ansible-lint -x ANSIBLE0006 ANSIBLE0017
 
 lint: yamllint vars tasks defaults meta
 
@@ -53,5 +53,5 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-16/
+    - ../repo-17/
   lint: flake8

@@ -1,5 +1,4 @@
 ---
-
 # By default no additional repository is added to the hosts to install dnsdist
 dnsdist_install_repo: ""
 
@@ -42,7 +41,7 @@ dnsdist_install_repo: ""
 
 # Install the EPEL repository.
 # EPEL is needed to satisfy some dnsdist dependencies like libsodium
-dnsdist_install_epel: True
+dnsdist_install_epel: true
 
 # The name of the dnsdist package
 dnsdist_package_name: "{{ default_dnsdist_package_name }}"
@@ -53,26 +52,23 @@ dnsdist_package_name: "{{ default_dnsdist_package_name }}"
 dnsdist_package_version: ""
 
 # Install dnsdist debug symbols package
-dnsdist_install_debug_symbols_package: False
+dnsdist_install_debug_symbols_package: false
 
 # The name of the dnsdist debug symbols package
 dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
 
 # dnsdist listen addresses
-dnsdist_locals: ['127.0.0.1:5300']
-
+dnsdist_locals: ["127.0.0.1:5300"]
 # dnsdist backend servers
 dnsdist_servers: []
-
 # Access Control List
 dnsdist_acls: []
-
 # dnsdist's control socket encryption key.
 # See https://dnsdist.org/reference/config.html#setKey for more information.
-dnsdist_generatekey: "{{ (dnsdist_setkey is defined)|bool and (dnsdist_setkey != '' )|bool }}"
+dnsdist_generatekey: "{{ (dnsdist_setkey is defined) | bool and (dnsdist_setkey != '' ) | bool }}"
 
 # dnsdist's control socket list address.
-dnsdist_controlsocket: "127.0.0.1"
+dnsdist_controlsocket: 127.0.0.1
 
 # Embedded webserver listen address.
 dnsdist_webserver_address: ""
@@ -101,17 +97,16 @@ dnsdist_service_overrides: {}
 #   LimitNOFILE: 10000
 
 # State of the DNSdist service
-dnsdist_service_state: "started"
+dnsdist_service_state: started
 dnsdist_service_enabled: "yes"
 
 # When True, disable the automated restart of the dnsdist service
-dnsdist_disable_handlers: False
+dnsdist_disable_handlers: false
 
 # When set, adds a DNS over TLS frontend
 dnsdist_tlslocals: []
-
 # When set to True, remove dnsdist packages and force a reinstall
 # Not recommended for regular usage; Primarily intended for 2 scenario's:
 # - Force a downgrade
 # - Automation of test scenario's where switching between versions on the same server is necessary
-dnsdist_force_reinstall: False
+dnsdist_force_reinstall: false

@@ -65,7 +65,7 @@ dnsdist_servers: []
 dnsdist_acls: []
 # dnsdist's control socket encryption key.
 # See https://dnsdist.org/reference/config.html#setKey for more information.
-dnsdist_generatekey: "{{ (dnsdist_setkey is defined) | bool and (dnsdist_setkey != '' ) | bool }}"
+dnsdist_generatekey: "{{ (dnsdist_setkey is not defined or dnsdist_setkey == '') | bool }}"
 
 # dnsdist's control socket list address.
 dnsdist_controlsocket: 127.0.0.1

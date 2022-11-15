@@ -103,7 +103,9 @@ dnsdist_locals: ['127.0.0.1:5300']
 Configure dnsdist's listen addresses.
 
 ```yaml
-dnsdist_servers: []
+dnsdist_servers:
+  - '127.0.0.1'
+  - "{ address='127.0.0.1:5300', source='127.0.0.1@lo', order=1 }"
 ```
 
 The list of IP addresses of the downstream DNS servers dnsdist should be send traffic to

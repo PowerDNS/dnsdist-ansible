@@ -147,6 +147,11 @@ dnsdist_webserver_apikey: ""
 
 The authentication credentials for the built-in API. 
 
+```yaml
+dnsdist_webserver_acl: ""
+```
+
+Since 1.5.0, only connections from 127.0.0.1 and ::1 are allowed by default. See https://dnsdist.org/guides/webserver.html for more information.
 
 ```yaml
 dnsdist_config: ""

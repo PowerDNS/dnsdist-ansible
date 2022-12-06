@@ -25,11 +25,27 @@ controlSocket("{{ dnsdist_controlsocket }}")
 setKey("{{dnsdist_setkey}}")
 {% endif %}
 
-{% if dnsdist_webserver_address != "" and dnsdist_webserver_password != "" %}
-{% if dnsdist_webserver_apikey == "" %}
-webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}")
-{% else %}
+{% if dnsdist_webserver_address|length>0 and dnsdist_webserver_password|length>0 %}
+
+{% if _dnsdist_installed_version is defined and _dnsdist_installed_version is version('1.5', operator='lt') %}
+{# dnsdist 1.4x or older: #}
+{% if dnsdist_webserver_apikey|length>0 %}
 webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}", "{{ dnsdist_webserver_apikey }}")
+{% else %}
+webserver("{{ dnsdist_webserver_address }}", "{{ dnsdist_webserver_password }}")
+{% endif %}
+
+{% else %}
+{# dnsdist 1.5x or newer: #}
+webserver("{{ dnsdist_webserver_address }}")
+{% if dnsdist_webserver_apikey|length>0 and dnsdist_webserver_acl|length>0 %}
+setWebserverConfig({password="{{ dnsdist_webserver_password }}", apiKey="{{ dnsdist_webserver_apikey }}", acl="{{ dnsdist_webserver_acl }}"})
+{% elif dnsdist_webserver_apikey|length>0 %}
+setWebserverConfig({password="{{ dnsdist_webserver_password }}", apiKey="{{ dnsdist_webserver_apikey }}"})
+{% else %}
+setWebserverConfig({password="{{ dnsdist_webserver_password }}"})
+{% endif %}
+
 {% endif %}
 {% endif %}
 

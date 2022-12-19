@@ -1,6 +1,7 @@
 ---
 - name: Set up systemd override
   block:
+
     - name: Ensure the override directory exists (systemd)
       ansible.builtin.file:
         name: /etc/systemd/system/dnsdist.service.d
@@ -9,16 +10,37 @@
         group: root
         mode: 0755
 
-    - name: Override the dnsdist unit (systemd)
+    - name: Override the dnsdist service (systemd)
       ansible.builtin.template:
         src: override-service.systemd.conf.j2
         dest: /etc/systemd/system/dnsdist.service.d/override.conf
         owner: root
         group: root
         mode: 0644
+      when: dnsdist_service_overrides != {}
       notify: reload systemd and restart dnsdist
-  when: dnsdist_service_overrides != {}
-    and ansible_service_mgr == "systemd"
+
+    - name: Override the dnsdist unit (systemd)
+      ansible.builtin.template:
+        src: override-unit.systemd.conf.j2
+        dest: /etc/systemd/system/dnsdist.service.d/override-unit.conf
+        owner: root
+        group: root
+        mode: 0644
+      when: dnsdist_unit_overrides != {}
+      notify: reload systemd and restart dnsdist
+
+    - name: Override the dnsdist environments (systemd)
+      ansible.builtin.template:
+        src: override-environment.systemd.conf.j2
+        dest: /etc/systemd/system/dnsdist.service.d/override-environment.conf
+        owner: root
+        group: root
+        mode: 0644
+      when: dnsdist_environment_overrides != {}
+      notify: reload systemd and restart dnsdist
+
+  when: ansible_service_mgr == "systemd"
 
 - name: Add the dnsdist configuration
   ansible.builtin.template:

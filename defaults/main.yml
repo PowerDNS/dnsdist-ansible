@@ -96,6 +96,14 @@ dnsdist_service_overrides: {}
 # dnsdist_service_overrides:
 #   LimitNOFILE: 10000
 
+dnsdist_unit_overrides: {}
+# dnsdist_service_overrides:
+#  PartOf: "network.service"
+
+dnsdist_environment_overrides: {}
+# dnsdist_service_overrides:
+#   PATH: "/var/lib/mylib/bin:$PATH"
+
 # State of the DNSdist service
 dnsdist_service_state: started
 dnsdist_service_enabled: "yes"

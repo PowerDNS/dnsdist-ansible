@@ -1,0 +1,4 @@
+[Unit]
+{% for k, v in dnsdist_unit_overrides.items() %}
+{{ k }}={{ v }}
+{% endfor %}

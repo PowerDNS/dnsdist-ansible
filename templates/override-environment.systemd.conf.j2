@@ -1,0 +1,4 @@
+[Service]
+{% for k,v in pdns_platform_common_override_unit_environment.items() %}
+Environment={{ k }}={{ v }}
+{% endfor %}

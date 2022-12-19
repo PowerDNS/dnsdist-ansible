@@ -39,7 +39,7 @@ By default, dnsdist is installed from the software repositories configured on th
       dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
 ```
 
-The examples above, show how to install dnsdist from the official PowerDNS repositories
+The examples above, show how to install DNSdist from the official PowerDNS repositories
 (see the complete list of pre-defined repos in `vars/main.yml`).
 
 ```yaml
@@ -63,8 +63,8 @@ It is also possible to install dnsdist from custom repositories as demonstrated 
 dnsdist_install_epel: True
 ```
 
-By default, install EPEL to satisfy some dnsdist dependencies like `lidsodium`.
-To skip the installtion of EPEL set the `dnsdist_install_epel` variable to `False`.
+By default, install EPEL to satisfy some DNSdist dependencies like `lidsodium`.
+To skip the installation of EPEL set the `dnsdist_install_epel` variable to `False`.
 
 ```yaml
 dnsdist_package_name: "{{ default_dnsdist_package_name }}"
@@ -145,7 +145,7 @@ The authentication credentials for the built-in webserver. Must be set when `dns
 dnsdist_webserver_apikey: ""
 ```
 
-The authentication credentials for the built-in API. 
+The authentication credentials for the built-in API.
 
 
 ```yaml
@@ -167,6 +167,20 @@ dnsdist_service_overrides: {}
 
 Dict with overrides for the service (systemd only).
 This can be used to change any systemd settings in the `[Service]` category.
+
+```yaml
+dnsdist_unit_overrides: {}
+```
+
+Dict with overrides for the service unit (systemd only).
+This can be used to change any systemd settings in the `[Unit]` category.
+
+```yaml
+dnsdist_environment_overrides: {}
+```
+
+Dict with overrides for the service environments (systemd only).
+This can be used to change any environment variables in systemd settings in the `[Service]` category.
 
 ```yaml
 dnsdist_service_state: "started"

@@ -1,3 +1,25 @@
+## v1.4.1 (2023-02-08)
+
+NEW FEATURES:
+- Include DNSdist 17 ([\#44](https://github.com/PowerDNS/dnsdist-ansible/pull/44))
+
+IMPROVEMENTS:
+- Add varibles to change unit and env vars for dnsdist service ([\#60](https://github.com/PowerDNS/dnsdist-ansible/pull/60))
+- Handlers: change the order, order matters when config and service unit were modified ([\#47](https://github.com/PowerDNS/dnsdist-ansible/pull/47))
+- Allow for newServer Lua table syntax in dnsdist_servers list ([\#42](https://github.com/PowerDNS/dnsdist-ansible/pull/42))
+- Added example for dnsdist_servers list
+- Allow for newServer Lua table syntax in dnsdist_servers list
+- Improved Linter coverage ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
+
+BUG FIXES:
+- Fix typo in vars/main.yml ([\#69](https://github.com/PowerDNS/dnsdist-ansible/pull/69))
+- Fix for dnsdist_setkey is ignored ([\#45](https://github.com/PowerDNS/dnsdist-ansible/pull/45))
+- Fix CI ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
+
+REMOVED FEATURES:
+- EOL version repositories (1.4) have been removed
+- Travis integration have been removed
+
 ## v1.4.0 (2021-07-02)
 
 NEW FEATURES:

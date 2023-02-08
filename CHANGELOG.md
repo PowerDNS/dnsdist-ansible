@@ -12,9 +12,12 @@ IMPROVEMENTS:
 BUG FIXES:
 - Version fix in yum_debug_symbols_repo_baseurl  ([\#69](https://github.com/PowerDNS/dnsdist-ansible/pull/69))
 - Fix dependabot spacing and dashes ([\#68])(https://github.com/PowerDNS/dnsdist-ansible/pull/68)
+- Bump yamllint from 1.26.1 to 1.29.0 ([\#62]) (https://github.com/PowerDNS/dnsdist-ansible/pull/62)
+- Bump actions/checkout from 2 to 3 ([\48])(https://github.com/PowerDNS/dnsdist-ansible/pull/48)
 - Webserver needs config in setWebserverConfig (introduced in dnsdist 15) ([\#57](https://github.com/PowerDNS/dnsdist-ansible/pull/57)
 - Fix for dnsdist_setkey is ignored ([\#45](https://github.com/PowerDNS/dnsdist-ansible/pull/45))
 - Fix CI ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
+
 
 REMOVED FEATURES:
 - EOL version repositories (1.4) have been removed ([\#66])(https://github.com/PowerDNS/dnsdist-ansible/pull/66)

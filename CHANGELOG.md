@@ -1,4 +1,4 @@
-## v1.4.1 (2023-02-08)
+## v1.5.0 (2023-02-08)
 
 NEW FEATURES:
 - Include DNSdist 17 ([\#44](https://github.com/PowerDNS/dnsdist-ansible/pull/44))
@@ -12,13 +12,15 @@ IMPROVEMENTS:
 - Improved Linter coverage ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
 
 BUG FIXES:
-- Fix typo in vars/main.yml ([\#69](https://github.com/PowerDNS/dnsdist-ansible/pull/69))
+- Version fix in yum_debug_symbols_repo_baseurl  ([\#69](https://github.com/PowerDNS/dnsdist-ansible/pull/69))
+- Fix dependabot spacing and dashes ([\#68])(https://github.com/PowerDNS/dnsdist-ansible/pull/68)
+- Webserver needs config in setWebserverConfig (introduced in dnsdist 15) ([\#57](https://github.com/PowerDNS/dnsdist-ansible/pull/57)
 - Fix for dnsdist_setkey is ignored ([\#45](https://github.com/PowerDNS/dnsdist-ansible/pull/45))
 - Fix CI ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
 
 REMOVED FEATURES:
-- EOL version repositories (1.4) have been removed
-- Travis integration have been removed
+- EOL version repositories (1.4) have been removed ([\#66])(https://github.com/PowerDNS/dnsdist-ansible/pull/66)
+- Travis integration have been removed ([\#65])(https://github.com/PowerDNS/dnsdist-ansible/pull/65)
 
 ## v1.4.0 (2021-07-02)
 

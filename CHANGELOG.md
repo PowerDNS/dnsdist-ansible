@@ -7,8 +7,6 @@ IMPROVEMENTS:
 - Add varibles to change unit and env vars for dnsdist service ([\#60](https://github.com/PowerDNS/dnsdist-ansible/pull/60))
 - Handlers: change the order, order matters when config and service unit were modified ([\#47](https://github.com/PowerDNS/dnsdist-ansible/pull/47))
 - Allow for newServer Lua table syntax in dnsdist_servers list ([\#42](https://github.com/PowerDNS/dnsdist-ansible/pull/42))
-- Added example for dnsdist_servers list
-- Allow for newServer Lua table syntax in dnsdist_servers list
 - Improved Linter coverage ([\#39](https://github.com/PowerDNS/dnsdist-ansible/pull/39))
 
 BUG FIXES:

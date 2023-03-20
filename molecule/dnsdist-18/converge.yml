@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  vars_files:
+    - ../resources/vars/dnsdist-common.yml
+    - ../resources/vars/dnsdist-repo-18.yml
+  roles:
+    - { role: powerdns.dnsdist }

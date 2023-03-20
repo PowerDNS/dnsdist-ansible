@@ -17,6 +17,10 @@ platforms:
   - name: centos-8
     image: quay.io/centos/centos:stream8
     dockerfile_tpl: centos-systemd
+  
+  - name: oraclelinux-9
+    image: oraclelinux:9
+    dockerfile_tpl: centos-systemd
 
   - name: ubuntu-1804
     image: ubuntu:18.04

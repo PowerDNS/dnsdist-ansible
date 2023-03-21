@@ -1,7 +1,7 @@
 import re
 
 debian_os = ['debian', 'ubuntu']
-rhel_os = ['redhat', 'centos']
+rhel_os = ['redhat', 'centos', 'oracleserver']
 
 
 def test_distribution(host):

@@ -20,7 +20,7 @@ platforms:
   
   - name: oraclelinux-9
     image: oraclelinux:9
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: oraclelinux-systemd
 
   - name: ubuntu-1804
     image: ubuntu:18.04

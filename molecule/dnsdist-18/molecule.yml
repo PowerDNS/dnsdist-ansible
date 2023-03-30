@@ -22,10 +22,6 @@ platforms:
     image: oraclelinux:9
     dockerfile_tpl: oraclelinux-systemd
 
-  - name: ubuntu-1804
-    image: ubuntu:18.04
-    dockerfile_tpl: debian-systemd
-
   - name: ubuntu-2004
     image: ubuntu:20.04
     dockerfile_tpl: debian-systemd

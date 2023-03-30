@@ -241,7 +241,7 @@ To test all the scenarios run
 
 To run a custom molecule command
 
-    $ tox -e ansible29 -- molecule test -s dnsdist-15
+    $ tox -e ansible29 -- molecule test -s dnsdist-18
 
 ## License
 

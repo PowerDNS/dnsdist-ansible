@@ -13,7 +13,6 @@
   ansible.builtin.service:
     name: dnsdist
     state: restarted
-    sleep: 1
   when: dnsdist_service_state != 'stopped' and not dnsdist_disable_handlers
 
 - name: Update the APT cache

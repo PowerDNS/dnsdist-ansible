@@ -27,33 +27,33 @@
 # Ensure user override is present in the systemd overrides if a dnsdist_config_owner has been specified
 - name: Override systemd User
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({ 'User': dnsdist_config_owner }) }}"
+    dnsdist_service_overrides: "{{dnsdist_service_overrides | combine({'User': dnsdist_config_owner}) }}"
   when: dnsdist_config_owner | length > 0
 
 # Ensure group override is present in the systemd overrides if a dnsdist_config_group has been specified
 - name: Override systemd Group
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({ 'Group': dnsdist_config_group }) }}"
+    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({'Group': dnsdist_config_group}) }}"
   when: dnsdist_config_group | length > 0
 
 # Override default ExecStart on RedHat OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStart=/usr/bin/dnsdist -u dnsdist -g dnsdist --supervised --disable-syslog
 - name: Override default ExecStart on RedHat OS family
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({ 'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog' }) }}"
+    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog'}) }}"
   when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'RedHat'
 
 # Override default ExecStartPre on RedHat OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStartPre=/usr/bin/dnsdist -u dnsdist -g dnsdist --check-config
 - name: Override default ExecStartPre on RedHat OS family
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({ 'ExecStartPre': '/usr/bin/dnsdist --check-config' }) }}"
+    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({'ExecStartPre': '/usr/bin/dnsdist --check-config'}) }}"
   when: dnsdist_config_owner | length > 0 and 'ExecStartPre' not in dnsdist_service_overrides and ansible_os_family == 'RedHat'
 
 # Override default ExecStart on Debian OS family if a dnsdist_config_owner has been specified
 # Default setting which will be overwritten is: ExecStart=/usr/bin/dnsdist --supervised --disable-syslog -u _dnsdist -g _dnsdist
 - name: Override default ExecStart on Debian OS family for dnsdist < 1.5
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({ 'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog' }) }}"
+    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({'ExecStart': '/usr/bin/dnsdist --supervised --disable-syslog'}) }}"
   when: dnsdist_config_owner | length > 0 and 'ExecStart' not in dnsdist_service_overrides and ansible_os_family == 'Debian' and _dnsdist_installed_version is defined
     and _dnsdist_installed_version is version('1.5', operator='lt')

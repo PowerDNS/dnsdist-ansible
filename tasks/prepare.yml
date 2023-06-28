@@ -27,7 +27,7 @@
 # Ensure user override is present in the systemd overrides if a dnsdist_config_owner has been specified
 - name: Override systemd User
   ansible.builtin.set_fact:
-    dnsdist_service_overrides: "{{dnsdist_service_overrides | combine({'User': dnsdist_config_owner}) }}"
+    dnsdist_service_overrides: "{{ dnsdist_service_overrides | combine({'User': dnsdist_config_owner}) }}"
   when: dnsdist_config_owner | length > 0
 
 # Ensure group override is present in the systemd overrides if a dnsdist_config_group has been specified

@@ -18,33 +18,37 @@
     - install
 
 - name: Create encryption key
+  when: dnsdist_generatekey
+  tags:
+    - install
+    - configure
   block:
     - name: Check if the key is already present in the DNSdist configuration file
-      ansible.builtin.shell: fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
+      ansible.builtin.shell: |
+        set -o pipefail
+        fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
       register: dnsdist_grepkey_cmd
       changed_when: false
       failed_when: false
 
     - name: Set up new encryption key
+      # if the config file does not contains a key already
+      when: dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0
       block:
         - name: Generate encryption key  # noqa no-changed-when
           ansible.builtin.shell: head -c 32 /dev/urandom | base64
           register: dnsdist_setkey_cmd
           changed_when: true
 
-        - name: base64 encode encyption key
+        - name: Base64 encode encyption key
           ansible.builtin.set_fact:
             dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
-      # if the config file does not contains a key already
-      when: dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0
+
     - name: Set old encryption key
       ansible.builtin.set_fact:
         dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
       when: dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0
-  when: dnsdist_generatekey
-  tags:
-    - install
-    - configure
+
 
 - name: Prepare facts for config file
   ansible.builtin.include_tasks: prepare.yml

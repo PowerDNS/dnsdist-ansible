@@ -1,5 +1,6 @@
 ---
 - name: Set up EPEL
+  when: dnsdist_install_epel
   block:
     - name: Install epel-release on CentOS
       ansible.builtin.package:
@@ -18,8 +19,6 @@
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
       when: ansible_distribution in [ 'RedHat', 'OracleLinux' ]
-
-  when: dnsdist_install_epel
 
 - name: Install yum-plugin-priorities
   ansible.builtin.package:

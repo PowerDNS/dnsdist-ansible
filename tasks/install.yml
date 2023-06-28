@@ -1,5 +1,6 @@
 ---
 - name: Set up version seperator
+  when: dnsdist_package_version != ''
   block:
     - name: Prefix the version with the correct separator on RedHat
       ansible.builtin.set_fact:
@@ -10,8 +11,6 @@
       ansible.builtin.set_fact:
         _dnsdist_package_version: ={{ dnsdist_package_version }}
       when: ansible_os_family == 'Debian'
-
-  when: dnsdist_package_version != ''
 
 - name: Remove dnsdist if reinstall is forced
   ansible.builtin.package:

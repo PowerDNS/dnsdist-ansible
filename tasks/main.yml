@@ -24,9 +24,11 @@
     - configure
   block:
     - name: Check if the key is already present in the DNSdist configuration file
-      ansible.builtin.raw: |
+      shell: |
         set -o pipefail
         fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
+      args:
+        executable: /bin/bash        
       register: dnsdist_grepkey_cmd
       changed_when: false
       failed_when: false

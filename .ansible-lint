@@ -1,3 +1,8 @@
 ---
 exclude_paths:
   - molecule/
+skip_list:
+  - name: Shells not using the pipefail option - bug
+    id: ANSIBLE0006 
+  - nmae: Shells that run when changed should likely be handlers
+    id: ANSIBLE0016

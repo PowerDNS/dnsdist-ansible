@@ -2,7 +2,5 @@
 exclude_paths:
   - molecule/
 skip_list:
-  - name: Shells not using the pipefail option
-    id: ANSIBLE0006 
-  - name: Shells that run when changed should likely be handlers
-    id: ANSIBLE0016
+  - Shells not using the pipefail option: ANSIBLE0006
+  - Tasks that run when changed should likely be handlers: ANSIBLE0016

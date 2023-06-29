@@ -1,7 +1,7 @@
-ansible-lint==6.16.2
+ansible-lint==6.17.2
 yamllint==1.32.0
 molecule-plugins[docker]==23.4.1
 molecule-plugins[lint]==23.4.1
-molecule==5.0.1
+molecule==5.1.0
 pytest-testinfra==8.1.0
 docker==6.1.3

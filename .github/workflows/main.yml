@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - "2.11"
           - "2.12"
           - "2.13"
+          - "2.14"
         scenario:
           - dnsdist-16
           - dnsdist-17

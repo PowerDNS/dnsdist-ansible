@@ -3,13 +3,13 @@
 # is needed to make sure the service has been
 # correctly stopped before being started again during restarts
 
-- name: reload systemd and restart dnsdist
+- name: Reload systemd and restart dnsdist
   ansible.builtin.systemd:
     daemon_reload: true
   notify: restart dnsdist
   when: not dnsdist_disable_handlers
 
-- name: restart dnsdist
+- name: Restart dnsdist
   ansible.builtin.service:
     name: dnsdist
     state: restarted

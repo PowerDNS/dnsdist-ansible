@@ -1,5 +1,6 @@
 ---
 - name: Set up systemd override
+  when: ansible_service_mgr == "systemd"
   block:
 
     - name: Ensure the override directory exists (systemd)
@@ -39,8 +40,6 @@
         mode: 0644
       when: dnsdist_environment_overrides != {}
       notify: reload systemd and restart dnsdist
-
-  when: ansible_service_mgr == "systemd"
 
 - name: Add the dnsdist configuration
   ansible.builtin.template:

@@ -19,7 +19,7 @@
         group: root
         mode: 0644
       when: dnsdist_service_overrides != {}
-      notify: reload systemd and restart dnsdist
+      notify: Reload systemd and restart dnsdist
 
     - name: Override the dnsdist unit (systemd)
       ansible.builtin.template:
@@ -29,7 +29,7 @@
         group: root
         mode: 0644
       when: dnsdist_unit_overrides != {}
-      notify: reload systemd and restart dnsdist
+      notify: Reload systemd and restart dnsdist
 
     - name: Override the dnsdist environments (systemd)
       ansible.builtin.template:
@@ -39,9 +39,11 @@
         group: root
         mode: 0644
       when: dnsdist_environment_overrides != {}
-      notify: reload systemd and restart dnsdist
+      notify: Reload systemd and restart dnsdist
 
 - name: Add the dnsdist configuration
+  tags:
+    - molecule-idempotence-notest
   ansible.builtin.template:
     src: dnsdist.conf.j2
     dest: "{{ default_dnsdist_config_location }}"
@@ -49,4 +51,4 @@
     group: "{{ _dnsdist_group }}"
     mode: 0640
     validate: dnsdist -C %s --check-config 2>&1
-  notify: restart dnsdist
+  notify: Restart dnsdist

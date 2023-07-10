@@ -6,7 +6,7 @@
 - name: Reload systemd and restart dnsdist
   ansible.builtin.systemd:
     daemon_reload: true
-  notify: restart dnsdist
+  notify: Restart dnsdist
   when: not dnsdist_disable_handlers
 
 - name: Restart dnsdist

@@ -32,11 +32,11 @@ platforms:
 
   - name: debian-11
     image: debian:11
-    dockerfile_tpl: debian-systemd
+    dockerfile_tpl: debian-python3
 
   - name: debian-12
     image: debian:12
-    dockerfile_tpl: debian-12
+    dockerfile_tpl: debian-python3
 
 provisioner:
   name: ansible

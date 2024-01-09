@@ -2,4 +2,4 @@
 exclude_paths:
   - molecule/
 skip_list:
-  - '306' # [306] Shells that use pipes should set the pipefail option
+  - '306'  # [306] Shells that use pipes should set the pipefail option

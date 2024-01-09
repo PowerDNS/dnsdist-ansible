@@ -41,5 +41,5 @@ dnsdist_powerdns_repo_19:
   gpg_key: http://repo.powerdns.com/FD380FBB-pub.asc
   gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19
-  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-18/debug
+  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19/debug
   name: powerdns-dnsdist-19

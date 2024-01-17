@@ -1,6 +1,6 @@
 
 debian_os = ['debian', 'ubuntu']
-rhel_os = ['redhat', 'centos', 'oracleserver', 'oraclelinux']
+rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
 
 
 def test_repo_file(host):

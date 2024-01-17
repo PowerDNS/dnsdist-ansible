@@ -71,7 +71,7 @@ provisioner:
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
 
-#lint: yamllint vars tasks defaults meta
+# lint: yamllint vars tasks defaults meta
 
 verifier:
   name: testinfra

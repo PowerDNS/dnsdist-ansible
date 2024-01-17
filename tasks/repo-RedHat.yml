@@ -17,8 +17,8 @@
     - name: Install epel-release on OracleLinux
       ansible.builtin.package:
         name:
-        - "oracle-epel-release-el{{ ansible_distribution_major_version }}"
-        - hostname
+          - "oracle-epel-release-el{{ ansible_distribution_major_version }}"
+          - hostname
         state: present
       when: ansible_distribution in [ 'OracleLinux' ]
 

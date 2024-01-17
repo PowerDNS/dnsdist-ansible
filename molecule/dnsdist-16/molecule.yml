@@ -50,7 +50,7 @@ provisioner:
     create: ../resources/create.yml
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
-  
+
 lint: yamllint vars tasks defaults meta
 
 verifier:

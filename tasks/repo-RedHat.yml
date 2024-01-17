@@ -6,25 +6,29 @@
       ansible.builtin.package:
         name: epel-release
         state: present
-      when: ansible_distribution in [ 'CentOS' ]
+      when: ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
 
-    - name: Import epel GPG key on oraclelinux-9
-      ansible.builtin.rpm_key:
-        key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+    - name: Install epel-release on RHEL
+      ansible.builtin.package:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+      when: ansible_distribution in [ 'RedHat' ]
+
+    - name: Install epel-release on OracleLinux
+      ansible.builtin.package:
+        name:
+          - "oracle-epel-release-el{{ ansible_distribution_major_version }}"
+          - hostname
         state: present
       when: ansible_distribution in [ 'OracleLinux' ]
-
-    - name: Install epel-release on RHEL/OracleLinux
-      ansible.builtin.package:
-        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
-        state: present
-      when: ansible_distribution in [ 'RedHat', 'OracleLinux' ]
 
 - name: Install yum-plugin-priorities
   ansible.builtin.package:
     name: yum-plugin-priorities
     state: present
-  when: ansible_distribution in [ 'CentOS' ] and ansible_pkg_mgr in [ 'yum' ]
+  when:
+    - ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
+    - ansible_distribution_major_version | int < 8
 
 - name: Add the dnsdist YUM Repository
   ansible.builtin.yum_repository:
@@ -33,7 +37,7 @@
     description: PowerDNS dnsdist Repository
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
-    gpgcheck: true
+    gpgcheck: yes
     priority: "90"
     state: present
 
@@ -44,7 +48,7 @@
     description: PowerDNS dnsdist Repository - debug symbols
     baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key'] }}"
-    gpgcheck: true
+    gpgcheck: yes
     priority: "90"
     state: present
   when: dnsdist_install_debug_symbols_package

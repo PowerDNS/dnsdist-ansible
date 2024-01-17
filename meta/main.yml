@@ -12,17 +12,16 @@ galaxy_info:
       versions:
         - "7"
         - "8"
+        - "9"
     - name: Debian
       versions:
-        - jessie
-        - stretch
         - buster
+        - bullseye
+        - bookworm
     - name: Ubuntu
       versions:
-        - trusty
-        - xenial
-        - bionic
         - focal
+        - jammy
   galaxy_tags:
     - dnsdist
     - dns

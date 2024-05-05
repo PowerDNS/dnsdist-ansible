@@ -3,6 +3,6 @@
 - hosts: all
   vars_files:
     - ../resources/vars/dnsdist-common.yml
-    - ../resources/vars/dnsdist-repo-16.yml
+    - ../resources/vars/dnsdist-repo-19.yml
   roles:
     - { role: powerdns.dnsdist }

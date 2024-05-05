@@ -1,7 +1,0 @@
----
-
-##
-# Dnsdist 1.6.x Repository
-##
-
-dnsdist_install_repo: "{{ dnsdist_powerdns_repo_16 }}"

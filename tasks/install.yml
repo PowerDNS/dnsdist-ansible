@@ -27,10 +27,10 @@
 - name: Install dnsdist
   ansible.builtin.package:
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
-    state: present
+    state: latest
 
 - name: Install dnsdist debug symbols
   ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
-    state: present
+    state: latest
   when: dnsdist_install_debug_symbols_package | bool

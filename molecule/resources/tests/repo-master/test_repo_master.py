@@ -29,4 +29,4 @@ def test_dnsdist_repo(host):
 def test_dnsdist_version(host):
     cmd = host.run('/usr/bin/dnsdist --version')
 
-    assert re.match('dnsdist \d\.\d\.', cmd.stdout)
+    assert re.match('dnsdist \d+\.\d+\.', cmd.stdout)

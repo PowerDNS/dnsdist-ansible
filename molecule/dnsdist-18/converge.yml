@@ -1,6 +1,7 @@
 ---
 
-- hosts: all
+- name: Dnsdist 1.8
+  hosts: all
   vars_files:
     - ../resources/vars/dnsdist-common.yml
     - ../resources/vars/dnsdist-repo-18.yml

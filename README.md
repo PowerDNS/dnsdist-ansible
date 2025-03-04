@@ -160,6 +160,12 @@ dnsdist_config: ""
 Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
 
 ```yaml
+dnsdist_config_files: {}
+```
+
+Additional dnsdist configuration files to be placed in the configuration directory.
+
+```yaml
 dnsdist_config_owner: 'root'
 dnsdist_config_group: 'root'
 ```

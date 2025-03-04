@@ -52,3 +52,15 @@
     mode: 0640
     validate: dnsdist -C %s --check-config 2>&1
   notify: Restart dnsdist
+
+- name: Add the dnsdist additional configuration files
+  tags:
+    - molecule-idempotence-notest
+  ansible.builtin.copy:
+    content: "{{ dnsdist_config_files[item] }}"
+    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
+    owner: "{{ _dnsdist_owner }}"
+    group: "{{ _dnsdist_group }}"
+    mode: 0640
+  with_items: "{{ dnsdist_config_files }}"
+  notify: Restart dnsdist

@@ -90,6 +90,12 @@ dnsdist_carbonserver: ""
 # injected into dnsdist's configuration file.
 dnsdist_config: ""
 
+# Additional dnsdist configuration files.
+dnsdist_config_files: {}
+# dnsdist_config_files:
+#   extra.conf: |
+#     -- extra file with configration
+
 # Owner and group for /etc/dnsdist/dnsdist.conf
 dnsdist_config_owner: ""
 dnsdist_config_group: ""
@@ -116,6 +122,7 @@ dnsdist_disable_handlers: false
 
 # When set, adds a DNS over TLS frontend
 dnsdist_tlslocals: []
+
 # When set to True, remove dnsdist packages and force a reinstall
 # Not recommended for regular usage; Primarily intended for 2 scenario's:
 # - Force a downgrade

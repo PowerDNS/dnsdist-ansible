@@ -1,6 +1,7 @@
 ---
 # Version-related steps regarding user & group ownership to ensure reverse compatibility for https://github.com/PowerDNS/pdns/pull/7820
 - name: Get installed packages facts
+  no_log: true
   ansible.builtin.package_facts:
     manager: auto
 

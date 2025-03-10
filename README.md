@@ -90,6 +90,13 @@ dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_na
 
 The name of the dnsdist debug symbols package to be installed when `dnsdist_install_debug_symbols_package` is `True`.
 
+
+```yaml
+dnsdist_additional_packages: []
+```
+
+List of additional packages to install, list support version pining for each of the packages.
+
 ```yaml
 dnsdist_acls: []
 ```

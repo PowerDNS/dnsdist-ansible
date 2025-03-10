@@ -57,6 +57,14 @@ dnsdist_install_debug_symbols_package: false
 # The name of the dnsdist debug symbols package
 dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
 
+# Install additional packages
+dnsdist_additional_packages: []
+# dnsdist_additional_packages:
+#   - name: extra-package
+#     version: 1.0.0
+#   - name: extra-package2
+#   - extra-package3
+
 # dnsdist listen addresses
 dnsdist_locals: ["127.0.0.1:5300"]
 # dnsdist backend servers

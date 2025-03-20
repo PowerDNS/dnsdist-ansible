@@ -41,18 +41,6 @@
       when: dnsdist_environment_overrides != {}
       notify: Reload systemd and restart dnsdist
 
-- name: Add the dnsdist configuration
-  tags:
-    - molecule-idempotence-notest
-  ansible.builtin.template:
-    src: dnsdist.conf.j2
-    dest: "{{ default_dnsdist_config_location }}"
-    owner: "{{ _dnsdist_owner }}"
-    group: "{{ _dnsdist_group }}"
-    mode: 0640
-    validate: dnsdist -C %s --check-config 2>&1
-  notify: Restart dnsdist
-
 - name: Add the dnsdist additional configuration files
   tags:
     - molecule-idempotence-notest
@@ -63,4 +51,16 @@
     group: "{{ _dnsdist_group }}"
     mode: 0640
   with_items: "{{ dnsdist_config_files }}"
+  notify: Restart dnsdist
+
+- name: Add the dnsdist configuration
+  tags:
+    - molecule-idempotence-notest
+  ansible.builtin.template:
+    src: dnsdist.conf.j2
+    dest: "{{ default_dnsdist_config_location }}"
+    owner: "{{ _dnsdist_owner }}"
+    group: "{{ _dnsdist_group }}"
+    mode: 0640
+    validate: dnsdist -C %s --check-config 2>&1
   notify: Restart dnsdist

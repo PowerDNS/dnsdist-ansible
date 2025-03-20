@@ -4,6 +4,9 @@ NEW FEATURES:
 - Add variable `dnsdist_config_files` for add additional configuration files ([\#145](https://github.com/PowerDNS/dnsdist-ansible/pull/145))
 - Add variable `dnsdist_additional_packages` for add additional dependency packages. Set `no_log: true` for "Get installed packages facts" task.  ([\#146](https://github.com/PowerDNS/dnsdist-ansible/pull/146))
 
+BUG FIXES:
+- Change the order of tasks for additional files, so it's before the validation of the dnsdist configuration file. Since the configuration file may refer to additional files, they should already exist in the system.
+
 ## v1.5.0 (2023-02-08)
 
 NEW FEATURES:

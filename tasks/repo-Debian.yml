@@ -20,6 +20,10 @@
     group: root
     mode: '0644'
   notify: Update the APT cache
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
   
 - name: Create the dnsdist APT repository Deb822 source
   ansible.builtin.template:

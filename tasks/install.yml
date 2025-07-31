@@ -45,7 +45,7 @@
     state: present
   when: 
     - dnsdist_install_debug_symbols_package | bool
-    - ansible_os_family == 'Debian'
+    - ansible_os_family != 'Debian'
 
 - name: Install dnsdist additional packages
   ansible.builtin.package:

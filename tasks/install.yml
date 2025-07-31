@@ -38,11 +38,12 @@
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
 
+# -dbgsym package doesn't exist anymore in the repo, disabling this.
 - name: Install dnsdist debug symbols
   ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
-  when: dnsdist_install_debug_symbols_package | bool
+  when: never # dnsdist_install_debug_symbols_package | bool
 
 - name: Install dnsdist additional packages
   ansible.builtin.package:

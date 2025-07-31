@@ -38,14 +38,11 @@
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
 
-# -dbgsym package doesn't exist anymore in Apt repos.
 - name: Install dnsdist debug symbols
   ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
     state: present
-  when: 
-    - dnsdist_install_debug_symbols_package | bool
-    - ansible_os_family != 'Debian'
+  when: dnsdist_install_debug_symbols_package | bool
 
 - name: Install dnsdist additional packages
   ansible.builtin.package:

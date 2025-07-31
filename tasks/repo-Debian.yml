@@ -24,7 +24,7 @@
 - name: Create the dnsdist APT repository Deb822 source
   ansible.builtin.template:
     src: 'dnsdist.sources.j2'
-    dest: "/etc/apt/sources.list.d/dnsdist_install_repo['name'].sources"
+    dest: "/etc/apt/sources.list.d/{{ dnsdist_install_repo['name'] }}.sources"
     owner: root
     group: root
     mode: '0644'

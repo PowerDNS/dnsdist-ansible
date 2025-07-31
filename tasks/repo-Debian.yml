@@ -4,6 +4,14 @@
     name: gnupg
     state: present
 
+- name: Ensure keyring directory exists.
+  ansible.builtin.file:
+    name: '/etc/apt/keyrings'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: Download the dnsdist APT Repository key
   ansible.builtin.get_url:
     url: "{{ dnsdist_install_repo['gpg_key_url'] }}"

@@ -23,9 +23,9 @@ jobs:
           - "2.15"
           - "2.16"
         scenario:
-          - dnsdist-16
-          - dnsdist-17
           - dnsdist-18
+          - dnsdist-19
+          - dnsdist-20
           - dnsdist-master
     steps:
       - name: checkout

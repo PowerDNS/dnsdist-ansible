@@ -6,9 +6,9 @@ rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
 def test_repo_file(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-17.list')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-20.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-17.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-20.repo')
 
     assert f.exists
     assert f.user == 'root'
@@ -18,15 +18,15 @@ def test_repo_file(host):
 def test_pdns_repo(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-17.list')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-20.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-17.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-20.repo')
 
     assert f.exists
-    assert f.contains('dnsdist-17')
+    assert f.contains('dnsdist-20')
 
 
 def test_pdns_version(host):
     cmd = host.run('/usr/bin/dnsdist --version')
 
-    assert 'dnsdist 1.7' in cmd.stdout
+    assert 'dnsdist 2.0' in cmd.stdout

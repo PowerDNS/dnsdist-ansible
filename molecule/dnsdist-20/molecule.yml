@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-17
+  name: dnsdist-20
 
 driver:
   name: docker
@@ -28,6 +28,10 @@ platforms:
 
   - name: debian-11
     image: debian:11
+    dockerfile_tpl: debian-python3
+
+  - name: debian-12
+    image: debian:12
     dockerfile_tpl: debian-python3
 
   - name: rockylinux-8
@@ -59,7 +63,7 @@ provisioner:
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
 
-lint: yamllint vars tasks defaults meta
+# lint: yamllint vars tasks defaults meta
 
 verifier:
   name: testinfra
@@ -68,4 +72,4 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-17/
+    - ../repo-20/

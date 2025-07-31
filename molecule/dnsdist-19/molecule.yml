@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-16
+  name: dnsdist-17
 
 driver:
   name: docker
@@ -14,12 +14,24 @@ platforms:
     image: oraclelinux:8
     dockerfile_tpl: centos-systemd
 
+  - name: oraclelinux-9
+    image: oraclelinux:9
+    dockerfile_tpl: centos-systemd
+
   - name: ubuntu-2004
     image: ubuntu:20.04
     dockerfile_tpl: ubuntu-systemd
 
+  - name: ubuntu-2204
+    image: ubuntu:22.04
+    dockerfile_tpl: ubuntu-systemd
+
   - name: debian-11
     image: debian:11
+    dockerfile_tpl: debian-python3
+
+  - name: debian-12
+    image: debian:12
     dockerfile_tpl: debian-python3
 
   - name: rockylinux-8
@@ -28,6 +40,14 @@ platforms:
 
   - name: almalinux-8
     image: almalinux:8
+    dockerfile_tpl: centos-systemd
+
+  - name: rockylinux-9
+    image: rockylinux:9.0
+    dockerfile_tpl: centos-systemd
+
+  - name: almalinux-9
+    image: almalinux:9
     dockerfile_tpl: centos-systemd
 
 provisioner:
@@ -43,7 +63,7 @@ provisioner:
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
 
-lint: yamllint vars tasks defaults meta
+# lint: yamllint vars tasks defaults meta
 
 verifier:
   name: testinfra
@@ -52,4 +72,4 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-16/
+    - ../repo-19/

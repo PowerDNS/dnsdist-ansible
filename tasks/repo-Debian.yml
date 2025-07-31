@@ -7,7 +7,7 @@
 - name: Download the dnsdist APT Repository key
   ansible.builtin.get_url:
     url: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    dest: '{{ dnsdist_install_repo['gpg_key_file'] }}'
+    dest: "{{ dnsdist_install_repo['gpg_key_file'] }}"
     owner: root
     group: root
     mode: '0644'

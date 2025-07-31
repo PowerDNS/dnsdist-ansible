@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-17
+  name: dnsdist-19
 
 driver:
   name: docker

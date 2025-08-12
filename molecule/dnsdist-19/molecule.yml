@@ -22,6 +22,10 @@ platforms:
     image: ubuntu:22.04
     dockerfile_tpl: ubuntu-systemd
 
+  - name: ubuntu-2404
+    image: ubuntu:24.04
+    dockerfile_tpl: ubuntu-systemd
+
   - name: debian-11
     image: debian:11
     dockerfile_tpl: debian-python3

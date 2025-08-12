@@ -31,7 +31,6 @@ dnsdist_powerdns_repo_19:
 
 dnsdist_powerdns_repo_18:
   apt_repo_origin: repo.powerdns.com
-  apt_sources_file: dnsdist-18.sources
   apt_version: dnsdist-18
   gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
   gpg_key_file: dnsdist-18-pub.asc

@@ -1,9 +1,9 @@
 ---
 
-- name: Dnsdist 1.7
+- name: Dnsdist 2.0
   hosts: all
   vars_files:
     - ../resources/vars/dnsdist-common.yml
-    - ../resources/vars/dnsdist-repo-17.yml
+    - ../resources/vars/dnsdist-repo-20.yml
   roles:
     - { role: powerdns.dnsdist }

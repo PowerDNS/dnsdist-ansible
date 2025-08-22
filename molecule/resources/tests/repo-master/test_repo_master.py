@@ -6,7 +6,7 @@ rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
 def test_repo_file(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.list')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.sources')
     if host.system_info.distribution.lower() in rhel_os:
         f = host.file('/etc/yum.repos.d/powerdns-dnsdist-master.repo')
 
@@ -18,7 +18,7 @@ def test_repo_file(host):
 def test_dnsdist_repo(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.list')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.sources')
     if host.system_info.distribution.lower() in rhel_os:
         f = host.file('/etc/yum.repos.d/powerdns-dnsdist-master.repo')
 

@@ -4,21 +4,34 @@
     name: gnupg
     state: present
 
-- name: Import the dnsdist APT Repository key
-  ansible.builtin.apt_key:
-    url: "{{ dnsdist_install_repo['gpg_key'] }}"
-    id: "{{ dnsdist_install_repo['gpg_key_id'] | default('') }}"
-    state: present
-  register: _dnsdist_apt_key
+- name: Ensure keyring directory exists.
+  ansible.builtin.file:
+    name: '/etc/apt/keyrings'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Download the dnsdist APT Repository key
+  ansible.builtin.get_url:
+    url: "{{ dnsdist_install_repo['gpg_key_url'] }}"
+    dest: "/etc/apt/keyrings/{{ dnsdist_install_repo['gpg_key_file'] }}"
+    owner: root
+    group: root
+    mode: '0644'
   notify: Update the APT cache
 
-- name: Add the dnsdist APT Repository
-  ansible.builtin.apt_repository:
-    filename: "{{ dnsdist_install_repo['name'] }}"
-    repo: "{{ dnsdist_install_repo['apt_repo'] }}"
-    state: present
-  register: _dnsdist_apt_repo
+- name: Create the dnsdist APT repository Deb822 source
+  ansible.builtin.template:
+    src: 'dnsdist.sources.j2'
+    dest: "/etc/apt/sources.list.d/{{ dnsdist_install_repo['name'] }}.sources"
+    owner: root
+    group: root
+    mode: '0644'
   notify: Update the APT cache
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Pin the dnsdist APT Repository
   ansible.builtin.template:

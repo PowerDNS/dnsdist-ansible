@@ -9,7 +9,7 @@
         state: directory
         owner: root
         group: root
-        mode: 0755
+        mode: '0755'
 
     - name: Override the dnsdist service (systemd)
       ansible.builtin.template:
@@ -17,7 +17,7 @@
         dest: /etc/systemd/system/dnsdist.service.d/override.conf
         owner: root
         group: root
-        mode: 0644
+        mode: '0644'
       when: dnsdist_service_overrides != {}
       notify: Reload systemd and restart dnsdist
 
@@ -27,7 +27,7 @@
         dest: /etc/systemd/system/dnsdist.service.d/override-unit.conf
         owner: root
         group: root
-        mode: 0644
+        mode: '0644'
       when: dnsdist_unit_overrides != {}
       notify: Reload systemd and restart dnsdist
 
@@ -37,7 +37,7 @@
         dest: /etc/systemd/system/dnsdist.service.d/override-environment.conf
         owner: root
         group: root
-        mode: 0644
+        mode: '0644'
       when: dnsdist_environment_overrides != {}
       notify: Reload systemd and restart dnsdist
 
@@ -49,7 +49,7 @@
     dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
     owner: "{{ _dnsdist_owner }}"
     group: "{{ _dnsdist_group }}"
-    mode: 0640
+    mode: '0640'
   with_items: "{{ dnsdist_config_files }}"
   notify: Restart dnsdist
 
@@ -61,6 +61,6 @@
     dest: "{{ default_dnsdist_config_location }}"
     owner: "{{ _dnsdist_owner }}"
     group: "{{ _dnsdist_group }}"
-    mode: 0640
+    mode: '0640'
     validate: dnsdist -C %s --check-config 2>&1
   notify: Restart dnsdist

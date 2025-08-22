@@ -1,35 +1,39 @@
 ---
 dnsdist_powerdns_repo_master:
   apt_repo_origin: repo.powerdns.com
-  apt_repo: deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-master main
-  gpg_key: http://repo.powerdns.com/CBC8B383-pub.asc
+  apt_version: dnsdist-master
+  gpg_key_url: http://repo.powerdns.com/CBC8B383-pub.asc
+  gpg_key_file: dnsdist-master-pub.asc
   gpg_key_id: D47975F8DAE32700A563E64FFF389421CBC8B383
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-master
   yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-master/debug
   name: powerdns-dnsdist-master
-
-dnsdist_powerdns_repo_16:
+  
+dnsdist_powerdns_repo_20:
   apt_repo_origin: repo.powerdns.com
-  apt_repo: deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-16 main
-  gpg_key: http://repo.powerdns.com/FD380FBB-pub.asc
+  apt_version: dnsdist-20
+  gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
+  gpg_key_file: dnsdist-20-pub.asc
   gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
-  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-16
-  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-16/debug
-  name: powerdns-dnsdist-16
+  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-20
+  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-20/debug
+  name: powerdns-dnsdist-20
 
-dnsdist_powerdns_repo_17:
+dnsdist_powerdns_repo_19:
   apt_repo_origin: repo.powerdns.com
-  apt_repo: deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-17 main
-  gpg_key: http://repo.powerdns.com/FD380FBB-pub.asc
+  apt_version: dnsdist-19
+  gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
+  gpg_key_file: dnsdist-19-pub.asc
   gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
-  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-17
-  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-17/debug
-  name: powerdns-dnsdist-17
+  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19
+  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19/debug
+  name: powerdns-dnsdist-19
 
 dnsdist_powerdns_repo_18:
   apt_repo_origin: repo.powerdns.com
-  apt_repo: deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-dnsdist-18 main
-  gpg_key: http://repo.powerdns.com/FD380FBB-pub.asc
+  apt_version: dnsdist-18
+  gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
+  gpg_key_file: dnsdist-18-pub.asc
   gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-18
   yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-18/debug

@@ -45,12 +45,12 @@
   tags:
     - molecule-idempotence-notest
   ansible.builtin.copy:
-    content: "{{ dnsdist_config_files[item] }}"
-    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
+    content: "{{ item.value }}"
+    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item.key }}"
     owner: "{{ _dnsdist_owner }}"
     group: "{{ _dnsdist_group }}"
     mode: '0640'
-  with_items: "{{ dnsdist_config_files }}"
+  with_items: "{{ dnsdist_config_files | dict2items }}"
   notify: Restart dnsdist
 
 - name: Add the dnsdist configuration

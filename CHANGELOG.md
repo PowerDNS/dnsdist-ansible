@@ -1,11 +1,28 @@
-## v1.6.0 (#UNRELEASED)
+## v1.6.0 (2025-10-29)
 
 NEW FEATURES:
+- Add dnsdist 1.8 ([\#78](https://github.com/PowerDNS/dnsdist-ansible/pull/78))
+- Added ol9 ([\#82](https://github.com/PowerDNS/dnsdist-ansible/pull/82))
 - Add variable `dnsdist_config_files` for add additional configuration files ([\#145](https://github.com/PowerDNS/dnsdist-ansible/pull/145))
 - Add variable `dnsdist_additional_packages` for add additional dependency packages. Set `no_log: true` for "Get installed packages facts" task.  ([\#146](https://github.com/PowerDNS/dnsdist-ansible/pull/146))
+- Update for DNSdist 19 and 20, and apt fixes   ([\#152](https://github.com/PowerDNS/dnsdist-ansible/pull/152))
+
+IMPROVEMENTS:
+- GH Actions: test weekly and new CI targets ([\#118](https://github.com/PowerDNS/dnsdist-ansible/pull/118))
+- CI tests: upgraded version of molecule and ansible-core packages ([\#136](https://github.com/PowerDNS/dnsdist-ansible/pull/136))
+- Change the order of tasks for additional files and configration file  ([\#150](https://github.com/PowerDNS/dnsdist-ansible/pull/150))
+
+REMOVED / EOL:
+- Removed EOL dnsdist15 ([\#84](https://github.com/PowerDNS/dnsdist-ansible/pull/84))
+- Remove sleep Option from handler ([\#86](https://github.com/PowerDNS/dnsdist-ansible/pull/86))
+- Removed EOL targets RHEL-7 and Debian-10 ([\#127](https://github.com/PowerDNS/dnsdist-ansible/pull/127))
 
 BUG FIXES:
-- Change the order of tasks for additional files, so it's before the validation of the dnsdist configuration file. Since the configuration file may refer to additional files, they should already exist in the system.
+- unbreak CI, bump a few things ([\#97](https://github.com/PowerDNS/dnsdist-ansible/pull/97))
+- ansible-lint should no longer complain ([\#99](https://github.com/PowerDNS/dnsdist-ansible/pull/99))
+- Unbreak CI again ([\#100](https://github.com/PowerDNS/dnsdist-ansible/pull/100))
+- GH Actions: fix issues with CI  ([\#125](https://github.com/PowerDNS/dnsdist-ansible/pull/125))
+- Change the order of tasks for additional files  ([\#150](https://github.com/PowerDNS/dnsdist-ansible/pull/150))
 
 ## v1.5.0 (2023-02-08)
 

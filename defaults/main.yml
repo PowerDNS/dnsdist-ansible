@@ -43,6 +43,7 @@ dnsdist_install_repo: ""
 # EPEL is needed to satisfy some dnsdist dependencies like libsodium
 dnsdist_install_epel: true
 
+
 # The name of the dnsdist package
 dnsdist_package_name: "{{ default_dnsdist_package_name }}"
 
@@ -50,6 +51,10 @@ dnsdist_package_name: "{{ default_dnsdist_package_name }}"
 # NB: The usage of this variable makes only sense on RedHat-like systems,
 #     where each YUM repository can contains multiple versions of the same package.
 dnsdist_package_version: ""
+
+# The desired state of the dnsdist packages.
+# Use "present" (default) to install, "latest" to upgrade, or "absent" to uninstall.
+dnsdist_package_state: "present"
 
 # Install dnsdist debug symbols package
 dnsdist_install_debug_symbols_package: false
@@ -73,7 +78,12 @@ dnsdist_servers: []
 dnsdist_acls: []
 # dnsdist's control socket encryption key.
 # See https://dnsdist.org/reference/config.html#setKey for more information.
-dnsdist_generatekey: "{{ (dnsdist_setkey is not defined or dnsdist_setkey == '') | bool }}"
+# If empty, a random key will be generated. If a key is already present in the
+# configuration file, it will be kept.
+dnsdist_setkey: ""
+
+# Whether to auto-generate a control socket encryption key when dnsdist_setkey is empty.
+dnsdist_generatekey: "{{ (dnsdist_setkey | length == 0) | bool }}"
 
 # dnsdist's control socket list address.
 dnsdist_controlsocket: 127.0.0.1
@@ -123,7 +133,7 @@ dnsdist_environment_overrides: {}
 
 # State of the DNSdist service
 dnsdist_service_state: started
-dnsdist_service_enabled: "yes"
+dnsdist_service_enabled: true
 
 # When True, disable the automated restart of the dnsdist service
 dnsdist_disable_handlers: false

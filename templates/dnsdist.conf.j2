@@ -21,7 +21,7 @@ newServer("{{server}}")
 {% if dnsdist_controlsocket != "" %}
 controlSocket("{{ dnsdist_controlsocket }}")
 {% endif %}
-{% if dnsdist_setkey is defined and dnsdist_setkey != "" %}
+{% if dnsdist_setkey | length > 0 %}
 setKey("{{ dnsdist_setkey }}")
 {% endif %}
 

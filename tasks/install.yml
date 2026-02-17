@@ -36,17 +36,17 @@
 - name: Install dnsdist
   ansible.builtin.package:
     name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
-    state: present
+    state: "{{ dnsdist_package_state }}"
 
 - name: Install dnsdist debug symbols
   ansible.builtin.package:
     name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
-    state: present
+    state: "{{ dnsdist_package_state }}"
   when: dnsdist_install_debug_symbols_package | bool
 
 - name: Install dnsdist additional packages
   ansible.builtin.package:
     name: "{{ item.name | default(item) }}{{ _version_separator ~ item.version if item.version is defined and item.version | length > 0 else '' }}"
-    state: present
+    state: "{{ dnsdist_package_state }}"
   when: dnsdist_additional_packages | length > 0
   with_items: "{{ dnsdist_additional_packages }}"

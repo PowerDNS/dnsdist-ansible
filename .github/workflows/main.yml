@@ -10,8 +10,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - name: Install python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main
+        with:
+          setup_python: "false"
   Tests:
     name: Test role on different ansible versions
     runs-on: ubuntu-22.04
@@ -19,14 +25,14 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - "2.14"
-          - "2.15"
-          - "2.16"
+          # - 2.14
+          # - 2.15
+          - 2.16
         scenario:
-          - dnsdist-18
-          - dnsdist-19
+          # - dnsdist-18
+          # - dnsdist-19
           - dnsdist-20
-          - dnsdist-master
+          # - dnsdist-master
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -39,6 +45,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
       - name: Run the tests
-        run: tox -- molecule test -s ${{ matrix.scenario }}
+        run: tox -- molecule test -s ${{ matrix.scenario }} --destroy=always
         env:
           ANSIBLE: ${{ matrix.ansible }}

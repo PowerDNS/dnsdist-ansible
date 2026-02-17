@@ -60,7 +60,7 @@ The examples above, show how to install DNSdist from the official PowerDNS repos
 It is also possible to install dnsdist from custom repositories as demonstrated in the example above.
 
 ```yaml
-dnsdist_install_epel: True
+dnsdist_install_epel: true
 ```
 
 By default, install EPEL to satisfy some DNSdist dependencies like `lidsodium`.
@@ -79,7 +79,13 @@ dnsdist_package_version: ""
 Optionally, allow to set a specific version of the dnsdist package to be installed.
 
 ```yaml
-dnsdist_install_debug_symbols_package: False
+dnsdist_package_state: "present"
+```
+
+The desired state of the dnsdist packages. Use `"present"` (default) to install, `"latest"` to upgrade, or `"absent"` to uninstall.
+
+```yaml
+dnsdist_install_debug_symbols_package: false
 ```
 
 Install dnsdist debug symbols package.
@@ -125,16 +131,22 @@ dnsdist_carbonserver: ""
 The IP address of the Carbon server that should receive dnsdist metrics.
 
 ```yaml
+dnsdist_setkey: ""
+```
+
+Encryption key for the dnsdist's TCP control socket. If it is empty, a random key will be generated. If a key is already present in the configuration file, it will be kept.
+
+```yaml
+dnsdist_generatekey: "{{ (dnsdist_setkey | length == 0) | bool }}"
+```
+
+Whether to auto-generate a control socket encryption key. Defaults to `true` when `dnsdist_setkey` is empty.
+
+```yaml
 dnsdist_controlsocket: "127.0.0.1"
 ```
 
 The listen IP address of the dnsdist's TCP control socket.
-
-```yaml
-dnsdist_setkey: ""
-```
-
-Encryption key for the dnsdist's TCP control socket. If it is empty, a random key will be generated. If a key is already present in the file, it will be kept.
 
 ```yaml
 dnsdist_webserver_address: ""
@@ -173,11 +185,11 @@ dnsdist_config_files: {}
 Additional dnsdist configuration files to be placed in the configuration directory.
 
 ```yaml
-dnsdist_config_owner: 'root'
-dnsdist_config_group: 'root'
+dnsdist_config_owner: ""
+dnsdist_config_group: ""
 ```
 
-User and Group that own the `dnsdist.conf` file.
+User and Group that own the `dnsdist.conf` file. When empty, version-specific defaults are used.
 
 ```yaml
 dnsdist_service_overrides: {}
@@ -202,14 +214,14 @@ This can be used to change any environment variables in systemd settings in the 
 
 ```yaml
 dnsdist_service_state: "started"
-dnsdist_service_enabled: "yes"
+dnsdist_service_enabled: true
 ```
 
 Allow to specify the desired state of the DNSdist service.
 E.g. This allows to install and configure DNSdist without automatically starting the service.
 
 ```yaml
-dnsdist_disable_handlers: False
+dnsdist_disable_handlers: false
 ```
 
 Disable automated service restart on configuration changes.
@@ -220,7 +232,7 @@ dnsdist_tlslocals: []
 Configures DNS over TLS listeners. The entries are copied verbatim entry-by-entry.
 
 ```yaml
-dnsdist_force_reinstall: False
+dnsdist_force_reinstall: false
 ```
 
 Force reinstall of dnsdist packages by performing a removal prior to the package installation steps. Intended for usage where a downgrade of dnsdist needs to be performed.
@@ -246,15 +258,21 @@ A detailed changelog of all the changes applied to the role is available [here](
 
 Tests are performed by [Molecule](http://molecule.readthedocs.org/en/latest/).
 
-    $ pip install tox
+```bash
+$ pip install tox
+```
 
 To test all the scenarios run
 
-    $ tox
+```bash
+$ tox
+```
 
 To run a custom molecule command
 
-    $ tox -e ansible29 -- molecule test -s dnsdist-18
+```bash
+$ tox -e ansible216 -- molecule test -s dnsdist-18
+```
 
 ## License
 

@@ -9,19 +9,19 @@ dnsdist_install_repo: ""
 #    - { role: PowerDNS.dnsdist,
 #        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"
 #
-# To install the 1.2.x release of the powerdns official repository
+# To install the 1.9.x release of the powerdns official repository
 # use the following playbook
 # - hosts: all
 #   roles:
 #    - { role: powerdns.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_12 }}"
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_19 }}"
 #
-# To install the 1.3.x release of the powerdns official repository
+# To install the 2.0.x release of the powerdns official repository
 # use the following playbook
 # - hosts: all
 #   roles:
 #    - { role: powerdns.dnsdist,
-#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_13 }}"
+#        dnsdist_install_repo: "{{ dnsdist_powerdns_repo_20 }}"
 #
 # To install dnsdist from a custom repository
 # override the `dnsdist_install_repo` default value in your playbook.

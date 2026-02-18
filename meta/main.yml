@@ -6,7 +6,7 @@ galaxy_info:
   description: Dnsdist is a highly scriptable and DDoS aware DNS loadbalancer
   company: PowerDNS.COM BV
   license: MIT
-  min_ansible_version: "2.5"
+  min_ansible_version: "2.15"
   platforms:
     - name: EL
       versions:

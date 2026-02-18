@@ -7,7 +7,7 @@
 
 - name: Setup repository
   ansible.builtin.include_tasks: "repo-{{ ansible_os_family }}.yml"
-  when: dnsdist_install_repo != ""
+  when: dnsdist_install_repo | length > 0
   tags:
     - install
     - repository
@@ -21,13 +21,15 @@
   when: dnsdist_generatekey
   tags:
     - install
+    - configure
     - config
-    - molecule-idempotence-notest
+    # - molecule-idempotence-notest
   block:
     - name: Check if the key is already present in the DNSdist configuration file
       ansible.builtin.shell: |
         set -o pipefail && fgrep setKey "{{ default_dnsdist_config_location }}" | sed 's/setKey("\(.*\)")/\1/'
-      executable: /bin/bash
+      args:
+        executable: /bin/bash
       register: _dnsdist_grepkey
       changed_when: false
       failed_when: false
@@ -38,7 +40,8 @@
       block:
         - name: Generate encryption key  # noqa no-changed-when
           ansible.builtin.shell: head -c 32 /dev/urandom | base64
-          executable: /bin/bash
+          args:
+            executable: /bin/bash
           register: _dnsdist_setkey_generate
           changed_when: true
 
@@ -55,11 +58,13 @@
 - name: Prepare facts for config file
   ansible.builtin.include_tasks: prepare.yml
   tags:
+    - configure
     - config
 
 - name: Build config file
   ansible.builtin.include_tasks: configure.yml
   tags:
+    - configure
     - config
 
 - name: Set the status of the dnsdist service

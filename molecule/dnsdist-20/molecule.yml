@@ -12,11 +12,11 @@ dependency:
 platforms:
   - name: oraclelinux-8
     image: oraclelinux:8
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: oraclelinux-systemd
 
   - name: oraclelinux-9
     image: oraclelinux:9
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: oraclelinux-systemd
 
   - name: ubuntu-2204
     image: ubuntu:22.04
@@ -57,8 +57,11 @@ platforms:
 provisioner:
   name: ansible
   options:
-    diff: True
-    v: True
+    diff: true
+    v: vrue
+  config_options:
+    defaults:
+      remote_tmp: /tmp/.ansible/tmp
   inventory:
     links:
       host_vars: ../resources/host_vars/
@@ -67,12 +70,10 @@ provisioner:
     destroy: ../resources/destroy.yml
     prepare: ../resources/prepare.yml
 
-# lint: yamllint vars tasks defaults meta
-
 verifier:
   name: testinfra
   options:
-    vvv: True
+    vvv: true
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'

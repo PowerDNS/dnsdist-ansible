@@ -48,9 +48,8 @@ The examples above, show how to install DNSdist from the official PowerDNS repos
     dnsdist_install_repo:
       name: "dnsdist" # the repository name
       apt_repo_origin: "example.com"  # used to pin dnsdist to the provided repository
-      apt_repo: "deb http://example.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}/dnsdist main"
-      gpg_key: "http://example.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
-      gpg_key_id: "MYREPOGPGPUBKEYID" # to avoid to reimport the key each time the role is executed
+      apt_version: "dnsdist-19"  # deb822 suites suffix (appended to release codename)
+      gpg_key_url: "http://example.com/MYREPOGPGPUBKEY.asc" # repository public GPG key
       yum_repo_baseurl: "http://example.com/centos/$basearch/$releasever/dnsdist"
       yum_debug_symbols_repo_baseurl: "http://example.com/centos/$basearch/$releasever/dnsdist/debug"
   roles:
@@ -271,7 +270,7 @@ $ tox
 To run a custom molecule command
 
 ```bash
-$ tox -e ansible216 -- molecule test -s dnsdist-18
+$ tox -e ansible216 -- molecule test -s dnsdist-20
 ```
 
 ## License

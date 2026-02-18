@@ -14,9 +14,9 @@ def test_repo_pinning_file(host):
         assert f.exists
         assert f.user == 'root'
         assert f.group == 'root'
-        f.contains('Package: dnsdist*')
-        f.contains('Pin: origin repo.powerdns.com')
-        f.contains('Pin-Priority: 600')
+        assert f.contains('Package: dnsdist*')
+        assert f.contains('Pin: origin repo.powerdns.com')
+        assert f.contains('Pin-Priority: 600')
 
 
 def test_package(host):
@@ -58,10 +58,10 @@ def test_service_overrides(host):
 
         assert re.search(r'^LimitCORE=infinity$', f_string, re.MULTILINE) is not None
 
-        # # Ensure a ExecStart override is preceeded by a 'ExecStart=' reset instruction
+        # Ensure a ExecStart override is preceeded by a 'ExecStart=' reset instruction
         if re.search(r'^ExecStart=.+$', f_string, re.MULTILINE) is not None:
             assert re.search(r'^ExecStart=$(\r?\n)^ExecStart=.+$', f_string, re.MULTILINE) is not None
-        
-        # # Ensure a ExecStartPre override is preceeded by a 'ExecStartPre=' reset instruction
+
+        # Ensure a ExecStartPre override is preceeded by a 'ExecStartPre=' reset instruction
         if re.search(r'^ExecStartPre=.+$', f_string, re.MULTILINE) is not None:
             assert re.search(r'^ExecStartPre=$(\r?\n)^ExecStartPre=.+$', f_string, re.MULTILINE) is not None

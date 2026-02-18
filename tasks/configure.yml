@@ -42,8 +42,8 @@
       notify: Reload systemd and restart dnsdist
 
 - name: Add the dnsdist additional configuration files
-  tags:
-    - molecule-idempotence-notest
+  # tags:
+  #   - molecule-idempotence-notest
   ansible.builtin.copy:
     content: "{{ dnsdist_config_files[item] }}"
     dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
@@ -54,8 +54,8 @@
   notify: Restart dnsdist
 
 - name: Add the dnsdist configuration
-  tags:
-    - molecule-idempotence-notest
+  # tags:
+  #   - molecule-idempotence-notest
   ansible.builtin.template:
     src: dnsdist.conf.j2
     dest: "{{ default_dnsdist_config_location }}"

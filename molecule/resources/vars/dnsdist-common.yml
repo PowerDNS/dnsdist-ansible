@@ -4,7 +4,7 @@
 # Dnsdist Configuration
 ##
 
-dnsdist_install_debug_symbols_package: True
+dnsdist_install_debug_symbols_package: true
 
 dnsdist_service_overrides:
   LimitCORE: infinity

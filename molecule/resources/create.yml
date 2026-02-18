@@ -26,7 +26,7 @@
 
     - name: Discover local Docker images
       community.docker.docker_image_info:
-        name: "molecule_dnsdist/{{ item.item.name }}"
+        name: "molecule_dnsdist/{{ item.item.image }}"
       with_items: "{{ platforms.results }}"
       register: docker_images
 
@@ -40,7 +40,9 @@
         force_source: "{{ item.item.force | default(True) }}"
         force_tag: "{{ item.item.force | default(True) }}"
       with_items: "{{ platforms.results }}"
-      when: platforms.changed or docker_images.results | map(attribute='images') | select('equalto', []) | list | count >= 0
+      when: >-
+        platforms.changed or
+        (docker_images.results | map(attribute='images') | select('equalto', []) | list | count > 0)
 
     - name: Create molecule instance(s)
       community.docker.docker_container:

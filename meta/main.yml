@@ -16,10 +16,11 @@ galaxy_info:
       versions:
         - bullseye
         - bookworm
+        - trixie
     - name: Ubuntu
       versions:
-        - focal
         - jammy
+        - noble
   galaxy_tags:
     - dnsdist
     - dns

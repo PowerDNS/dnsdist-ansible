@@ -42,7 +42,6 @@ dnsdist_install_repo: ""
 # EPEL is needed to satisfy some dnsdist dependencies like libsodium
 dnsdist_install_epel: true
 
-
 # The name of the dnsdist package
 dnsdist_package_name: "{{ default_dnsdist_package_name }}"
 
@@ -114,8 +113,8 @@ dnsdist_config_files: {}
 #     -- extra file with configration
 
 # Owner and group for /etc/dnsdist/dnsdist.conf
-dnsdist_config_owner: ""
-dnsdist_config_group: ""
+dnsdist_config_owner: "{{ default_dnsdist_owner }}"
+dnsdist_config_group: "{{ default_dnsdist_group }}"
 
 # Dict with overrides for the service (systemd only)
 dnsdist_service_overrides: {}

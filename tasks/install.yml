@@ -14,39 +14,22 @@
         _version_separator: "="
       when: ansible_os_family == 'Debian'
 
-- name: Remove dnsdist if reinstall is forced
+- name: Uninstall dnsdist and related packages
   ansible.builtin.package:
-    name: "{{ dnsdist_package_name }}"
+    name: >-
+      {{ [dnsdist_package_name, dnsdist_debug_symbols_package_name]|union(
+        dnsdist_additional_packages | map(attribute='name') | list if dnsdist_additional_packages|length > 0 else dnsdist_additional_packages
+      ) }}
     state: absent
   when: dnsdist_force_reinstall | bool
 
-- name: Remove dnsdist debug symbols if reinstall is forced
+- name: Install dnsdist and related packages
   ansible.builtin.package:
-    name: "{{ dnsdist_debug_symbols_package_name }}"
-    state: absent
-  when: dnsdist_force_reinstall | bool
-
-- name: Remove dnsdist additional packages
-  ansible.builtin.package:
-    name: "{{ item.name | default(item) }}"
-    state: absent
-  when: dnsdist_force_reinstall | bool
-  with_items: "{{ dnsdist_additional_packages }}"
-
-- name: Install dnsdist
-  ansible.builtin.package:
-    name: "{{ dnsdist_package_name }}{{ _dnsdist_package_version | default('') }}"
+    name: >-
+      {{ [dnsdist_package_name ~ (_dnsdist_package_version | default(''))]
+        + ([dnsdist_debug_symbols_package_name ~ (_dnsdist_package_version | default(''))] if dnsdist_install_debug_symbols_package | bool else [])
+        + (
+          dnsdist_additional_packages | map('combine', {'_full_name': (item.name | default(item)) ~ (_version_separator ~ item.version if item.version is defined and item.version | length > 0 else '') }) | map(attribute='_full_name') | list if dnsdist_additional_packages | length > 0 else []
+        )
+      }}
     state: "{{ dnsdist_package_state }}"
-
-- name: Install dnsdist debug symbols
-  ansible.builtin.package:
-    name: "{{ dnsdist_debug_symbols_package_name }}{{ _dnsdist_package_version | default('') }}"
-    state: "{{ dnsdist_package_state }}"
-  when: dnsdist_install_debug_symbols_package | bool
-
-- name: Install dnsdist additional packages
-  ansible.builtin.package:
-    name: "{{ item.name | default(item) }}{{ _version_separator ~ item.version if item.version is defined and item.version | length > 0 else '' }}"
-    state: "{{ dnsdist_package_state }}"
-  when: dnsdist_additional_packages | length > 0
-  with_items: "{{ dnsdist_additional_packages }}"

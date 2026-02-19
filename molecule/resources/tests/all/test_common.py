@@ -45,12 +45,19 @@ def test_default_controlsocket_config(host):
 
 def test_default_setkey_generated(host):
     f = host.file('/etc/dnsdist/dnsdist.conf')
-    f_string = f.content.decode()
-    assert re.search(r'^setKey\("[^"]+"\)$', f_string, re.MULTILINE) is not None
+    for raw_line in f.content.decode().splitlines():
+        line = raw_line.strip()
+        if 'setKey("' not in line:
+            continue
+        assert not line.startswith('--')
+        assert '--' not in line
+        assert re.match(r'^setKey\("[^"]+"\)$', line) is not None
+        return
+    assert False, 'No active setKey("...") line found in dnsdist.conf'
 
 
 def test_service(host):
-    # Using Ansible to mitigate some issues with the service test on debian-8
+    # Use the service module to avoid backend-specific service inspection differences.
     s = host.ansible('service', 'name=dnsdist state=started enabled=yes')
 
     assert s["changed"] is False
@@ -99,3 +106,23 @@ def test_service_overrides(host):
         # Ensure a ExecStartPre override is preceeded by a 'ExecStartPre=' reset instruction
         if re.search(r'^ExecStartPre=.+$', f_string, re.MULTILINE) is not None:
             assert re.search(r'^ExecStartPre=$(\r?\n)^ExecStartPre=.+$', f_string, re.MULTILINE) is not None
+
+
+def test_unit_overrides(host):
+    smgr = host.ansible("setup")["ansible_facts"]["ansible_service_mgr"]
+    if smgr == 'systemd':
+        fname = '/etc/systemd/system/dnsdist.service.d/override-unit.conf'
+        f = host.file(fname)
+
+        assert f.exists
+        assert re.search(r'^PartOf=network.service$', f.content.decode(), re.MULTILINE) is not None
+
+
+def test_environment_overrides(host):
+    smgr = host.ansible("setup")["ansible_facts"]["ansible_service_mgr"]
+    if smgr == 'systemd':
+        fname = '/etc/systemd/system/dnsdist.service.d/override-environment.conf'
+        f = host.file(fname)
+
+        assert f.exists
+        assert re.search(r'^Environment=TZ=UTC$', f.content.decode(), re.MULTILINE) is not None

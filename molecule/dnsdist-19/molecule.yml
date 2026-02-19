@@ -43,7 +43,7 @@ platforms:
     dockerfile_tpl: centos-systemd
 
   - name: rockylinux-9
-    image: rockylinux:9.0
+    image: rockylinux:9
     dockerfile_tpl: centos-systemd
 
   - name: almalinux-9

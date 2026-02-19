@@ -18,3 +18,9 @@ dnsdist_config_files:
 
 dnsdist_service_overrides:
   LimitCORE: infinity
+
+dnsdist_unit_overrides:
+  PartOf: network.service
+
+dnsdist_environment_overrides:
+  TZ: UTC

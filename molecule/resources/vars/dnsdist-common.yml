@@ -9,7 +9,7 @@ dnsdist_install_debug_symbols_package: true
 
 # Install additional packages
 dnsdist_additional_packages:
-  - name: curl
+  - name: telnet
 
 # Additional dnsdist configuration files.
 dnsdist_config_files:

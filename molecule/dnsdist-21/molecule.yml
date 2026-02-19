@@ -1,7 +1,7 @@
 ---
 
 scenario:
-  name: dnsdist-20
+  name: dnsdist-21
 
 driver:
   name: docker
@@ -81,4 +81,4 @@ verifier:
   directory: ../resources/tests/all
   additional_files_or_dirs:
     # path relative to 'directory'
-    - ../repo-20/
+    - ../repo-21/

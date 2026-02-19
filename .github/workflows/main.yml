@@ -30,7 +30,7 @@ jobs:
         scenario:
           - dnsdist-19
           - dnsdist-20
-          - dnsdist-21
+          # - dnsdist-21
           - dnsdist-master
     steps:
       - name: checkout

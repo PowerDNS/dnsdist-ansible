@@ -43,15 +43,12 @@
 
 - name: Add the dnsdist additional configuration files
   ansible.builtin.copy:
-    content: "{{ dnsdist_config_files[item] }}"
-    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
+    content: "{{ item.value }}"
+    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item.key }}"
     owner: "{{ dnsdist_config_owner }}"
     group: "{{ dnsdist_config_group }}"
     mode: '0640'
-  with_items: "{{ dnsdist_config_files }}"
-  when: 
-    - dnsdist_config_files is defined
-    - dnsdist_config_files | length > 0
+  with_dict: "{{ dnsdist_config_files }}"
   notify: Restart dnsdist
 
 - name: Add the dnsdist configuration

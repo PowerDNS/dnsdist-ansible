@@ -12,11 +12,11 @@ dependency:
 platforms:
   - name: oraclelinux-8
     image: oraclelinux:8
-    dockerfile_tpl: oraclelinux-systemd
+    dockerfile_tpl: el-systemd
 
   - name: oraclelinux-9
     image: oraclelinux:9
-    dockerfile_tpl: oraclelinux-systemd
+    dockerfile_tpl: el-systemd
 
   - name: ubuntu-2204
     image: ubuntu:22.04
@@ -28,27 +28,27 @@ platforms:
 
   - name: debian-11
     image: debian:11
-    dockerfile_tpl: debian-python3
+    dockerfile_tpl: debian-systemd
 
   - name: debian-12
     image: debian:12
-    dockerfile_tpl: debian-python3
+    dockerfile_tpl: debian-systemd
 
   - name: rockylinux-8
     image: rockylinux:8
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: el-systemd
 
   - name: almalinux-8
     image: almalinux:8
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: el-systemd
 
   - name: rockylinux-9
     image: rockylinux:9
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: el-systemd
 
   - name: almalinux-9
     image: almalinux:9
-    dockerfile_tpl: centos-systemd
+    dockerfile_tpl: el-systemd
 
 provisioner:
   name: ansible

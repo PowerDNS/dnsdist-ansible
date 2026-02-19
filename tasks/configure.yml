@@ -49,6 +49,9 @@
     group: "{{ dnsdist_config_group }}"
     mode: '0640'
   with_items: "{{ dnsdist_config_files }}"
+  when: 
+    - dnsdist_config_files is defined
+    - dnsdist_config_files | length > 0
   notify: Restart dnsdist
 
 - name: Add the dnsdist configuration

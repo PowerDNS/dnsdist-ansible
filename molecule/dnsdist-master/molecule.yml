@@ -54,10 +54,10 @@ platforms:
     image: almalinux:9
     dockerfile_tpl: centos-systemd
 
-  - name: almalinux-10
-    image: almalinux:10
-    dockerfile_tpl: centos-systemd
-
+  # no packages for el10
+  # - name: almalinux-10
+  #   image: almalinux:10
+  #   dockerfile_tpl: centos-systemd
 
 provisioner:
   name: ansible

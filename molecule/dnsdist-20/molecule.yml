@@ -56,7 +56,7 @@ platforms:
 
   - name: almalinux-10
     image: almalinux:10
-    dockerfile_tpl: rhel-systemd
+    dockerfile_tpl: centos-systemd
 
 provisioner:
   name: ansible

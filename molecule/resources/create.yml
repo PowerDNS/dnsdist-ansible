@@ -3,7 +3,7 @@
 - name: Create
   hosts: localhost
   connection: local
-  gather_facts: False
+  gather_facts: false
   vars_files:
     - vars/molecule.yml
   tasks:
@@ -37,8 +37,8 @@
         build:
           dockerfile: "{{ item.item.dockerfile | default(item.invocation.module_args.dest) }}"
           path: "{{ molecule_ephemeral_directory }}"
-        force_source: "{{ item.item.force | default(True) }}"
-        force_tag: "{{ item.item.force | default(True) }}"
+        force_source: "{{ item.item.force | default(true) }}"
+        force_tag: "{{ item.item.force | default(true) }}"
       with_items: "{{ platforms.results }}"
       when: >-
         platforms.changed or
@@ -50,7 +50,7 @@
         hostname: "{{ item.name }}"
         image: "{{ item.image }}"
         state: started
-        recreate: False
+        recreate: false
         env: "{{ item.env | default(omit) }}"
         privileged: "no"
         volumes: "{{ item.volumes | default(omit) }}"
@@ -64,7 +64,7 @@
         links: "{{ molecule_service_instances | map(attribute='name') | list }}"
         command: "{{ item.command | default(omit) }}"
         state: started
-        recreate: False
+        recreate: false
         privileged: "yes"
         volumes:
           # Mount the cgroups fs to allow SystemD to run into the containers

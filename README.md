@@ -63,7 +63,7 @@ dnsdist_install_epel: true
 ```
 
 By default, install EPEL to satisfy some DNSdist dependencies like `lidsodium`.
-To skip the installation of EPEL set the `dnsdist_install_epel` variable to `False`.
+To skip the installation of EPEL set the `dnsdist_install_epel` variable to `false`.
 
 ```yaml
 dnsdist_package_name: "{{ default_dnsdist_package_name }}"
@@ -93,7 +93,7 @@ Install dnsdist debug symbols package.
 dnsdist_debug_symbols_package_name: "{{ default_dnsdist_debug_symbols_package_name }}"
 ```
 
-The name of the dnsdist debug symbols package to be installed when `dnsdist_install_debug_symbols_package` is `True`.
+The name of the dnsdist debug symbols package to be installed when `dnsdist_install_debug_symbols_package` is `true`.
 
 
 ```yaml

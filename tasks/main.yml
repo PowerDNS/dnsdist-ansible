@@ -53,12 +53,6 @@
         dnsdist_setkey: "{{ _dnsdist_grepkey.stdout }}"
       when: _dnsdist_grepkey.rc == 0 and _dnsdist_grepkey.stdout | length > 0
 
-# - name: Prepare facts for config file
-#   ansible.builtin.include_tasks: prepare.yml
-#   tags:
-#     - configure
-#     - config
-
 - name: Build config file
   ansible.builtin.include_tasks: configure.yml
   tags:

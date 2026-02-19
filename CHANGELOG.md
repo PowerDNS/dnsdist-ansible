@@ -1,3 +1,30 @@
+## Unreleased
+
+NEW FEATURES:
+- Add dnsdist 2.1 repository preset (`dnsdist_powerdns_repo_21`) and a Molecule scenario/test suite for `dnsdist-21`
+- Add package lifecycle control via `dnsdist_package_state` (`present`, `latest`, `absent`)
+- Add Debian architecture mapping for Deb822 repository setup (`x86_64/amd64 -> amd64`, `aarch64/arm64/armv8l -> arm64`)
+
+IMPROVEMENTS:
+- Switch Debian repository management to `ansible.builtin.deb822_repository`
+- Refresh supported platforms and metadata: EL 10, Debian trixie, Ubuntu noble; set `min_ansible_version` to 2.15
+- Update CI/test toolchain: remove Ansible 2.14 tox env, refresh dependencies, pin `community.docker` to `>=4,<5`, and run Molecule with `--destroy=always`
+- Expand and modernize Molecule targets/images for current distributions and architectures
+- Improve role defaults and documentation consistency (booleans, repository examples, default config ownership)
+
+REMOVED / EOL:
+- Remove dnsdist-18 repository preset and Molecule scenario
+- Remove legacy APT source template (`templates/dnsdist.sources.j2`) in favor of Deb822 repository management
+- Remove `prepare.yml` from the active task flow.
+
+BUG FIXES:
+- Fix package list rendering in install tasks (remove undefined `item` usage; support both dict and string additional package inputs)
+- Fix systemd environment override template to use `dnsdist_environment_overrides`
+- Fix Molecule Docker image discovery/build condition so cache behavior is correct
+- Fix test coverage gaps for repository pinning checks and Debian architecture assertions
+- Fix Debian/Ubuntu Molecule images by installing `python3-apt` and `adduser` (resolves dnsdist postinst failures on Debian 13)
+- Fix Oracle Linux Molecule image build path for OL8/OL9 aarch64
+
 ## v1.6.0 (2025-10-29)
 
 NEW FEATURES:

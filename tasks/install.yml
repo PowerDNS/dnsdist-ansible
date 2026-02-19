@@ -1,35 +1,47 @@
 ---
-- name: Set up version seperator
-  when: dnsdist_package_version != ''
-  block:
-    - name: Prefix the version with the correct separator on RedHat
-      ansible.builtin.set_fact:
-        _dnsdist_package_version: "-{{ dnsdist_package_version }}"
-        _version_separator: "-"
-      when: ansible_os_family == 'RedHat'
+- name: Set up package version separator
+  ansible.builtin.set_fact:
+    _version_separator: "{{ '=' if ansible_os_family == 'Debian' else '-' }}"
 
-    - name: Prefix the version with the correct separator on Debian
-      ansible.builtin.set_fact:
-        _dnsdist_package_version: "={{ dnsdist_package_version }}"
-        _version_separator: "="
-      when: ansible_os_family == 'Debian'
+- name: Prefix package version with separator
+  ansible.builtin.set_fact:
+    _dnsdist_package_version: "{{ _version_separator }}{{ dnsdist_package_version }}"
+  when: dnsdist_package_version | length > 0
 
 - name: Uninstall dnsdist and related packages
   ansible.builtin.package:
     name: >-
-      {{ [dnsdist_package_name, dnsdist_debug_symbols_package_name]|union(
-        dnsdist_additional_packages | map(attribute='name') | list if dnsdist_additional_packages|length > 0 else dnsdist_additional_packages
-      ) }}
+      {{ ([dnsdist_package_name, dnsdist_debug_symbols_package_name] + _dnsdist_additional_packages_to_uninstall) | unique | list }}
     state: absent
   when: dnsdist_force_reinstall | bool
+  vars:
+    _dnsdist_additional_packages_to_uninstall: >-
+      {%- set packages = [] -%}
+      {%- for pkg in dnsdist_additional_packages -%}
+      {%-   if pkg is mapping -%}
+      {%-     set _ = packages.append(pkg.name) -%}
+      {%-   else -%}
+      {%-     set _ = packages.append(pkg) -%}
+      {%-   endif -%}
+      {%- endfor -%}
+      {{ packages }}
 
 - name: Install dnsdist and related packages
   ansible.builtin.package:
     name: >-
       {{ [dnsdist_package_name ~ (_dnsdist_package_version | default(''))]
         + ([dnsdist_debug_symbols_package_name ~ (_dnsdist_package_version | default(''))] if dnsdist_install_debug_symbols_package | bool else [])
-        + (
-          dnsdist_additional_packages | map('combine', {'_full_name': (item.name | default(item)) ~ (_version_separator ~ item.version if item.version is defined and item.version | length > 0 else '') }) | map(attribute='_full_name') | list if dnsdist_additional_packages | length > 0 else []
-        )
+        + _dnsdist_additional_packages_to_install
       }}
     state: "{{ dnsdist_package_state }}"
+  vars:
+    _dnsdist_additional_packages_to_install: >-
+      {%- set packages = [] -%}
+      {%- for pkg in dnsdist_additional_packages -%}
+      {%-   if pkg is mapping -%}
+      {%-     set _ = packages.append(pkg.name ~ (_version_separator ~ pkg.version if (pkg.version is defined and pkg.version | length > 0) else '')) -%}
+      {%-   else -%}
+      {%-     set _ = packages.append(pkg) -%}
+      {%-   endif -%}
+      {%- endfor -%}
+      {{ packages }}

@@ -45,8 +45,8 @@
   ansible.builtin.copy:
     content: "{{ dnsdist_config_files[item] }}"
     dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
-    owner: "{{ _dnsdist_owner }}"
-    group: "{{ _dnsdist_group }}"
+    owner: "{{ dnsdist_config_owner }}"
+    group: "{{ dnsdist_config_group }}"
     mode: '0640'
   with_items: "{{ dnsdist_config_files }}"
   notify: Restart dnsdist
@@ -55,8 +55,8 @@
   ansible.builtin.template:
     src: dnsdist.conf.j2
     dest: "{{ default_dnsdist_config_location }}"
-    owner: "{{ _dnsdist_owner }}"
-    group: "{{ _dnsdist_group }}"
+    owner: "{{ dnsdist_config_owner }}"
+    group: "{{ dnsdist_config_group }}"
     mode: '0640'
     validate: dnsdist -C %s --check-config 2>&1
   notify: Restart dnsdist

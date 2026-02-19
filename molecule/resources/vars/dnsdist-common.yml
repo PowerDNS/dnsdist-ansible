@@ -4,7 +4,17 @@
 # Dnsdist Configuration
 ##
 
+# Debug sysbols
 dnsdist_install_debug_symbols_package: true
+
+# Install additional packages
+dnsdist_additional_packages:
+  - name: curl
+
+# Additional dnsdist configuration files.
+dnsdist_config_files:
+  extra.conf: |
+    -- extra file with configration
 
 dnsdist_service_overrides:
   LimitCORE: infinity

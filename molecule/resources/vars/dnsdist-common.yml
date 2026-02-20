@@ -4,7 +4,23 @@
 # Dnsdist Configuration
 ##
 
-dnsdist_install_debug_symbols_package: True
+# Debug sysbols
+dnsdist_install_debug_symbols_package: true
+
+# Install additional packages
+dnsdist_additional_packages:
+  - name: telnet
+
+# Additional dnsdist configuration files.
+dnsdist_config_files:
+  extra.conf: |
+    -- extra file with configration
 
 dnsdist_service_overrides:
   LimitCORE: infinity
+
+dnsdist_unit_overrides:
+  PartOf: network.service
+
+dnsdist_environment_overrides:
+  TZ: UTC

@@ -1,6 +1,6 @@
 ---
 
-- name: Dnsdist 2.0
+- name: DNSdist 2.0
   hosts: all
   vars_files:
     - ../resources/vars/dnsdist-common.yml

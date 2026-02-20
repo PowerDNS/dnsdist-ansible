@@ -7,7 +7,7 @@
 
 - name: Setup repository
   ansible.builtin.include_tasks: "repo-{{ ansible_os_family }}.yml"
-  when: dnsdist_install_repo != ""
+  when: dnsdist_install_repo | length > 0
   tags:
     - install
     - repository
@@ -22,43 +22,42 @@
   tags:
     - install
     - configure
-    - molecule-idempotence-notest
+    - config
   block:
     - name: Check if the key is already present in the DNSdist configuration file
       ansible.builtin.shell: |
         set -o pipefail && grep '^\s*setKey' "{{ default_dnsdist_config_location }}" | sed 's/.*setKey("\(.*\)").*/\1/'
-      register: dnsdist_grepkey_cmd
+      args:
+        executable: /bin/bash
+      register: _dnsdist_grepkey
       changed_when: false
       failed_when: false
 
     - name: Set up new encryption key
       # if the config file does not contains a key already
-      when: dnsdist_grepkey_cmd.rc > 0 or dnsdist_grepkey_cmd.stdout | length == 0
+      when: _dnsdist_grepkey.rc > 0 or _dnsdist_grepkey.stdout | length == 0
       block:
         - name: Generate encryption key  # noqa no-changed-when
           ansible.builtin.shell: head -c 32 /dev/urandom | base64
-          register: dnsdist_setkey_cmd
+          args:
+            executable: /bin/bash
+          register: _dnsdist_setkey_generate
           changed_when: true
 
         - name: Base64 encode encyption key
           ansible.builtin.set_fact:
-            dnsdist_setkey: "{{ dnsdist_setkey_cmd.stdout }}"
+            dnsdist_setkey: "{{ _dnsdist_setkey_generate.stdout }}"
 
     - name: Set old encryption key
       ansible.builtin.set_fact:
-        dnsdist_setkey: "{{ dnsdist_grepkey_cmd.stdout }}"
-      when: dnsdist_grepkey_cmd.rc == 0 and dnsdist_grepkey_cmd.stdout | length > 0
-
-
-- name: Prepare facts for config file
-  ansible.builtin.include_tasks: prepare.yml
-  tags:
-    - configure
+        dnsdist_setkey: "{{ _dnsdist_grepkey.stdout }}"
+      when: _dnsdist_grepkey.rc == 0 and _dnsdist_grepkey.stdout | length > 0
 
 - name: Build config file
   ansible.builtin.include_tasks: configure.yml
   tags:
     - configure
+    - config
 
 - name: Set the status of the dnsdist service
   ansible.builtin.service:

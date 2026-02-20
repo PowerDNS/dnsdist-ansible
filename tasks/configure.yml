@@ -42,28 +42,21 @@
       notify: Reload systemd and restart dnsdist
 
 - name: Add the dnsdist additional configuration files
-  tags:
-    - molecule-idempotence-notest
   ansible.builtin.copy:
-    content: "{{ dnsdist_config_files[item] }}"
-    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item }}"
-    owner: "{{ _dnsdist_owner }}"
-    group: "{{ _dnsdist_group }}"
+    content: "{{ item.value }}"
+    dest: "{{ default_dnsdist_config_location | dirname }}/{{ item.key }}"
+    owner: "{{ dnsdist_config_owner }}"
+    group: "{{ dnsdist_config_group }}"
     mode: '0640'
-  with_items: "{{ dnsdist_config_files }}"
-  when: 
-    - dnsdist_config_files is defined
-    - dnsdist_config_files | length > 0
+  with_dict: "{{ dnsdist_config_files }}"
   notify: Restart dnsdist
 
 - name: Add the dnsdist configuration
-  tags:
-    - molecule-idempotence-notest
   ansible.builtin.template:
     src: dnsdist.conf.j2
     dest: "{{ default_dnsdist_config_location }}"
-    owner: "{{ _dnsdist_owner }}"
-    group: "{{ _dnsdist_group }}"
+    owner: "{{ dnsdist_config_owner }}"
+    group: "{{ dnsdist_config_group }}"
     mode: '0640'
     validate: dnsdist -C %s --check-config 2>&1
   notify: Restart dnsdist

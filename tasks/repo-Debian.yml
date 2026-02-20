@@ -1,33 +1,18 @@
 ---
-- name: Install gnupg
+- name: Install python3-debian (required by deb822_repository)
   ansible.builtin.package:
-    name: gnupg
+    name: python3-debian
     state: present
 
-- name: Ensure keyring directory exists.
-  ansible.builtin.file:
-    name: '/etc/apt/keyrings'
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Download the dnsdist APT Repository key
-  ansible.builtin.get_url:
-    url: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    dest: "/etc/apt/keyrings/{{ dnsdist_install_repo['gpg_key_file'] }}"
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Update the APT cache
-
-- name: Create the dnsdist APT repository Deb822 source
-  ansible.builtin.template:
-    src: 'dnsdist.sources.j2'
-    dest: "/etc/apt/sources.list.d/{{ dnsdist_install_repo['name'] }}.sources"
-    owner: root
-    group: root
-    mode: '0644'
+- name: Add the dnsdist APT Repository (Deb822-style)
+  ansible.builtin.deb822_repository:
+    name: "{{ dnsdist_install_repo['name'] }}"
+    types: deb
+    uris: "http://{{ dnsdist_install_repo['apt_repo_origin'] }}/{{ ansible_distribution | lower }}/"
+    suites: "{{ ansible_distribution_release | lower }}-{{ dnsdist_install_repo['apt_version'] }}"
+    components: main
+    architectures: "{{ _dnsdist_apt_architecture }}"
+    signed_by: "{{ dnsdist_install_repo['gpg_key_url'] }}"
   notify: Update the APT cache
 
 - name: Flush handlers

@@ -26,6 +26,14 @@ def test_pdns_repo(host):
     assert f.contains('dnsdist-19')
 
 
+def test_pdns_repo_architecture(host):
+    if host.system_info.distribution.lower() in debian_os:
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-19.sources')
+        apt_arch = host.check_output('dpkg --print-architecture').strip()
+
+        assert f.contains(f'Architectures: {apt_arch}')
+
+
 def test_pdns_version(host):
     cmd = host.run('/usr/bin/dnsdist --version')
 

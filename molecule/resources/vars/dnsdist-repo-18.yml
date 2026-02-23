@@ -1,7 +1,0 @@
----
-
-##
-# Dnsdist 1.8.x Repository
-##
-
-dnsdist_install_repo: "{{ dnsdist_powerdns_repo_18 }}"

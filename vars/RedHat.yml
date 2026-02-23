@@ -12,6 +12,6 @@ default_dnsdist_config_location: /etc/dnsdist/dnsdist.conf
 default_dnsdist_owner: dnsdist
 default_dnsdist_group: dnsdist
 
-# The default owner/group of the process and files: 1.4 and earlier
-default_dnsdist_owner_pre15: root
-default_dnsdist_group_pre15: root
+# # The default owner/group of the process and files: 1.4 and earlier
+# default_dnsdist_owner_pre15: root
+# default_dnsdist_group_pre15: root

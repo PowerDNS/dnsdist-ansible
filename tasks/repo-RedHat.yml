@@ -37,7 +37,7 @@
     description: PowerDNS dnsdist Repository
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    gpgcheck: yes
+    gpgcheck: true
     priority: "90"
     state: present
 
@@ -48,7 +48,7 @@
     description: PowerDNS dnsdist Repository - debug symbols
     baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    gpgcheck: yes
+    gpgcheck: true
     priority: "90"
     state: present
   when: dnsdist_install_debug_symbols_package

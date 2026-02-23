@@ -1,4 +1,13 @@
 ---
+# Architecture label normalization for PowerDNS repositories.
+_dnsdist_arch_map_debian:
+  x86_64: amd64
+  amd64: amd64
+  aarch64: arm64
+  arm64: arm64
+  armv8l: arm64
+_dnsdist_apt_architecture: "{{ _dnsdist_arch_map_debian.get(ansible_architecture | lower, 'amd64' ) }}"
+
 dnsdist_powerdns_repo_master:
   apt_repo_origin: repo.powerdns.com
   apt_version: dnsdist-master
@@ -8,7 +17,17 @@ dnsdist_powerdns_repo_master:
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-master
   yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-master/debug
   name: powerdns-dnsdist-master
-  
+
+dnsdist_powerdns_repo_21:
+  apt_repo_origin: repo.powerdns.com
+  apt_version: dnsdist-21
+  gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
+  gpg_key_file: dnsdist-21-pub.asc
+  gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
+  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-21
+  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-21/debug
+  name: powerdns-dnsdist-21
+
 dnsdist_powerdns_repo_20:
   apt_repo_origin: repo.powerdns.com
   apt_version: dnsdist-20
@@ -28,13 +47,3 @@ dnsdist_powerdns_repo_19:
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19
   yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19/debug
   name: powerdns-dnsdist-19
-
-dnsdist_powerdns_repo_18:
-  apt_repo_origin: repo.powerdns.com
-  apt_version: dnsdist-18
-  gpg_key_url: http://repo.powerdns.com/FD380FBB-pub.asc
-  gpg_key_file: dnsdist-18-pub.asc
-  gpg_key_id: 9FAAA5577E8FCF62093D036C1B0C6205FD380FBB
-  yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-18
-  yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-18/debug
-  name: powerdns-dnsdist-18

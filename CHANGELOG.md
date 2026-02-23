@@ -1,3 +1,8 @@
+## v1.7.2 (2026-02-23)
+
+BUG FIXES:
+- Fix the `namespace` in meta/main.yml must match the registered Galaxy namespace exactly as `powerdns`.
+
 ## v1.7.1 (2026-02-23)
 
 BUG FIXES:

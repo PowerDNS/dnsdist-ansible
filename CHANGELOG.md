@@ -1,3 +1,9 @@
+## v1.7.3 (Unreleased)
+
+IMPROVEMENTS:
+- Rework apt and dnf repo file creation to stop using version suffixed file names which are not cleaned up on version changes ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
+- Remove version suffixed apt and dnf repo files ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
+
 ## v1.7.2 (2026-02-23)
 
 BUG FIXES:

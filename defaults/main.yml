@@ -151,3 +151,15 @@ dnsdist_tlslocals: []
 # - Force a downgrade
 # - Automation of test scenario's where switching between versions on the same server is necessary
 dnsdist_force_reinstall: false
+
+# Name of installable repo
+dnsdist_install_repo_name: powerdns-dnsdist
+
+# Regex for matching and removing non-version suffixed repos
+dnsdist_install_repo_regex: "{{ '^' + dnsdist_install_repo_name + '\\.(list|sources|repo|asc)$' }}"
+
+# Regex for matching and removing version suffixed repos
+dnsdist_remove_versioned_repo_regex: '^powerdns-dnsdist-(master|\d+)\.(list|sources|repo|asc)$'
+
+# When set to true remove version suffixed repos, set to false to keep using version suffixed repos
+dnsdist_remove_versioned_repo_files: true

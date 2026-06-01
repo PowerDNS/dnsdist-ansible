@@ -6,7 +6,7 @@ _dnsdist_arch_map_debian:
   aarch64: arm64
   arm64: arm64
   armv8l: arm64
-_dnsdist_apt_architecture: "{{ _dnsdist_arch_map_debian.get(ansible_architecture | lower, 'amd64' ) }}"
+_dnsdist_apt_architecture: "{{ _dnsdist_arch_map_debian.get(ansible_architecture | lower, 'amd64') }}"
 
 dnsdist_powerdns_repo_master:
   apt_repo_origin: repo.powerdns.com

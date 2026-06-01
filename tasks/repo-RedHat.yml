@@ -1,4 +1,23 @@
 ---
+- name: Find repo files using version suffixed sources and list files
+  ansible.builtin.find:
+    paths: /etc/yum.repos.d/
+    patterns: "{{ dnsdist_repo_regex }}"
+    use_regex: true
+  register: _dnsdist_version_suffixed_repo_files
+  tags:
+    - install
+    - repository
+
+- name: Remove version suffixed repo files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
+  tags:
+    - install
+    - repository
+
 - name: Set up EPEL
   when: dnsdist_install_epel
   block:
@@ -32,8 +51,8 @@
 
 - name: Add the dnsdist YUM Repository
   ansible.builtin.yum_repository:
-    name: "{{ dnsdist_install_repo['name'] }}"
-    file: "{{ dnsdist_install_repo['name'] }}"
+    name: "{{ dnsdist_repo_name }}"
+    file: "{{ dnsdist_repo_name }}"
     description: PowerDNS dnsdist Repository
     baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
@@ -43,8 +62,8 @@
 
 - name: Add the dnsdist debug symbols YUM Repository
   ansible.builtin.yum_repository:
-    name: "{{ dnsdist_install_repo['name'] }}-debuginfo"
-    file: "{{ dnsdist_install_repo['name'] }}"
+    name: "{{ dnsdist_repo_name }}-debuginfo"
+    file: "{{ dnsdist_repo_name }}"
     description: PowerDNS dnsdist Repository - debug symbols
     baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
     gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"

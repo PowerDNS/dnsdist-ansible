@@ -1,4 +1,26 @@
 ---
+- name: Find repo and key files using version suffixed sources and list files
+  ansible.builtin.find:
+    paths:
+      - /etc/apt/sources.list.d/
+      - /etc/apt/trusted.gpg.d/
+      - /etc/apt/keyrings/
+    patterns: "{{ dnsdist_repo_regex }}"
+    use_regex: true
+  register: _dnsdist_version_suffixed_repo_files
+  tags:
+    - install
+    - repository
+
+- name: Remove version suffixed repo files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
+  tags:
+    - install
+    - repository
+
 - name: Install python3-debian (required by deb822_repository)
   ansible.builtin.package:
     name: python3-debian
@@ -6,7 +28,7 @@
 
 - name: Add the dnsdist APT Repository (Deb822-style)
   ansible.builtin.deb822_repository:
-    name: "{{ dnsdist_install_repo['name'] }}"
+    name: "{{ dnsdist_repo_name }}"
     types: deb
     uris: "http://{{ dnsdist_install_repo['apt_repo_origin'] }}/{{ ansible_distribution | lower }}/"
     suites: "{{ ansible_distribution_release | lower }}-{{ dnsdist_install_repo['apt_version'] }}"

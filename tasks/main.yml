@@ -10,6 +10,9 @@
   ansible.builtin.set_fact:
     dnsdist_repo_name: "{{ dnsdist_remove_versioned_repo_files | ternary(dnsdist_install_repo_name, dnsdist_install_repo['name']) }}"
     dnsdist_repo_regex: "{{ dnsdist_remove_versioned_repo_files | ternary(dnsdist_remove_versioned_repo_regex, dnsdist_install_repo_regex) }}"
+  tags:
+    - install
+    - repository
 
 - name: Setup repository
   ansible.builtin.include_tasks: "repo-{{ ansible_os_family }}.yml"

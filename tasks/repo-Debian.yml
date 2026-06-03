@@ -1,5 +1,5 @@
 ---
-- name: Find repo and key files using version suffixed sources and list files
+- name: Find repo and key files matching dnsdist_repo_regex
   ansible.builtin.find:
     paths:
       - /etc/apt/sources.list.d/
@@ -12,7 +12,7 @@
     - install
     - repository
 
-- name: Remove version suffixed repo files
+- name: Remove found matching repo and key files
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent

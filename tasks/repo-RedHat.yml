@@ -1,5 +1,5 @@
 ---
-- name: Find repo files using version suffixed sources and list files
+- name: Find repo files matching dnsdist_repo_regex
   ansible.builtin.find:
     paths: /etc/yum.repos.d/
     patterns: "{{ dnsdist_repo_regex }}"
@@ -9,7 +9,7 @@
     - install
     - repository
 
-- name: Remove version suffixed repo files
+- name: Remove found matching repo and key files
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent

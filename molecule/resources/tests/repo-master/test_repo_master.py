@@ -6,9 +6,9 @@ rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
 def test_repo_file(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.sources')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-master.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist.repo')
 
     assert f.exists
     assert f.user == 'root'
@@ -18,9 +18,9 @@ def test_repo_file(host):
 def test_dnsdist_repo(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-master.sources')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-master.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist.repo')
 
     assert f.exists
     assert f.contains('dnsdist-master')

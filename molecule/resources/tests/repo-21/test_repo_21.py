@@ -6,9 +6,9 @@ rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
 def test_repo_file(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-21.sources')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-21.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist.repo')
 
     assert f.exists
     assert f.user == 'root'
@@ -18,9 +18,9 @@ def test_repo_file(host):
 def test_pdns_repo(host):
     f = None
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-21.sources')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist.sources')
     if host.system_info.distribution.lower() in rhel_os:
-        f = host.file('/etc/yum.repos.d/powerdns-dnsdist-21.repo')
+        f = host.file('/etc/yum.repos.d/powerdns-dnsdist.repo')
 
     assert f.exists
     assert f.contains('dnsdist-21')
@@ -28,7 +28,7 @@ def test_pdns_repo(host):
 
 def test_pdns_repo_architecture(host):
     if host.system_info.distribution.lower() in debian_os:
-        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist-21.sources')
+        f = host.file('/etc/apt/sources.list.d/powerdns-dnsdist.sources')
         apt_arch = host.check_output('dpkg --print-architecture').strip()
 
         assert f.contains(f'Architectures: {apt_arch}')

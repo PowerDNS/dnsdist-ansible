@@ -1,73 +1,72 @@
 ---
-- name: Find repo files matching dnsdist_repo_regex
-  ansible.builtin.find:
-    paths: /etc/yum.repos.d/
-    patterns: "{{ dnsdist_repo_regex }}"
-    use_regex: true
-  register: _dnsdist_version_suffixed_repo_files
+- name: Set up the dnsdist YUM repository
   tags:
     - install
     - repository
-
-- name: Remove found matching repo and key files
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
-  tags:
-    - install
-    - repository
-
-- name: Set up EPEL
-  when: dnsdist_install_epel
   block:
-    - name: Install epel-release on CentOS
+    - name: Find repo files matching dnsdist_repo_regex
+      ansible.builtin.find:
+        paths: /etc/yum.repos.d/
+        patterns: "{{ dnsdist_repo_regex }}"
+        use_regex: true
+      register: _dnsdist_version_suffixed_repo_files
+
+    - name: Remove found matching repo and key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
+
+    - name: Set up EPEL
+      when: dnsdist_install_epel
+      block:
+        - name: Install epel-release on CentOS
+          ansible.builtin.package:
+            name: epel-release
+            state: present
+          when: ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
+
+        - name: Install epel-release on RHEL
+          ansible.builtin.package:
+            name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+            state: present
+          when: ansible_distribution in [ 'RedHat' ]
+
+        - name: Install epel-release on OracleLinux
+          ansible.builtin.package:
+            name:
+              - "oracle-epel-release-el{{ ansible_distribution_major_version }}"
+              - hostname
+            state: present
+          when: ansible_distribution in [ 'OracleLinux' ]
+
+    - name: Install yum-plugin-priorities
       ansible.builtin.package:
-        name: epel-release
+        name: yum-plugin-priorities
         state: present
-      when: ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
+      when:
+        - ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
+        - ansible_distribution_major_version | int < 8
 
-    - name: Install epel-release on RHEL
-      ansible.builtin.package:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+    - name: Add the dnsdist YUM Repository
+      ansible.builtin.yum_repository:
+        name: "{{ dnsdist_repo_name }}"
+        file: "{{ dnsdist_repo_name }}"
+        description: PowerDNS dnsdist Repository
+        baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
+        gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
+        gpgcheck: true
+        priority: "90"
         state: present
-      when: ansible_distribution in [ 'RedHat' ]
 
-    - name: Install epel-release on OracleLinux
-      ansible.builtin.package:
-        name:
-          - "oracle-epel-release-el{{ ansible_distribution_major_version }}"
-          - hostname
+    - name: Add the dnsdist debug symbols YUM Repository
+      ansible.builtin.yum_repository:
+        name: "{{ dnsdist_repo_name }}-debuginfo"
+        file: "{{ dnsdist_repo_name }}"
+        description: PowerDNS dnsdist Repository - debug symbols
+        baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
+        gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
+        gpgcheck: true
+        priority: "90"
         state: present
-      when: ansible_distribution in [ 'OracleLinux' ]
-
-- name: Install yum-plugin-priorities
-  ansible.builtin.package:
-    name: yum-plugin-priorities
-    state: present
-  when:
-    - ansible_distribution in [ 'CentOS', 'Rocky', 'AlmaLinux' ]
-    - ansible_distribution_major_version | int < 8
-
-- name: Add the dnsdist YUM Repository
-  ansible.builtin.yum_repository:
-    name: "{{ dnsdist_repo_name }}"
-    file: "{{ dnsdist_repo_name }}"
-    description: PowerDNS dnsdist Repository
-    baseurl: "{{ dnsdist_install_repo['yum_repo_baseurl'] }}"
-    gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    gpgcheck: true
-    priority: "90"
-    state: present
-
-- name: Add the dnsdist debug symbols YUM Repository
-  ansible.builtin.yum_repository:
-    name: "{{ dnsdist_repo_name }}-debuginfo"
-    file: "{{ dnsdist_repo_name }}"
-    description: PowerDNS dnsdist Repository - debug symbols
-    baseurl: "{{ dnsdist_install_repo['yum_debug_symbols_repo_baseurl'] }}"
-    gpgkey: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-    gpgcheck: true
-    priority: "90"
-    state: present
-  when: dnsdist_install_debug_symbols_package
+      when: dnsdist_install_debug_symbols_package

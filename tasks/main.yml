@@ -39,6 +39,7 @@
       args:
         executable: /bin/bash
       register: _dnsdist_grepkey
+      check_mode: false
       changed_when: false
       failed_when: false
 

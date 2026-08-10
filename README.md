@@ -236,6 +236,53 @@ dnsdist_force_reinstall: false
 
 Force reinstall of dnsdist packages by performing a removal prior to the package installation steps. Intended for usage where a downgrade of dnsdist needs to be performed.
 
+## Role Tags
+
+Tags for `--tags` / `--skip-tags`:
+
+- `repository`: repo and GPG key setup, APT pinning, removal of stale versioned repo files.
+- `install`: package installation and removal.
+- `config` (alias `configure`): config files, systemd overrides, control socket key.
+- `service`: service state.
+- `always`: OS variable import.
+
+Repository tasks are also tagged `install`. The control socket key tasks are tagged `install`,
+`configure` and `config`, so the key exists before the config is rendered.
+
+Contributors: tags belong on the tasks inside `install.yml`, `configure.yml` and `repo-*.yml`, not
+only on the `include_tasks` in `tasks/main.yml`. A dynamic `include_tasks` does not pass its tags
+to included tasks, so a narrow `--tags` run would execute the include and skip its body, silently,
+with `rc=0`.
+
+## Check Mode
+
+Supported only on a host where this role already ran successfully.
+
+Converged host: `--check` reports real drift only. Read-only probes such as the key lookup carry
+`check_mode: false` so they still run and register results; they change nothing. Without that,
+every run reports the config as changed with the existing `setKey(...)` removed.
+
+Fresh host: `--check` is expected to fail. It installs neither the repository, `python3-debian`
+nor the package, so `deb822_repository` fails and the config cannot be validated without the
+`dnsdist` binary.
+
+## Package and Service State
+
+- `dnsdist_package_state`: `present`, `latest`, `absent`, ...
+- `dnsdist_force_reinstall`: remove before install, for downgrades.
+- `dnsdist_service_state` (`started`, `stopped`, `restarted`, `reloaded`),
+  `dnsdist_service_enabled`. No `dnsdist_service_masked`.
+
+`dnsdist_package_state: absent` removes the packages, but the config and service tasks still run,
+so a full run fails on the service task (`Could not find the requested service dnsdist`). Remove
+via the install path only:
+
+```bash
+ansible-playbook site.yml -e dnsdist_package_state=absent --tags install
+```
+
+Works with or without the config file present.
+
 ## Example Playbook
 
 Deploy dnsdist in front of Quad9 and enable the web monitoring interface

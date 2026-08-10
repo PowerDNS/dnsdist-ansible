@@ -3,6 +3,11 @@
 IMPROVEMENTS:
 - Rework apt and dnf repo file creation to stop using version suffixed file names which are not cleaned up on version changes ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
 - Remove version suffixed apt and dnf repo files ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
+- Document the role tags, check mode support (converged hosts only) and the package/service state variables in the README ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
+
+BUG FIXES:
+- Tag the tasks inside `install.yml`, `configure.yml` and `repo-*.yml` so that `--tags install`, `--tags config` and `--tags repository` no longer run the include and skip its body. A dynamic `include_tasks` does not pass its tags to the tasks it includes, so filtered runs silently did nothing and still exited 0 ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
+- Add `check_mode: false` to the control socket key probe so `--check` against a converged host no longer reports the configuration file as changed with the existing `setKey(...)` line removed ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
 
 ## v1.7.2 (2026-02-23)
 

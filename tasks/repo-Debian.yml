@@ -1,47 +1,46 @@
 ---
-- name: Find repo and key files matching dnsdist_repo_regex
-  ansible.builtin.find:
-    paths:
-      - /etc/apt/sources.list.d/
-      - /etc/apt/trusted.gpg.d/
-      - /etc/apt/keyrings/
-    patterns: "{{ dnsdist_repo_regex }}"
-    use_regex: true
-  register: _dnsdist_version_suffixed_repo_files
+- name: Set up the dnsdist APT repository
   tags:
     - install
     - repository
+  block:
+    - name: Find repo and key files matching dnsdist_repo_regex
+      ansible.builtin.find:
+        paths:
+          - /etc/apt/sources.list.d/
+          - /etc/apt/trusted.gpg.d/
+          - /etc/apt/keyrings/
+        patterns: "{{ dnsdist_repo_regex }}"
+        use_regex: true
+      register: _dnsdist_version_suffixed_repo_files
 
-- name: Remove found matching repo and key files
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
-  tags:
-    - install
-    - repository
+    - name: Remove found matching repo and key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop: "{{ _dnsdist_version_suffixed_repo_files.files | map(attribute='path') | list }}"
 
-- name: Install python3-debian (required by deb822_repository)
-  ansible.builtin.package:
-    name: python3-debian
-    state: present
+    - name: Install python3-debian (required by deb822_repository)
+      ansible.builtin.package:
+        name: python3-debian
+        state: present
 
-- name: Add the dnsdist APT Repository (Deb822-style)
-  ansible.builtin.deb822_repository:
-    name: "{{ dnsdist_repo_name }}"
-    types: deb
-    uris: "http://{{ dnsdist_install_repo['apt_repo_origin'] }}/{{ ansible_distribution | lower }}/"
-    suites: "{{ ansible_distribution_release | lower }}-{{ dnsdist_install_repo['apt_version'] }}"
-    components: main
-    architectures: "{{ _dnsdist_apt_architecture }}"
-    signed_by: "{{ dnsdist_install_repo['gpg_key_url'] }}"
-  notify: Update the APT cache
+    - name: Add the dnsdist APT Repository (Deb822-style)
+      ansible.builtin.deb822_repository:
+        name: "{{ dnsdist_repo_name }}"
+        types: deb
+        uris: "http://{{ dnsdist_install_repo['apt_repo_origin'] }}/{{ ansible_distribution | lower }}/"
+        suites: "{{ ansible_distribution_release | lower }}-{{ dnsdist_install_repo['apt_version'] }}"
+        components: main
+        architectures: "{{ _dnsdist_apt_architecture }}"
+        signed_by: "{{ dnsdist_install_repo['gpg_key_url'] }}"
+      notify: Update the APT cache
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
 
-- name: Pin the dnsdist APT Repository
-  ansible.builtin.template:
-    src: dnsdist.pin.j2
-    dest: /etc/apt/preferences.d/dnsdist
-    mode: u=rw,g=r,o=r
+    - name: Pin the dnsdist APT Repository
+      ansible.builtin.template:
+        src: dnsdist.pin.j2
+        dest: /etc/apt/preferences.d/dnsdist
+        mode: u=rw,g=r,o=r

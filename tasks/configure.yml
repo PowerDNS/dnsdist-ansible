@@ -10,7 +10,7 @@
 
         - name: Ensure the override directory exists (systemd)
           ansible.builtin.file:
-            name: /etc/systemd/system/dnsdist.service.d
+            name: /etc/systemd/system/{{ dnsdist_service_name }}.service.d
             state: directory
             owner: root
             group: root
@@ -19,7 +19,7 @@
         - name: Override the dnsdist service (systemd)
           ansible.builtin.template:
             src: override-service.systemd.conf.j2
-            dest: /etc/systemd/system/dnsdist.service.d/override.conf
+            dest: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override.conf
             owner: root
             group: root
             mode: '0644'
@@ -29,7 +29,7 @@
         - name: Override the dnsdist unit (systemd)
           ansible.builtin.template:
             src: override-unit.systemd.conf.j2
-            dest: /etc/systemd/system/dnsdist.service.d/override-unit.conf
+            dest: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override-unit.conf
             owner: root
             group: root
             mode: '0644'
@@ -39,7 +39,7 @@
         - name: Override the dnsdist environments (systemd)
           ansible.builtin.template:
             src: override-environment.systemd.conf.j2
-            dest: /etc/systemd/system/dnsdist.service.d/override-environment.conf
+            dest: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override-environment.conf
             owner: root
             group: root
             mode: '0644'
@@ -49,7 +49,7 @@
     - name: Add the dnsdist additional configuration files
       ansible.builtin.copy:
         content: "{{ item.value }}"
-        dest: "{{ default_dnsdist_config_location | dirname }}/{{ item.key }}"
+        dest: "{{ dnsdist_config_location | dirname }}/{{ item.key }}"
         owner: "{{ dnsdist_config_owner }}"
         group: "{{ dnsdist_config_group }}"
         mode: '0640'
@@ -59,7 +59,7 @@
     - name: Add the dnsdist configuration
       ansible.builtin.template:
         src: dnsdist.conf.j2
-        dest: "{{ default_dnsdist_config_location }}"
+        dest: "{{ dnsdist_config_location }}"
         owner: "{{ dnsdist_config_owner }}"
         group: "{{ dnsdist_config_group }}"
         mode: '0640'

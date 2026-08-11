@@ -32,6 +32,7 @@ jobs:
           - dnsdist-20
           # - dnsdist-21
           - dnsdist-master
+          - multi-instance
     steps:
       - name: checkout
         uses: actions/checkout@v7

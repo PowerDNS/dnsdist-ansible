@@ -1,0 +1,40 @@
+---
+
+# Reconfigure the first instance only and assert that no other instance was
+# restarted, which is what the per-invocation handler flushing guarantees.
+- name: Restart only the reconfigured instance
+  hosts: all
+  vars_files:
+    - ../resources/vars/dnsdist-repo-20.yml
+    - ../resources/vars/dnsdist-instances.yml
+  tasks:
+
+    - name: Record the unit start timestamps before the change
+      ansible.builtin.systemd:
+        name: "dnsdist@{{ item }}"
+      loop: "{{ dnsdist_multi_instances | map(attribute='name') | list }}"
+      register: _units_before
+      changed_when: false
+
+    - name: Reconfigure the first instance
+      ansible.builtin.include_tasks: ../resources/tasks/dnsdist-instance.yml
+      vars:
+        instance: "{{ dnsdist_multi_instances | first }}"
+        instance_revision: 2
+
+    - name: Record the unit start timestamps after the change
+      ansible.builtin.systemd:
+        name: "dnsdist@{{ item }}"
+      loop: "{{ dnsdist_multi_instances | map(attribute='name') | list }}"
+      register: _units_after
+      changed_when: false
+
+    - name: Assert that only the reconfigured instance was restarted
+      ansible.builtin.assert:
+        that:
+          - _after[0] > _before[0]
+          - _after[1:] == _before[1:]
+        fail_msg: "before={{ _before }} after={{ _after }}"
+      vars:
+        _before: "{{ _units_before.results | map(attribute='status.ActiveEnterTimestampMonotonic') | map('int') | list }}"
+        _after: "{{ _units_after.results | map(attribute='status.ActiveEnterTimestampMonotonic') | map('int') | list }}"

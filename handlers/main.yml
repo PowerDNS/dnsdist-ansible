@@ -3,17 +3,24 @@
 # is needed to make sure the service has been
 # correctly stopped before being started again during restarts
 
+# Handlers are shared between role invocations in the same play, and role
+# parameters resolve to the values of the *last* invocation. The _dnsdist_*
+# facts below are published per invocation by tasks/main.yml; the role
+# parameters are the fallback for runs that skip tasks/main.yml.
+
 - name: Reload systemd and restart dnsdist
   ansible.builtin.systemd:
     daemon_reload: true
   notify: Restart dnsdist
-  when: not dnsdist_disable_handlers
+  when: not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
 - name: Restart dnsdist
   ansible.builtin.service:
-    name: dnsdist
+    name: "{{ _dnsdist_service_name | default(dnsdist_service_name) }}"
     state: restarted
-  when: dnsdist_service_state != 'stopped' and not dnsdist_disable_handlers
+  when:
+    - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
+    - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
 - name: Update the APT cache
   ansible.builtin.apt:

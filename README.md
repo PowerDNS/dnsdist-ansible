@@ -175,7 +175,7 @@ Since 1.5.0, only connections from 127.0.0.1 and ::1 are allowed by default. See
 dnsdist_config: ""
 ```
 
-Additional dnsdist configuration to be injected verbatim in the `dnsdist.conf` file.
+Additional dnsdist configuration to be injected verbatim in the configuration file.
 
 ```yaml
 dnsdist_config_files: {}
@@ -188,7 +188,7 @@ dnsdist_config_owner: ""
 dnsdist_config_group: ""
 ```
 
-User and Group that own the `dnsdist.conf` file. When empty, version-specific defaults are used.
+User and Group that own the configuration file. When empty, version-specific defaults are used.
 
 ```yaml
 dnsdist_service_overrides: {}
@@ -212,6 +212,22 @@ Dict with overrides for the service environments (systemd only).
 This can be used to change any environment variables in systemd settings in the `[Service]` category.
 
 ```yaml
+dnsdist_service_name: "dnsdist"
+```
+
+Name of the managed service. Set it to `dnsdist@<instance>` to manage an instance of the templated
+systemd unit shipped by the dnsdist packages, and set `dnsdist_config_location` to the matching
+`/etc/dnsdist/dnsdist-<instance>.conf`. See [Handlers](#handlers).
+
+```yaml
+dnsdist_config_location: "{{ default_dnsdist_config_location }}"
+```
+
+Location of the configuration file, `/etc/dnsdist/dnsdist.conf` on Linux and
+`/usr/local/etc/dnsdist.conf` on FreeBSD. The additional files from `dnsdist_config_files` are
+written next to it.
+
+```yaml
 dnsdist_service_state: "started"
 dnsdist_service_enabled: true
 ```
@@ -224,6 +240,13 @@ dnsdist_disable_handlers: false
 ```
 
 Disable automated service restart on configuration changes.
+
+```yaml
+dnsdist_flush_handlers: false
+```
+
+Run the notified handlers at the end of the role instead of at the end of the play. See
+[Handlers](#handlers).
 
 ```yaml
 dnsdist_tlslocals: []
@@ -282,6 +305,49 @@ ansible-playbook site.yml -e dnsdist_package_state=absent --tags install
 ```
 
 Works with or without the config file present.
+
+## Handlers
+
+Handlers run at the end of the play, and Ansible shares them between invocations of the same role.
+A role parameter read inside a handler resolves to the value of the *last* invocation, so with more
+than one invocation in a play the restart targets the wrong service or is collapsed into a single
+run. Set `dnsdist_flush_handlers: true` to run `meta: flush_handlers` as the last task of the role,
+which restarts the `dnsdist_service_name` of that invocation.
+
+Every instance needs its own service name and configuration file; the templated systemd unit reads
+`/etc/dnsdist/dnsdist-<instance>.conf`:
+
+```yaml
+- hosts: dnsdist
+  tasks:
+    - name: Instance a
+      ansible.builtin.include_role:
+        name: PowerDNS.dnsdist
+      vars:
+        dnsdist_service_name: dnsdist@a
+        dnsdist_config_location: /etc/dnsdist/dnsdist-a.conf
+        dnsdist_locals: ['127.0.0.1:5301']
+        dnsdist_controlsocket: '127.0.0.1:5401'
+        dnsdist_flush_handlers: true
+
+    - name: Instance b
+      ansible.builtin.include_role:
+        name: PowerDNS.dnsdist
+      vars:
+        dnsdist_service_name: dnsdist@b
+        dnsdist_config_location: /etc/dnsdist/dnsdist-b.conf
+        dnsdist_locals: ['127.0.0.1:5302']
+        dnsdist_controlsocket: '127.0.0.1:5402'
+        dnsdist_flush_handlers: true
+```
+
+The `dnsdist_locals` and `dnsdist_controlsocket` of every instance have to differ, otherwise the
+second instance cannot bind its addresses.
+
+The systemd overrides of an instance are written to `/etc/systemd/system/<service name>.service.d/`.
+
+`meta: flush_handlers` is play-wide: it also runs handlers that earlier roles in the same play
+notified. `dnsdist_disable_handlers: true` skips the restart handlers entirely.
 
 ## Example Playbook
 

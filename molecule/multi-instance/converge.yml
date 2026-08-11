@@ -1,0 +1,17 @@
+---
+
+# Every instance is configured in the same play. Handlers are shared between
+# role invocations, so every invocation flushes its own handlers.
+- name: DNSdist multiple instances in a single play
+  hosts: all
+  vars_files:
+    - ../resources/vars/dnsdist-repo-20.yml
+    - ../resources/vars/dnsdist-instances.yml
+  tasks:
+
+    - name: Configure the dnsdist instances
+      ansible.builtin.include_tasks: ../resources/tasks/dnsdist-instance.yml
+      loop: "{{ dnsdist_multi_instances }}"
+      loop_control:
+        loop_var: instance
+        label: "{{ instance.name }}"

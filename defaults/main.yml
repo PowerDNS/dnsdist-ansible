@@ -119,7 +119,11 @@ dnsdist_config_files: {}
 #   extra.conf: |
 #     -- extra file with configration
 
-# Owner and group for /etc/dnsdist/dnsdist.conf
+# Location of the dnsdist configuration file. Instances of the templated
+# systemd unit read /etc/dnsdist/dnsdist-<instance>.conf.
+dnsdist_config_location: "{{ default_dnsdist_config_location }}"
+
+# Owner and group for the dnsdist configuration file
 dnsdist_config_owner: "{{ default_dnsdist_owner }}"
 dnsdist_config_group: "{{ default_dnsdist_group }}"
 
@@ -136,12 +140,20 @@ dnsdist_environment_overrides: {}
 # dnsdist_service_overrides:
 #   PATH: "/var/lib/mylib/bin:$PATH"
 
+# Name of the dnsdist service. Set it to 'dnsdist@<instance>' to manage an
+# instance of the templated systemd unit shipped by the dnsdist packages.
+dnsdist_service_name: dnsdist
+
 # State of the DNSdist service
 dnsdist_service_state: started
 dnsdist_service_enabled: true
 
 # When true, disable the automated restart of the dnsdist service
 dnsdist_disable_handlers: false
+
+# When true, run the notified handlers at the end of the role instead of at the
+# end of the play. Set this when the role runs more than once in a play.
+dnsdist_flush_handlers: false
 
 # When set, adds a DNS over TLS frontend
 dnsdist_tlslocals: []

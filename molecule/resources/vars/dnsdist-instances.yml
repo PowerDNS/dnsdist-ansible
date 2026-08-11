@@ -1,0 +1,18 @@
+---
+
+##
+# Instances of the templated dnsdist@.service unit used by the
+# multi-instance scenario. The first entry is the one the side effect
+# reconfigures.
+##
+
+dnsdist_multi_instances:
+  - name: a
+    local: "127.0.0.1:5311"
+    controlsocket: "127.0.0.1:5411"
+    server: "9.9.9.9"
+
+  - name: b
+    local: "127.0.0.1:5312"
+    controlsocket: "127.0.0.1:5412"
+    server: "1.1.1.1"

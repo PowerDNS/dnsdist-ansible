@@ -1,20 +1,20 @@
 ## v1.7.3 (Unreleased)
 
 NEW FEATURES:
-- Add `dnsdist_service_name` and `dnsdist_config_location` so the role can manage an instance of the templated `dnsdist@.service` unit. The systemd drop-in directory follows the service name ([\#XXX](https://github.com/PowerDNS/dnsdist-ansible/pull/XXX))
-- Add `dnsdist_flush_handlers` to run the notified handlers at the end of the role instead of at the end of the play, which is required when the role runs more than once in a play ([\#XXX](https://github.com/PowerDNS/dnsdist-ansible/pull/XXX))
-- Add the `multi-instance` Molecule scenario, which configures two instances in a single play ([\#XXX](https://github.com/PowerDNS/dnsdist-ansible/pull/XXX))
+- Add `dnsdist_service_name` and `dnsdist_config_location` so the role can manage an instance of the templated `dnsdist@.service` unit. The systemd drop-in directory follows the service name ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
+- Add `dnsdist_flush_handlers` to run the notified handlers at the end of the role instead of at the end of the play, which is required when the role runs more than once in a play ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
+- Add the `multi-instance` Molecule scenario, which configures two instances in a single play ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 
 IMPROVEMENTS:
 - Rework apt and dnf repo file creation to stop using version suffixed file names which are not cleaned up on version changes ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
 - Remove version suffixed apt and dnf repo files ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
 - Document the role tags, check mode support (converged hosts only) and the package/service state variables in the README ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
-- Document the handler behaviour and the multi-instance usage in the README ([\#XXX](https://github.com/PowerDNS/dnsdist-ansible/pull/XXX))
+- Document the handler behaviour and the multi-instance usage in the README ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 
 BUG FIXES:
 - Tag the tasks inside `install.yml`, `configure.yml` and `repo-*.yml` so that `--tags install`, `--tags config` and `--tags repository` no longer run the include and skip its body. A dynamic `include_tasks` does not pass its tags to the tasks it includes, so filtered runs silently did nothing and still exited 0 ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
 - Add `check_mode: false` to the control socket key probe so `--check` against a converged host no longer reports the configuration file as changed with the existing `setKey(...)` line removed ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
-- Read the service name and state from facts published per role invocation in the restart handlers. Ansible shares handlers between invocations of the same role and resolves role parameters to the last invocation, so a play with more than one instance restarted the wrong service. Correct restarts need `dnsdist_flush_handlers: true` as well ([\#XXX](https://github.com/PowerDNS/dnsdist-ansible/pull/XXX))
+- Read the service name and state from facts published per role invocation in the restart handlers. Ansible shares handlers between invocations of the same role and resolves role parameters to the last invocation, so a play with more than one instance restarted the wrong service. Correct restarts need `dnsdist_flush_handlers: true` as well ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 
 ## v1.7.2 (2026-02-23)
 

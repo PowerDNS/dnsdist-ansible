@@ -2,6 +2,7 @@
 
 - name: Install and configure dnsdist
   hosts: all
+  become: true
   vars_files:
     - ../resources/vars/dnsdist-version.yml
     - ../resources/vars/dnsdist-common.yml

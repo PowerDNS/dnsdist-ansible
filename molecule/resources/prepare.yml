@@ -2,6 +2,7 @@
 
 - name: Prepare the Molecule Test Resources
   hosts: all
+  become: true
   tasks:
 
     # The image is older than the run, so the package database can still point at

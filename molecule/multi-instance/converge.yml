@@ -4,6 +4,7 @@
 # role invocations, so every invocation flushes its own handlers.
 - name: DNSdist multiple instances in a single play
   hosts: all
+  become: true
   vars_files:
     - ../resources/vars/dnsdist-version.yml
     - ../resources/vars/dnsdist-instances.yml

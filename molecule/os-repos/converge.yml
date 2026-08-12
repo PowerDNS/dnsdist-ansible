@@ -2,7 +2,6 @@
 
 - name: Install and configure dnsdist from the distribution packages
   hosts: all
-  become: true
   vars_files:
     - ../resources/vars/dnsdist-common.yml
     - ../resources/vars/dnsdist-os-repos.yml

@@ -1,10 +1,17 @@
 ---
+# Values follow the dns/dnsdist port: USERS/GROUPS=_dnsdist, USE_RC_SUBR=dnsdist
+# and --sysconfdir=${ETCDIR}, which is ${PREFIX}/etc/${PORTNAME}.
+
 # The name of the dnsdist package
 default_dnsdist_package_name: dnsdist
 
+# FreeBSD ships no debug symbols package. An empty name makes the role skip it
+# even when dnsdist_install_debug_symbols_package is enabled.
+default_dnsdist_debug_symbols_package_name: ""
+
 # The default location of the config file
-default_dnsdist_config_location: /usr/local/etc/dnsdist.conf
+default_dnsdist_config_location: /usr/local/etc/dnsdist/dnsdist.conf
 
 # The default owner/group of the process and files: 1.5 and beyond
-default_dnsdist_owner: dnsdist
-default_dnsdist_group: dnsdist
+default_dnsdist_owner: _dnsdist
+default_dnsdist_group: _dnsdist

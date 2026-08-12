@@ -14,4 +14,4 @@ __pycache__/
 .molecule
 .vagrant
 venv/
-
+.ansible/

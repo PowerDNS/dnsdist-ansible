@@ -79,11 +79,22 @@
     - configure
     - config
 
+- name: Set the status of the dnsdist service (systemd)
+  ansible.builtin.systemd_service:
+    name: "{{ dnsdist_service_name }}"
+    state: "{{ dnsdist_service_state }}"
+    enabled: "{{ dnsdist_service_enabled }}"
+  when: ansible_service_mgr == 'systemd'
+  tags:
+    - service
+
+# FreeBSD has no systemd, so the generic module drives its rc.d scripts.
 - name: Set the status of the dnsdist service
   ansible.builtin.service:
     name: "{{ dnsdist_service_name }}"
     state: "{{ dnsdist_service_state }}"
     enabled: "{{ dnsdist_service_enabled }}"
+  when: ansible_service_mgr != 'systemd'
   tags:
     - service
 

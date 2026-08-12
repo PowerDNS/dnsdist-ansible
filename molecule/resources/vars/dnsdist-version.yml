@@ -1,0 +1,13 @@
+---
+
+##
+# The dnsdist release under test.
+#
+# The value is the release as named by the PowerDNS repositories (19, 20, 21)
+# and defaults to the newest tested release. The repository presets it resolves
+# to live in the role's vars/main.yml, so the second variable is only rendered
+# once the role runs.
+##
+
+dnsdist_test_version: "{{ lookup('env', 'DNSDIST_VERSION') | default('21', true) }}"
+dnsdist_install_repo: "{{ lookup('vars', 'dnsdist_powerdns_repo_' ~ dnsdist_test_version) }}"

@@ -1,0 +1,9 @@
+---
+
+- name: Install and configure dnsdist
+  hosts: all
+  vars_files:
+    - ../resources/vars/dnsdist-version.yml
+    - ../resources/vars/dnsdist-common.yml
+  roles:
+    - role: powerdns.dnsdist

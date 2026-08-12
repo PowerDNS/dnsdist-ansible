@@ -15,7 +15,8 @@
     - name: Uninstall dnsdist and related packages
       ansible.builtin.package:
         name: >-
-          {{ ([dnsdist_package_name, dnsdist_debug_symbols_package_name] + _dnsdist_additional_packages_to_uninstall) | unique | list }}
+          {{ ([dnsdist_package_name, dnsdist_debug_symbols_package_name] + _dnsdist_additional_packages_to_uninstall)
+             | select | unique | list }}
         state: absent
       when: dnsdist_force_reinstall | bool
       vars:
@@ -34,7 +35,8 @@
       ansible.builtin.package:
         name: >-
           {{ [dnsdist_package_name ~ (_dnsdist_package_version | default(''))]
-            + ([dnsdist_debug_symbols_package_name ~ (_dnsdist_package_version | default(''))] if dnsdist_install_debug_symbols_package | bool else [])
+            + ([dnsdist_debug_symbols_package_name ~ (_dnsdist_package_version | default(''))]
+               if (dnsdist_install_debug_symbols_package | bool and dnsdist_debug_symbols_package_name | length > 0) else [])
             + _dnsdist_additional_packages_to_install
           }}
         state: "{{ dnsdist_package_state }}"

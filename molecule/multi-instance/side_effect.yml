@@ -5,12 +5,12 @@
 - name: Restart only the reconfigured instance
   hosts: all
   vars_files:
-    - ../resources/vars/dnsdist-repo-20.yml
+    - ../resources/vars/dnsdist-version.yml
     - ../resources/vars/dnsdist-instances.yml
   tasks:
 
     - name: Record the unit start timestamps before the change
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: "dnsdist@{{ item }}"
       loop: "{{ dnsdist_multi_instances | map(attribute='name') | list }}"
       register: _units_before
@@ -23,7 +23,7 @@
         instance_revision: 2
 
     - name: Record the unit start timestamps after the change
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: "dnsdist@{{ item }}"
       loop: "{{ dnsdist_multi_instances | map(attribute='name') | list }}"
       register: _units_after

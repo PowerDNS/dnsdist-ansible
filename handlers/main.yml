@@ -1,24 +1,49 @@
 ---
-# the sleep in the restart dnsdist handler
-# is needed to make sure the service has been
-# correctly stopped before being started again during restarts
-
 # Handlers are shared between role invocations in the same play, and role
 # parameters resolve to the values of the *last* invocation. The _dnsdist_*
 # facts below are published per invocation by tasks/main.yml; the role
 # parameters are the fallback for runs that skip tasks/main.yml.
+#
+# The restart is split in two: systemd hosts use ansible.builtin.systemd_service
+# and hosts without systemd (FreeBSD) use the generic module for their rc.d
+# scripts. Both listen on `Restart dnsdist`, so a task notifies that topic
+# without knowing which applies.
+#
+# `Reload systemd and restart dnsdist` fans out to the reload *and* the restart.
+# A task that only changes a systemd drop-in notifies it, and a daemon-reload
+# alone never reports `changed`, so the reload cannot notify the restart itself.
 
-- name: Reload systemd and restart dnsdist
-  ansible.builtin.systemd:
+- name: Reload systemd
+  ansible.builtin.systemd_service:
     daemon_reload: true
-  notify: Restart dnsdist
-  when: not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
+  listen:
+    - Reload systemd
+    - Reload systemd and restart dnsdist
+  when:
+    - ansible_service_mgr == 'systemd'
+    - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
 - name: Restart dnsdist
+  ansible.builtin.systemd_service:
+    name: "{{ _dnsdist_service_name | default(dnsdist_service_name) }}"
+    state: restarted
+  listen:
+    - Restart dnsdist
+    - Reload systemd and restart dnsdist
+  when:
+    - ansible_service_mgr == 'systemd'
+    - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
+    - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
+
+- name: Restart dnsdist without systemd
   ansible.builtin.service:
     name: "{{ _dnsdist_service_name | default(dnsdist_service_name) }}"
     state: restarted
+  listen:
+    - Restart dnsdist
+    - Reload systemd and restart dnsdist
   when:
+    - ansible_service_mgr != 'systemd'
     - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 

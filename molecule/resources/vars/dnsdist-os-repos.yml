@@ -1,0 +1,16 @@
+---
+
+##
+# Overlay on top of dnsdist-common.yml for the distribution packages, so the
+# os-repos scenario is verified by the same tests as the default scenario.
+##
+
+# An empty repository skips the repository tasks entirely.
+dnsdist_install_repo: ""
+
+# Arch Linux ships no debug symbols package for dnsdist, and the telnet client
+# is part of inetutils.
+dnsdist_install_debug_symbols_package: false
+
+dnsdist_additional_packages:
+  - name: inetutils

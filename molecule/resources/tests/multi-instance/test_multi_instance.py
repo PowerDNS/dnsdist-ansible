@@ -1,12 +1,15 @@
-debian_os = ['debian', 'ubuntu']
-rhel_os = ['redhat', 'centos', 'ol', 'rocky', 'almalinux']
-
 instances = {'a': '5311', 'b': '5312'}
 
 
-def test_instance_configuration(host):
+def instance_config(config_location, name):
+    """The configuration file the templated unit reads for an instance."""
+    directory, basename = config_location.rsplit('/', 1)
+    return '{}/{}-{}.conf'.format(directory, basename[:-len('.conf')], name)
+
+
+def test_instance_configuration(host, config_location):
     for name, port in instances.items():
-        f = host.file('/etc/dnsdist/dnsdist-{}.conf'.format(name))
+        f = host.file(instance_config(config_location, name))
         assert f.exists
         assert f.contains('-- instance {}'.format(name))
         assert f.contains('127.0.0.1:{}'.format(port))

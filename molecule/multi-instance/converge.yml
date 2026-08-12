@@ -5,7 +5,7 @@
 - name: DNSdist multiple instances in a single play
   hosts: all
   vars_files:
-    - ../resources/vars/dnsdist-repo-20.yml
+    - ../resources/vars/dnsdist-version.yml
     - ../resources/vars/dnsdist-instances.yml
   tasks:
 

@@ -1,7 +1,0 @@
----
-
-##
-# Dnsdist 2.1.x Repository
-##
-
-dnsdist_install_repo: "{{ dnsdist_powerdns_repo_21 }}"

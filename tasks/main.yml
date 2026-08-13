@@ -1,7 +1,7 @@
 ---
 
 - name: Include OS-specific variables
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yml"
   tags:
     - always
 
@@ -25,7 +25,7 @@
     - repository
 
 - name: Setup repository
-  ansible.builtin.include_tasks: "repo-{{ ansible_os_family }}.yml"
+  ansible.builtin.include_tasks: "repo-{{ ansible_facts.os_family }}.yml"
   when: dnsdist_install_repo | length > 0
   tags:
     - install
@@ -79,11 +79,22 @@
     - configure
     - config
 
+- name: Set the status of the dnsdist service (systemd)
+  ansible.builtin.systemd_service:
+    name: "{{ dnsdist_service_name }}"
+    state: "{{ dnsdist_service_state }}"
+    enabled: "{{ dnsdist_service_enabled }}"
+  when: ansible_facts.service_mgr == 'systemd'
+  tags:
+    - service
+
+# FreeBSD has no systemd, so the generic module drives its rc.d scripts.
 - name: Set the status of the dnsdist service
   ansible.builtin.service:
     name: "{{ dnsdist_service_name }}"
     state: "{{ dnsdist_service_state }}"
     enabled: "{{ dnsdist_service_enabled }}"
+  when: ansible_facts.service_mgr != 'systemd'
   tags:
     - service
 

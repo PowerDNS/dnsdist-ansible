@@ -5,7 +5,7 @@
     - config
   block:
     - name: Set up systemd override
-      when: ansible_service_mgr == "systemd"
+      when: ansible_facts.service_mgr == "systemd"
       block:
 
         - name: Ensure the override directory exists (systemd)

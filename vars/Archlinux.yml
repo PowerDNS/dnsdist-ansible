@@ -1,0 +1,17 @@
+---
+
+# The name of the dnsdist package
+default_dnsdist_package_name: dnsdist
+
+# Arch Linux ships no debug symbols package. An empty name makes the role skip
+# it even when dnsdist_install_debug_symbols_package is enabled.
+default_dnsdist_debug_symbols_package_name: ""
+
+# The default location of the config file. The Arch package installs
+# /etc/dnsdist.conf-dist and its units read /etc/dnsdist.conf, with
+# /etc/dnsdist-<instance>.conf for the templated unit.
+default_dnsdist_config_location: /etc/dnsdist.conf
+
+# The default owner/group of the process and files
+default_dnsdist_owner: dnsdist
+default_dnsdist_group: dnsdist

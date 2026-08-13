@@ -1,17 +1,32 @@
 ## v1.7.3 (Unreleased)
 
 NEW FEATURES:
+- Add Arch Linux support. The package is `dnsdist`, the configuration lives in `/etc/dnsdist.conf` (`/etc/dnsdist-<instance>.conf` for the templated unit) and the process runs as `dnsdist` ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Add `dnsdist_service_name` and `dnsdist_config_location` so the role can manage an instance of the templated `dnsdist@.service` unit. The systemd drop-in directory follows the service name ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 - Add `dnsdist_flush_handlers` to run the notified handlers at the end of the role instead of at the end of the play, which is required when the role runs more than once in a play ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 - Add the `multi-instance` Molecule scenario, which configures two instances in a single play ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 
+BREAKING CHANGES:
+- Require ansible-core 2.16 or newer. Support for 2.15 is dropped, and Enterprise Linux 8 targets must be managed with 2.16 because their system Python is 3.6 ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+
 IMPROVEMENTS:
+- Read facts through `ansible_facts` instead of the injected top-level `ansible_*` variables. ansible-core deprecated that injection and removes it in 2.24, after which a role reading `ansible_distribution` would break. The Molecule configuration sets `inject_facts_as_vars: false`, so a missed reference fails a test run instead of surfacing on a future ansible-core ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Cap every collection in `requirements.yml`. A collection that raises its `requires_ansible` in a new major would otherwise break the ansible-core 2.16 leg on the day it is published, without a change in this repository ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Manage the service with `ansible.builtin.systemd_service` on systemd hosts and with `ansible.builtin.service` on hosts without systemd, instead of mixing the two modules across the service task and the handlers ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Declare Ubuntu 26.04, Arch Linux and FreeBSD in the Galaxy metadata ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Rework apt and dnf repo file creation to stop using version suffixed file names which are not cleaned up on version changes ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
 - Remove version suffixed apt and dnf repo files ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)
 - Document the role tags, check mode support (converged hosts only) and the package/service state variables in the README ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
 - Document the handler behaviour and the multi-instance usage in the README ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 
+REMOVED FEATURES:
+- Stop testing the `dnsdist-master` repository and test the three most recent release series instead. The `dnsdist_powerdns_repo_master` preset is unchanged and still usable ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+
 BUG FIXES:
+- Correct the FreeBSD paths and ownership. The configuration lives in `/usr/local/etc/dnsdist/dnsdist.conf` and the process runs as `_dnsdist`, following the `dns/dnsdist` port ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Restart the service after a systemd drop-in changes. The reload handler notified the restart handler, but a daemon reload alone never reports `changed`, so the notification was dropped and a modified `dnsdist_service_overrides`, `dnsdist_unit_overrides` or `dnsdist_environment_overrides` never took effect ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Restart the service on hosts without systemd. The restart handler and the `daemon_reload` handler used the systemd module unconditionally, so a FreeBSD run failed as soon as a configuration change notified them ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Skip the debug symbols package on platforms that ship none. `dnsdist_debug_symbols_package_name` was referenced unconditionally by the `dnsdist_force_reinstall` path, where it is undefined on FreeBSD ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Tag the tasks inside `install.yml`, `configure.yml` and `repo-*.yml` so that `--tags install`, `--tags config` and `--tags repository` no longer run the include and skip its body. A dynamic `include_tasks` does not pass its tags to the tasks it includes, so filtered runs silently did nothing and still exited 0 ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
 - Add `check_mode: false` to the control socket key probe so `--check` against a converged host no longer reports the configuration file as changed with the existing `setKey(...)` line removed ([\#194](https://github.com/PowerDNS/dnsdist-ansible/pull/194))
 - Read the service name and state from facts published per role invocation in the restart handlers. Ansible shares handlers between invocations of the same role and resolves role parameters to the last invocation, so a play with more than one instance restarted the wrong service. Correct restarts need `dnsdist_flush_handlers: true` as well ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))

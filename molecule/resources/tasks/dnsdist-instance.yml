@@ -3,6 +3,10 @@
 # Configure one dnsdist instance. `instance` is an entry of
 # `dnsdist_multi_instances`; `instance_revision` changes the generated
 # configuration so the restart handler is notified.
+#
+# The configuration path is the Debian and Enterprise Linux layout, which is what
+# every platform set of this scenario uses. On Arch Linux the templated unit
+# reads /etc/dnsdist-<instance>.conf instead.
 - name: Configure the dnsdist instance {{ instance.name }}
   ansible.builtin.include_role:
     name: powerdns.dnsdist

@@ -1,7 +1,0 @@
----
-
-##
-# Dnsdist Master Repository
-##
-
-dnsdist_install_repo: "{{ dnsdist_powerdns_repo_master }}"

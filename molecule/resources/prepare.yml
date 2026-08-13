@@ -8,5 +8,5 @@
     # package versions the mirrors have already dropped.
     - name: Refresh the pacman package database
       ansible.builtin.command: pacman --sync --refresh --sysupgrade --noconfirm
-      when: ansible_pkg_mgr == 'pacman'
+      when: ansible_facts.pkg_mgr == 'pacman'
       changed_when: false

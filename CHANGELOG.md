@@ -10,6 +10,8 @@ BREAKING CHANGES:
 - Require ansible-core 2.16 or newer. Support for 2.15 is dropped, and Enterprise Linux 8 targets must be managed with 2.16 because their system Python is 3.6 ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 
 IMPROVEMENTS:
+- Read facts through `ansible_facts` instead of the injected top-level `ansible_*` variables. ansible-core deprecated that injection and removes it in 2.24, after which a role reading `ansible_distribution` would break. The Molecule configuration sets `inject_facts_as_vars: false`, so a missed reference fails a test run instead of surfacing on a future ansible-core ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
+- Cap every collection in `requirements.yml`. A collection that raises its `requires_ansible` in a new major would otherwise break the ansible-core 2.16 leg on the day it is published, without a change in this repository ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Manage the service with `ansible.builtin.systemd_service` on systemd hosts and with `ansible.builtin.service` on hosts without systemd, instead of mixing the two modules across the service task and the handlers ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Declare Ubuntu 26.04, Arch Linux and FreeBSD in the Galaxy metadata ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Rework apt and dnf repo file creation to stop using version suffixed file names which are not cleaned up on version changes ([\#183](https://github.com/PowerDNS/dnsdist-ansible/pull/183), @l00d3r)

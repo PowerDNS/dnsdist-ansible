@@ -20,7 +20,7 @@
     - Reload systemd
     - Reload systemd and restart dnsdist
   when:
-    - ansible_service_mgr == 'systemd'
+    - ansible_facts.service_mgr == 'systemd'
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
 - name: Restart dnsdist
@@ -31,7 +31,7 @@
     - Restart dnsdist
     - Reload systemd and restart dnsdist
   when:
-    - ansible_service_mgr == 'systemd'
+    - ansible_facts.service_mgr == 'systemd'
     - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
@@ -43,7 +43,7 @@
     - Restart dnsdist
     - Reload systemd and restart dnsdist
   when:
-    - ansible_service_mgr != 'systemd'
+    - ansible_facts.service_mgr != 'systemd'
     - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 

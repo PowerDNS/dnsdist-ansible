@@ -10,9 +10,14 @@ RUN sed -i '/^\[options\]/a DisableSandbox' /etc/pacman.conf
 
 # inetutils is deliberately absent: the scenario installs it through
 # dnsdist_additional_packages.
+#
+# The base image already carries bash, awk, grep, ps and systemd, and nothing
+# here calls netstat, ps or pip, so only what is genuinely missing is installed.
+# acl is needed for the unprivileged to unprivileged escalation of a task with
+# become_user: Ansible hands the temporary files over with setfacl.
+# `-Syu` rather than `-Sy`: Arch is rolling and a partial upgrade breaks it.
 RUN pacman -Syu --noconfirm && \
-    pacman -S --noconfirm systemd awk bash ca-certificates grep iproute2 \
-        net-tools procps-ng python python-pip sudo vim && \
+    pacman -S --noconfirm systemd ca-certificates acl iproute2 python sudo && \
     rm -rf /usr/share/doc/* && \
     rm -rf /usr/share/man/* && \
     pacman -Scc --noconfirm

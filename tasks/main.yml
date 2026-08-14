@@ -5,6 +5,45 @@
   tags:
     - always
 
+# Checked here rather than next to the configuration tasks because
+# dnsdist_config_format decides dnsdist_config_location, the console key probe
+# below and the template to render, so a bad value has to be caught before any of
+# them - including under a narrow --tags run that never reaches configure.yml.
+- name: Reject an unknown dnsdist configuration format
+  ansible.builtin.fail:
+    msg: >-
+      dnsdist_config_format is "{{ dnsdist_config_format }}", which is neither
+      "lua" nor "yaml".
+  when: dnsdist_config_format not in ['lua', 'yaml']
+  tags:
+    - always
+
+# dnsdist selects its parser from the file name extension, so the format and the
+# path have to agree. They can disagree only when an operator sets
+# dnsdist_config_location by hand - for an instance of the templated unit, say -
+# and that mistake is otherwise silent in the worst way: the configuration check
+# is run against a name this role chooses, so it passes, and the daemon then
+# reads the deployed file under the other parser and fails at start.
+- name: Reject a dnsdist configuration format that the file name contradicts
+  ansible.builtin.fail:
+    msg: >-
+      dnsdist_config_format is "{{ dnsdist_config_format }}" but
+      dnsdist_config_location is "{{ dnsdist_config_location }}". dnsdist picks
+      its parser from the extension, so a YAML configuration needs a .yml or
+      .yaml name and a Lua one needs any other.
+  when: (dnsdist_config_format == 'yaml') != (dnsdist_config_location is match('.*\.ya?ml$'))
+  tags:
+    - always
+
+- name: Render the merged dnsdist YAML configuration
+  ansible.builtin.set_fact:
+    _dnsdist_config_yaml_merged: >-
+      {{ default_dnsdist_config_yaml
+         | ansible.builtin.combine(dnsdist_config_yaml, recursive=true) }}
+  when: dnsdist_config_format == 'yaml'
+  tags:
+    - always
+
 # Handlers cannot read role parameters reliably when the role runs more than
 # once in a play; they resolve to the last invocation. Publish them as facts.
 - name: Publish the handler context of this role invocation
@@ -67,26 +106,72 @@
         daemon_reload: true
       when: _dnsdist_uninstall_dropin_dir is defined and _dnsdist_uninstall_dropin_dir.changed
 
+# In YAML format the key is written to console.key, and the role only fills that
+# in for a configuration that asks for a console - so with no `console` section
+# there is nowhere to put a key. Generating one anyway would report `changed` on
+# every converge for a key that is never written and never used.
 - name: Create encryption key
-  when: dnsdist_generatekey
+  when:
+    - dnsdist_generatekey | bool
+    - >-
+      dnsdist_config_format == 'lua'
+      or (_dnsdist_config_yaml_merged | default({})).console is defined
   tags:
     - install
     - configure
     - config
   block:
+    # The key the previous run wrote has to be recovered from the configuration
+    # file, or every converge would hand the console a new one. Where it sits
+    # depends on the format: the Lua configuration carries a setKey("...") call,
+    # the YAML one a console.key setting.
     - name: Check if the key is already present in the DNSdist configuration file
       ansible.builtin.shell: |
         set -o pipefail && grep '^\s*setKey' "{{ dnsdist_config_location }}" | sed 's/.*setKey("\(.*\)").*/\1/'
       args:
         executable: /bin/bash
       register: _dnsdist_grepkey
+      when: dnsdist_config_format == 'lua'
       check_mode: false
       changed_when: false
       failed_when: false
 
+    - name: Read the console key from the YAML configuration
+      when: dnsdist_config_format == 'yaml'
+      block:
+        - name: Check whether the dnsdist YAML configuration file exists
+          ansible.builtin.stat:
+            path: "{{ dnsdist_config_location }}"
+          register: _dnsdist_config_file
+          check_mode: false
+
+        - name: Read the dnsdist YAML configuration
+          ansible.builtin.slurp:
+            src: "{{ dnsdist_config_location }}"
+          register: _dnsdist_config_current
+          when: _dnsdist_config_file.stat.exists
+          check_mode: false
+
+    # `is mapping` rather than `default({}, true)`: an empty file parses as None,
+    # which default() with the second argument does replace, but a file whose top
+    # level is a scalar or a list parses as a truthy non-mapping that it does not
+    # - and .get() on a str raises. That is what a Lua configuration sitting at a
+    # .yml path parses as.
+    - name: Collect the console key the configuration file already carries
+      ansible.builtin.set_fact:
+        _dnsdist_existing_key: >-
+          {{ (_dnsdist_grepkey.stdout | default('') | trim)
+             if dnsdist_config_format == 'lua'
+             else (_parsed.console.key | default(''))
+                  if (_parsed is mapping and _parsed.console is mapping)
+                  else '' }}
+      vars:
+        _parsed: >-
+          {{ _dnsdist_config_current.content | default('') | b64decode | from_yaml }}
+
     - name: Set up new encryption key
       # if the config file does not contains a key already
-      when: _dnsdist_grepkey.rc > 0 or _dnsdist_grepkey.stdout | length == 0
+      when: _dnsdist_existing_key | length == 0
       block:
         - name: Generate encryption key  # noqa no-changed-when
           ansible.builtin.shell: head -c 32 /dev/urandom | base64
@@ -101,8 +186,8 @@
 
     - name: Set old encryption key
       ansible.builtin.set_fact:
-        dnsdist_setkey: "{{ _dnsdist_grepkey.stdout }}"
-      when: _dnsdist_grepkey.rc == 0 and _dnsdist_grepkey.stdout | length > 0
+        dnsdist_setkey: "{{ _dnsdist_existing_key }}"
+      when: _dnsdist_existing_key | length > 0
 
 - name: Build config file
   ansible.builtin.include_tasks: configure.yml

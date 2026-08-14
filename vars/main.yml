@@ -47,3 +47,13 @@ dnsdist_powerdns_repo_19:
   yum_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19
   yum_debug_symbols_repo_baseurl: http://repo.powerdns.com/centos/$basearch/$releasever/dnsdist-19/debug
   name: powerdns-dnsdist-19
+
+# Location of the configuration file in YAML format, derived from the Lua one so
+# that a platform only has to declare the path once. dnsdist selects its parser
+# from the file name extension.
+default_dnsdist_config_location_yaml: "{{ default_dnsdist_config_location | regex_replace('\\.conf$', '.yml') }}"
+
+# Baseline settings for the YAML configuration, merged under dnsdist_config_yaml.
+# Empty: dnsdist ships usable defaults for everything the role does not have to
+# state, and a listen address or a backend guessed here would be wrong.
+default_dnsdist_config_yaml: {}

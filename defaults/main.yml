@@ -119,9 +119,79 @@ dnsdist_config_files: {}
 #   extra.conf: |
 #     -- extra file with configration
 
+# Format of the generated configuration file: "lua" (default) or "yaml".
+#
+# dnsdist picks the parser from the file name extension, so "yaml" also moves the
+# configuration file from dnsdist.conf to dnsdist.yml. Given both files, a
+# dnsdist that is started without an explicit --config reads the .yml one, which
+# is what the packaged dnsdist.service does, so no unit override is needed to
+# switch a single instance over. The templated unit is the exception: its
+# ExecStart names dnsdist-<instance>.conf outright and needs an ExecStart and
+# ExecStartPre override - see the README.
+#
+# The two formats are separate inputs, and nothing is translated between them.
+# In "lua" the configuration comes from dnsdist_locals, dnsdist_servers,
+# dnsdist_acls, dnsdist_setkey, dnsdist_controlsocket, dnsdist_webserver_*,
+# dnsdist_carbonserver, dnsdist_tlslocals and dnsdist_config; in "yaml" it comes
+# from dnsdist_config_yaml alone and those variables are ignored.
+dnsdist_config_format: lua
+
+# Whether a "lua" run removes the YAML configuration file a previous "yaml" run
+# of this role wrote.
+#
+# Given both files, a dnsdist started without an explicit --config reads the .yml
+# one, so without this a switch back to Lua would leave the old YAML file in
+# charge and the Lua configuration ignored. Only the .yml is ever removed, and
+# only while the format is "lua": dnsdist.yml is not a packaged file - the
+# packages ship dnsdist.yml-dist - whereas dnsdist.conf is, and in YAML mode it
+# can stay where it is because the .yml already takes precedence.
+dnsdist_config_remove_stale_yaml: true
+
 # Location of the dnsdist configuration file. Instances of the templated
 # systemd unit read /etc/dnsdist/dnsdist-<instance>.conf.
-dnsdist_config_location: "{{ default_dnsdist_config_location }}"
+dnsdist_config_location: >-
+  {{ (dnsdist_config_format == 'yaml')
+     | ternary(default_dnsdist_config_location_yaml, default_dnsdist_config_location) }}
+
+# The dnsdist configuration, in YAML format. Used only when
+# dnsdist_config_format is "yaml".
+#
+# The dict is passed to dnsdist as given, so every setting of the YAML
+# configuration is reachable without the role knowing about it. See
+# https://dnsdist.org/reference/yaml-settings.html, and the dnsdist.yml-dist
+# file the packages ship for the settings of the installed version.
+dnsdist_config_yaml: {}
+# dnsdist_config_yaml:
+#   binds:
+#     - listen_address: "127.0.0.1:5300"
+#       protocol: Do53
+#   backends:
+#     - address: "127.0.0.1:53"
+#       protocol: Do53
+#   acl:
+#     - 127.0.0.0/8
+#   console:
+#     listen_address: "127.0.0.1:5900"
+#     key: "a base64 encoded key"
+
+# Settings whose value must stay a string, however it is spelled.
+#
+# The renderer converts a value that *looks* like a number or a boolean into one,
+# because dnsdist's YAML parser is strictly typed and rejects a quoted number
+# where it wants a real one. It cannot know the declared type, though, so a
+# password of "12345678" or a backend named "no" would be rewritten to an integer
+# and to false. Any setting listed here is emitted as a string untouched, and the
+# rule reaches nested values too, so an entry under `pools` stays a string.
+#
+# Matching is by key name at any depth, not by path, which is what makes it short.
+dnsdist_config_yaml_string_keys:
+  - api_key
+  - key
+  - name
+  - password
+  - pool
+  - pools
+  - secret
 
 # Owner and group for the dnsdist configuration file
 dnsdist_config_owner: "{{ default_dnsdist_owner }}"

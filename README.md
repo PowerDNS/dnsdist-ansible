@@ -213,6 +213,11 @@ dnsdist_environment_overrides: {}
 Dict with overrides for the service environments (systemd only).
 This can be used to change any environment variables in systemd settings in the `[Service]` category.
 
+The three dicts are written to `override.conf`, `override-unit.conf` and
+`override-environment.conf` in `/etc/systemd/system/<service name>.service.d/`. Emptying one of
+them removes its own file again and restarts the service; the other two files and any drop-in an
+operator added next to them are left alone.
+
 ```yaml
 dnsdist_service_name: "dnsdist"
 ```
@@ -232,10 +237,12 @@ written next to it.
 ```yaml
 dnsdist_service_state: "started"
 dnsdist_service_enabled: true
+dnsdist_service_masked: false
 ```
 
 Allow to specify the desired state of the DNSdist service.
 E.g. This allows to install and configure DNSdist without automatically starting the service.
+Masking is a systemd concept and is ignored on hosts without systemd.
 
 ```yaml
 dnsdist_disable_handlers: false
@@ -296,7 +303,7 @@ nor the package, so `deb822_repository` fails and the config cannot be validated
 - `dnsdist_package_state`: `present`, `latest`, `absent`, ...
 - `dnsdist_force_reinstall`: remove before install, for downgrades.
 - `dnsdist_service_state` (`started`, `stopped`, `restarted`, `reloaded`),
-  `dnsdist_service_enabled`. No `dnsdist_service_masked`.
+  `dnsdist_service_enabled`, `dnsdist_service_masked` (systemd hosts only).
 
 `dnsdist_package_state: absent` removes the packages, but the config and service tasks still run,
 so a full run fails on the service task (`Could not find the requested service dnsdist`). Remove
@@ -306,7 +313,9 @@ via the install path only:
 ansible-playbook site.yml -e dnsdist_package_state=absent --tags install
 ```
 
-Works with or without the config file present.
+Works with or without the config file present. That run also removes
+`/etc/systemd/system/<service name>.service.d/` and reloads systemd, so a later reinstall
+does not inherit the drop-ins of the previous installation.
 
 ## Handlers
 
@@ -350,6 +359,20 @@ The systemd overrides of an instance are written to `/etc/systemd/system/<servic
 
 `meta: flush_handlers` is play-wide: it also runs handlers that earlier roles in the same play
 notified. `dnsdist_disable_handlers: true` skips the restart handlers entirely.
+
+`dnsdist_flush_handlers` defaults to `false`, which is correct for a single invocation and wrong
+for more than one: without it the pending restarts of every instance run once, at the end of the
+play, against the service name of the last invocation.
+
+On systemd hosts the restart handler reloads the units in the same task, so a restart never runs
+against a unit systemd has not read. The reload happens even when `dnsdist_service_state: stopped`
+keeps the service down, so the next manual start uses the drop-ins this run wrote.
+
+Ansible does not filter handlers by tag, so the restart handlers read `ansible_skip_tags`
+themselves: under `--skip-tags service` the service task is skipped and the handler restarts
+nothing, while the systemd units of that run are still reloaded. `--tags config` is unaffected and
+still restarts. `dnsdist_disable_handlers: true` remains the way to apply configuration without
+restarting in a run that is not tag-filtered.
 
 ## Example Playbook
 

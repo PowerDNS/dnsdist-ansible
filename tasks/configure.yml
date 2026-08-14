@@ -15,6 +15,10 @@
             owner: root
             group: root
             mode: '0755'
+          when: >-
+            (dnsdist_service_overrides | length > 0)
+            or (dnsdist_unit_overrides | length > 0)
+            or (dnsdist_environment_overrides | length > 0)
 
         - name: Override the dnsdist service (systemd)
           ansible.builtin.template:
@@ -23,8 +27,20 @@
             owner: root
             group: root
             mode: '0644'
-          when: dnsdist_service_overrides != {}
+          when: dnsdist_service_overrides | length > 0
           notify: Reload systemd and restart dnsdist
+          register: _dnsdist_service_override
+
+        # Each drop-in this role writes is removed on its own when its variable
+        # is emptied; the drop-in directory stays, so drop-ins an operator added
+        # next to them are left alone.
+        - name: Remove the dnsdist service override (systemd)
+          ansible.builtin.file:
+            path: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override.conf
+            state: absent
+          when: dnsdist_service_overrides | length == 0
+          notify: Reload systemd and restart dnsdist
+          register: _dnsdist_service_override_removed
 
         - name: Override the dnsdist unit (systemd)
           ansible.builtin.template:
@@ -33,8 +49,17 @@
             owner: root
             group: root
             mode: '0644'
-          when: dnsdist_unit_overrides != {}
+          when: dnsdist_unit_overrides | length > 0
           notify: Reload systemd and restart dnsdist
+          register: _dnsdist_unit_override
+
+        - name: Remove the dnsdist unit override (systemd)
+          ansible.builtin.file:
+            path: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override-unit.conf
+            state: absent
+          when: dnsdist_unit_overrides | length == 0
+          notify: Reload systemd and restart dnsdist
+          register: _dnsdist_unit_override_removed
 
         - name: Override the dnsdist environments (systemd)
           ansible.builtin.template:
@@ -43,8 +68,17 @@
             owner: root
             group: root
             mode: '0644'
-          when: dnsdist_environment_overrides != {}
+          when: dnsdist_environment_overrides | length > 0
           notify: Reload systemd and restart dnsdist
+          register: _dnsdist_environment_override
+
+        - name: Remove the dnsdist environment override (systemd)
+          ansible.builtin.file:
+            path: /etc/systemd/system/{{ dnsdist_service_name }}.service.d/override-environment.conf
+            state: absent
+          when: dnsdist_environment_overrides | length == 0
+          notify: Reload systemd and restart dnsdist
+          register: _dnsdist_environment_override_removed
 
     - name: Add the dnsdist additional configuration files
       ansible.builtin.copy:

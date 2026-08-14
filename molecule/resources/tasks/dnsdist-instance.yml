@@ -18,5 +18,7 @@
     dnsdist_controlsocket: "{{ instance.controlsocket }}"
     dnsdist_servers: ["{{ instance.server }}"]
     dnsdist_config: "-- instance {{ instance.name }} revision {{ instance_revision | default(1) }}"
-    dnsdist_service_overrides:
-      LimitCORE: infinity
+    # `instance_service_overrides` replaces the drop-in of the instance, so a
+    # side effect can notify the drop-in handler topic instead of the plain
+    # restart topic.
+    dnsdist_service_overrides: "{{ instance_service_overrides | default({'LimitCORE': 'infinity'}) }}"

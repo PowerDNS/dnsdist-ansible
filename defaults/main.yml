@@ -147,6 +147,8 @@ dnsdist_service_name: dnsdist
 # State of the DNSdist service
 dnsdist_service_state: started
 dnsdist_service_enabled: true
+# Masking is a systemd concept and is ignored on hosts without systemd.
+dnsdist_service_masked: false
 
 # When true, disable the automated restart of the dnsdist service
 dnsdist_disable_handlers: false

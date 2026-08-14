@@ -9,42 +9,50 @@
 # scripts. Both listen on `Restart dnsdist`, so a task notifies that topic
 # without knowing which applies.
 #
-# `Reload systemd and restart dnsdist` fans out to the reload *and* the restart.
-# A task that only changes a systemd drop-in notifies it, and a daemon-reload
-# alone never reports `changed`, so the reload cannot notify the restart itself.
-
-- name: Reload systemd
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-  listen:
-    - Reload systemd
-    - Reload systemd and restart dnsdist
-  when:
-    - ansible_facts.service_mgr == 'systemd'
-    - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
+# The systemd restart reloads the units in the same task, so a restart can never
+# run against a unit systemd has not reloaded, and a host left with a unit file
+# systemd never read is repaired by the next change. The desired state guard
+# lives in the value of `state`, not in `when`: a `when` guard would skip the
+# daemon reload as well, and a drop-in changed while the service is deliberately
+# stopped would never reach systemd. A daemon reload alone never reports
+# `changed`, so a reload handler cannot notify the restart itself.
+#
+# Handlers run in the order they are defined here, not in the order a task lists
+# them in `notify:`.
+#
+# Tag selection filters tasks, not handlers, so `--skip-tags service` would skip
+# the service task and still restart - and restarting an inactive unit starts
+# it. `ansible_skip_tags` puts the restart under the same filter as the task,
+# and sits in the `state` value for the same reason the state guard does: the
+# drop-ins of that run still have to reach systemd.
 
 - name: Restart dnsdist
   ansible.builtin.systemd_service:
     name: "{{ _dnsdist_service_name | default(dnsdist_service_name) }}"
-    state: restarted
+    daemon_reload: true
+    state: >-
+      {{ 'restarted'
+         if ((_dnsdist_service_state | default(dnsdist_service_state)) != 'stopped'
+             and 'service' not in ansible_skip_tags)
+         else omit }}
   listen:
     - Restart dnsdist
     - Reload systemd and restart dnsdist
   when:
     - ansible_facts.service_mgr == 'systemd'
-    - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
+# Only the plain restart topic: `Reload systemd and restart dnsdist` is notified
+# from the systemd drop-in tasks, which never run here.
 - name: Restart dnsdist without systemd
   ansible.builtin.service:
     name: "{{ _dnsdist_service_name | default(dnsdist_service_name) }}"
     state: restarted
-  listen:
-    - Restart dnsdist
-    - Reload systemd and restart dnsdist
+  listen: Restart dnsdist
   when:
     - ansible_facts.service_mgr != 'systemd'
     - _dnsdist_service_state | default(dnsdist_service_state) != 'stopped'
+    - "'service' not in ansible_skip_tags"
     - not _dnsdist_disable_handlers | default(dnsdist_disable_handlers) | bool
 
 - name: Update the APT cache

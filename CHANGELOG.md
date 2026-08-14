@@ -1,6 +1,7 @@
 ## v1.7.3 (Unreleased)
 
 NEW FEATURES:
+- Add `dnsdist_service_masked` to mask or unmask the service unit. Masking is a systemd concept and is ignored on hosts without systemd ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
 - Add Arch Linux support. The package is `dnsdist`, the configuration lives in `/etc/dnsdist.conf` (`/etc/dnsdist-<instance>.conf` for the templated unit) and the process runs as `dnsdist` ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Add `dnsdist_service_name` and `dnsdist_config_location` so the role can manage an instance of the templated `dnsdist@.service` unit. The systemd drop-in directory follows the service name ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
 - Add `dnsdist_flush_handlers` to run the notified handlers at the end of the role instead of at the end of the play, which is required when the role runs more than once in a play ([\#195](https://github.com/PowerDNS/dnsdist-ansible/pull/195))
@@ -23,6 +24,11 @@ REMOVED FEATURES:
 - Stop testing the `dnsdist-master` repository and test the three most recent release series instead. The `dnsdist_powerdns_repo_master` preset is unchanged and still usable ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 
 BUG FIXES:
+- Skip the restart under `--skip-tags service`. Ansible filters tasks by tag but not handlers, so a run that deliberately left the service alone still restarted it on a configuration change - and restarting an inactive unit starts it. The handlers read `ansible_skip_tags` and still reload the units, so a `--tags config` run is unaffected ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
+- Reload the systemd units in the same task that restarts the service. A restart can no longer run against a unit systemd has not read, and a host left with a drop-in systemd never loaded is repaired by the next change instead of restarting onto the stale unit ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
+- Reload the systemd units in the service task when this run changed a drop-in. Handlers flush at the end of the play, so a service that was not running yet was started from the unit systemd had loaded before the run and kept the previous settings until the handler restarted it ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
+- Remove the drop-in override directory when `dnsdist_package_state: absent`, so a later reinstall does not inherit the overrides of the previous installation. The task is tagged `install`, because removal runs through the install path ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
+- Remove the drop-in of an override dict that is emptied. `override.conf`, `override-unit.conf` and `override-environment.conf` used to stay on disk, so clearing `dnsdist_service_overrides`, `dnsdist_unit_overrides` or `dnsdist_environment_overrides` kept the previous settings applied forever. Only the file of the emptied dict is removed ([\#198](https://github.com/PowerDNS/dnsdist-ansible/pull/198))
 - Correct the FreeBSD paths and ownership. The configuration lives in `/usr/local/etc/dnsdist/dnsdist.conf` and the process runs as `_dnsdist`, following the `dns/dnsdist` port ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Restart the service after a systemd drop-in changes. The reload handler notified the restart handler, but a daemon reload alone never reports `changed`, so the notification was dropped and a modified `dnsdist_service_overrides`, `dnsdist_unit_overrides` or `dnsdist_environment_overrides` never took effect ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))
 - Restart the service on hosts without systemd. The restart handler and the `daemon_reload` handler used the systemd module unconditionally, so a FreeBSD run failed as soon as a configuration change notified them ([\#197](https://github.com/PowerDNS/dnsdist-ansible/pull/197))

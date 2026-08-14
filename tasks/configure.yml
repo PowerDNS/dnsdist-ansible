@@ -4,6 +4,31 @@
     - configure
     - config
   block:
+    # The console key is the one setting the role fills in rather than passing
+    # through, because it is generated on the first converge and has to survive
+    # every later one. It is only supplied to a configuration that asks for a
+    # console and does not name a key of its own, so neither an operator's key
+    # nor the absence of a console is overruled.
+    #
+    # `is mapping` rather than `default({})`: a `console:` key written with no
+    # value at all parses as None, which default() does not replace, and None has
+    # no .get().
+    - name: Render the dnsdist YAML configuration
+      ansible.builtin.set_fact:
+        _dnsdist_config_yaml: "{{ _dnsdist_config_yaml_merged | ansible.builtin.combine(_console_key, recursive=true) }}"
+      vars:
+        _console: >-
+          {{ _dnsdist_config_yaml_merged.console
+             if _dnsdist_config_yaml_merged.console is mapping
+             else {} }}
+        _console_key: >-
+          {{ {'console': {'key': dnsdist_setkey}}
+             if (_dnsdist_config_yaml_merged.console is defined
+                 and _console.get('key', '') | length == 0
+                 and dnsdist_setkey | length > 0)
+             else {} }}
+      when: dnsdist_config_format == 'yaml'
+
     - name: Set up systemd override
       when: ansible_facts.service_mgr == "systemd"
       block:
@@ -90,12 +115,59 @@
       with_dict: "{{ dnsdist_config_files }}"
       notify: Restart dnsdist
 
+    # dnsdist chooses its parser from the file name extension, and `validate:`
+    # runs the command against a temporary copy Ansible names itself, without an
+    # extension - so a YAML file handed over directly would be read as Lua and
+    # rejected. The YAML check therefore copies the candidate to a name ending in
+    # .yml first. Only one %s is substituted (`validate % src` in the copy
+    # module), hence the single reference passed on as a positional argument.
     - name: Add the dnsdist configuration
       ansible.builtin.template:
-        src: dnsdist.conf.j2
+        src: "{{ (dnsdist_config_format == 'yaml') | ternary('dnsdist.yml.j2', 'dnsdist.conf.j2') }}"
         dest: "{{ dnsdist_config_location }}"
         owner: "{{ dnsdist_config_owner }}"
         group: "{{ dnsdist_config_group }}"
         mode: '0640'
-        validate: dnsdist -C %s --check-config 2>&1
+        validate: >-
+          {{ (dnsdist_config_format == 'yaml')
+             | ternary(_dnsdist_validate_yaml, _dnsdist_validate_lua) }}
+      vars:
+        _dnsdist_validate_lua: dnsdist -C %s --check-config 2>&1
+        # No `exec`, so the cleanup below is actually reached - exec replaces the
+        # shell and an EXIT trap would never fire, leaking a directory holding the
+        # rendered configuration, credentials and all. mktemp is checked rather
+        # than trusted: with an unset $d the copy would land in / and stay there.
+        _dnsdist_validate_yaml: >-
+          bash -c 'd=$(mktemp -d) || exit 1;
+          cp "$1" "$d/dnsdist.yml" || { rm -rf "$d"; exit 1; };
+          dnsdist -C "$d/dnsdist.yml" --check-config 2>&1; rc=$?;
+          rm -rf "$d"; exit $rc' _ %s
+      notify: Restart dnsdist
+
+    # On dnsdist 2.1 and newer, a daemon started without an explicit --config
+    # prefers the .yml over the .conf. So a switch back to Lua would leave the YAML
+    # file this role wrote earlier still in charge, and the Lua configuration
+    # silently ignored - the leftover has to go for the switch to mean anything.
+    # On 2.0 the .conf is read either way and the removal changes nothing, but it
+    # runs there too: a leftover that starts being read on an upgrade to 2.1 is
+    # worse than removing a file the daemon currently ignores.
+    #
+    # The path is derived from dnsdist_config_location, never from the platform
+    # default: with an instance of the templated unit the role manages
+    # dnsdist-<instance>.conf, and its leftover sibling is dnsdist-<instance>.yml.
+    # Removing the platform default here would delete the configuration of a
+    # different instance - the plain dnsdist.service one - which this role is not
+    # managing in that invocation at all.
+    #
+    # Only this direction removes anything, and only the .yml: the packages ship
+    # dnsdist.conf, so in YAML mode it is a file the role does not own, and on a
+    # 2.1 leaving it costs nothing because the .yml already wins. dnsdist.yml is
+    # not packaged - what the packages ship is dnsdist.yml-dist.
+    - name: Remove the YAML configuration left behind by an earlier YAML run
+      ansible.builtin.file:
+        path: "{{ dnsdist_config_location | regex_replace('\\.[^./]*$', '') }}.yml"
+        state: absent
+      when:
+        - dnsdist_config_format == 'lua'
+        - dnsdist_config_remove_stale_yaml | bool
       notify: Restart dnsdist

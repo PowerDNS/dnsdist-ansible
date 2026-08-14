@@ -1,0 +1,89 @@
+{#-
+  Render the merged dnsdist configuration as YAML.
+
+  Values that reach this template as strings have to be emitted as the type
+  dnsdist expects, because its YAML parser is strictly typed and rejects a
+  quoted number or boolean where it wants a real one. Strings arrive here
+  routinely: a value taken from an inventory file, from --extra-vars or from a
+  host_vars entry stays a string through ansible.builtin.combine, and a
+  vault-encrypted value arrives as an AnsibleVaultEncryptedUnicode rather than
+  as a plain str.
+
+  normalize_value emits JSON for any value and converts on the way:
+    - stringified integers   ("5300"  -> 5300)
+    - stringified floats     ("1.5"   -> 1.5)
+    - stringified booleans   ("true"  -> true, "yes" -> true, ...)
+    - stringified lists      ("['a']" -> a real list)
+    - vault-encrypted values (decrypted to str)
+  Native types and nested structures are passed through unchanged.
+
+  Conversion is driven by the shape of the value, not by the setting's declared
+  type, which the template has no way to know. So a setting whose value must
+  stay a string even when it looks like a number - a password of "12345678", a
+  backend named "no" - is protected by listing its key in
+  dnsdist_config_yaml_string_keys. That is what force_string carries down, and it
+  applies to nested values as well, so an entry under `pools` stays a string too.
+
+  The JSON is parsed back with from_json so that to_nice_yaml is left to handle
+  all indentation and quoting.
+-#}
+
+{#- Emit a JSON representation of `val` with stringified types fixed. -#}
+{%- macro normalize_value(val, force_string=false) -%}
+{%-   if val is string and val is not mapping -%}
+{#-     Coerce to a real str, so that a value from an inline !vault tag is
+        decrypted before any filter touches it. For a plain string this is a
+        no-op. Surrounding whitespace and newlines go as well. -#}
+{%-     set val = (val | string | trim) -%}
+{%-   endif -%}
+{%-   if val is mapping -%}
+{%-     set ns = namespace(items=[]) -%}
+{%-     for k, v in val.items() -%}
+{%-       set keep = force_string or (k in dnsdist_config_yaml_string_keys) -%}
+{%-       set ns.items = ns.items + [k | to_json ~ ": " ~ normalize_value(v, keep)] -%}
+{%-     endfor -%}
+{{ "{" }}{{ ns.items | join(", ") }}{{ "}" }}
+{%-   elif val is iterable and val is not string and val is not mapping -%}
+{%-     set ns = namespace(items=[]) -%}
+{%-     for item in val -%}
+{%-       set ns.items = ns.items + [normalize_value(item, force_string)] -%}
+{%-     endfor -%}
+[{{ ns.items | join(", ") }}]
+{%-   elif val is string -%}
+{%-     if force_string -%}
+{{ val | to_json }}
+{%-     elif val | lower in ("true", "yes") -%}
+true
+{%-     elif val | lower in ("false", "no") -%}
+false
+{%-     elif val | regex_search("^-?\\d+$") -%}
+{{ val | int }}
+{%-     elif val | regex_search("^-?\\d+\\.\\d+$") -%}
+{{ val | float }}
+{#-     A bracketed string is parsed as a stringified list only when it carries a
+        comma or a quote, or is an empty pair of brackets. Without that test
+        "[::1]" - an IPv6 address, not a list - reaches from_yaml and raises a
+        ParserError that aborts the whole render, naming neither the setting nor
+        the value. A comma or a quote is what every real stringified list has and
+        a bracketed address has not, so it separates the two without giving up
+        "['::1/128', '2001:db8::/32']", which does need converting. -#}
+{%-     elif val | regex_search("^\\[\\s*\\]$")
+              or (val | regex_search("^\\[.*\\]$") and val | regex_search("[,'\"]")) -%}
+{{ normalize_value(val | from_yaml, force_string) }}
+{%-     else -%}
+{{ val | to_json }}
+{%-     endif -%}
+{%-   elif val is sameas true -%}
+true
+{%-   elif val is sameas false -%}
+false
+{%-   elif val is none -%}
+null
+{%-   elif val is number -%}
+{{ val }}
+{%-   else -%}
+{{ val | to_json }}
+{%-   endif -%}
+{%- endmacro -%}
+
+{{ normalize_value(_dnsdist_config_yaml) | from_json | to_nice_yaml(indent=2, width=80) | trim }}

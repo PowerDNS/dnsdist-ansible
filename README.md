@@ -313,7 +313,9 @@ via the install path only:
 ansible-playbook site.yml -e dnsdist_package_state=absent --tags install
 ```
 
-Works with or without the config file present.
+Works with or without the config file present. That run also removes
+`/etc/systemd/system/<service name>.service.d/` and reloads systemd, so a later reinstall
+does not inherit the drop-ins of the previous installation.
 
 ## Handlers
 

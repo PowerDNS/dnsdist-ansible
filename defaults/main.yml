@@ -122,12 +122,19 @@ dnsdist_config_files: {}
 # Format of the generated configuration file: "lua" (default) or "yaml".
 #
 # dnsdist picks the parser from the file name extension, so "yaml" also moves the
-# configuration file from dnsdist.conf to dnsdist.yml. Given both files, a
-# dnsdist that is started without an explicit --config reads the .yml one, which
-# is what the packaged dnsdist.service does, so no unit override is needed to
-# switch a single instance over. The templated unit is the exception: its
-# ExecStart names dnsdist-<instance>.conf outright and needs an ExecStart and
-# ExecStartPre override - see the README.
+# configuration file from dnsdist.conf to dnsdist.yml.
+#
+# Whether the daemon then finds that file on its own depends on the release.
+# dnsdist 2.1 and newer, given both files, read the .yml, so the packaged
+# dnsdist.service - which passes no --config - needs no override to switch a
+# single instance over. dnsdist 2.0 does not: it reads dnsdist.conf and never
+# looks at the .yml, so a 2.0 host in this format runs the packaged Lua
+# configuration and silently ignores what this role wrote. It needs an ExecStart
+# and ExecStartPre override naming the file with --config, exactly like the
+# templated unit below - see the README.
+#
+# The templated unit needs those overrides on every release: its ExecStart names
+# dnsdist-<instance>.conf outright, and an explicit path has no .yml fallback.
 #
 # The two formats are separate inputs, and nothing is translated between them.
 # In "lua" the configuration comes from dnsdist_locals, dnsdist_servers,
@@ -139,12 +146,18 @@ dnsdist_config_format: lua
 # Whether a "lua" run removes the YAML configuration file a previous "yaml" run
 # of this role wrote.
 #
-# Given both files, a dnsdist started without an explicit --config reads the .yml
-# one, so without this a switch back to Lua would leave the old YAML file in
-# charge and the Lua configuration ignored. Only the .yml is ever removed, and
-# only while the format is "lua": dnsdist.yml is not a packaged file - the
-# packages ship dnsdist.yml-dist - whereas dnsdist.conf is, and in YAML mode it
-# can stay where it is because the .yml already takes precedence.
+# On dnsdist 2.1 and newer a daemon started without an explicit --config prefers
+# the .yml over the .conf, so without this a switch back to Lua would leave the
+# old YAML file in charge and the Lua configuration ignored. Only the .yml is ever
+# removed, and only while the format is "lua": dnsdist.yml is not a packaged file
+# - the packages ship dnsdist.yml-dist - whereas dnsdist.conf is, and in YAML mode
+# on those releases it can stay where it is because the .yml already takes
+# precedence.
+#
+# On dnsdist 2.0 the .conf is read either way, so the removal changes nothing
+# there. It is not conditional on the release: a leftover .yml that stops being
+# read the day the host is upgraded to 2.1 is worse than removing a file the
+# daemon currently ignores.
 dnsdist_config_remove_stale_yaml: true
 
 # Location of the dnsdist configuration file. Instances of the templated

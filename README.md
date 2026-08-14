@@ -184,8 +184,9 @@ Lua format only.
 dnsdist_config_format: "lua"
 ```
 
-Format of the generated configuration file, `lua` or `yaml`. See
-[Configuration format](#configuration-format).
+Format of the generated configuration file, `lua` or `yaml`. On dnsdist 2.0 the
+`yaml` format also needs a unit override, because only 2.1 and newer look for the
+file. See [Configuration format](#configuration-format).
 
 ```yaml
 dnsdist_config_yaml: {}
@@ -216,10 +217,13 @@ dnsdist_config_remove_stale_yaml: true
 ```
 
 Whether a `lua` run removes the YAML configuration file that an earlier `yaml`
-run of this role wrote. Given both files, a dnsdist started without an explicit
-`--config` reads the `.yml` one, so without this a switch back to Lua would leave
-the old YAML file in charge and the Lua configuration ignored. Only the `.yml` is
-ever removed, and only while the format is `lua`.
+run of this role wrote. On dnsdist 2.1 and newer a daemon started without an
+explicit `--config` prefers the `.yml`, so without this a switch back to Lua would
+leave the old YAML file in charge and the Lua configuration ignored. On 2.0 the
+`.conf` is read either way, so the removal changes nothing there - it still runs,
+because a leftover that starts being read the day the host is upgraded to 2.1 is
+worse than removing a file the daemon currently ignores. Only the `.yml` is ever
+removed, and only while the format is `lua`.
 
 The path removed is the `.yml` sibling of `dnsdist_config_location`, never the
 platform default, so an invocation that manages `dnsdist-a.conf` removes
@@ -287,7 +291,9 @@ from `dnsdist_config_files` are written next to it.
 ## Configuration format
 
 The role writes a Lua configuration by default. Set `dnsdist_config_format` to
-`yaml` to write the YAML configuration that dnsdist 2.0 and newer accept:
+`yaml` to write the YAML configuration that dnsdist 2.0 and newer accept. dnsdist
+2.1 and newer then read that file on their own; a 2.0 has to be pointed at it with
+`--config`, see [Which file the daemon reads](#which-file-the-daemon-reads).
 
 ```yaml
 - hosts: all
@@ -359,17 +365,45 @@ do not: dnsdist picks its parser from the extension, so a YAML document in a
 silent in the worst way - the configuration check passes, and the daemon fails at
 start.
 
-Which file dnsdist reads follows from the file name, because dnsdist selects its
-parser from the extension - a YAML document in a `.conf` file is parsed as Lua and
-fails. So `yaml` also moves the configuration file to `dnsdist.yml`, and
-`dnsdist_config_location` follows unless it is set explicitly.
+### Which file the daemon reads
 
-Given both `dnsdist.conf` and `dnsdist.yml`, a dnsdist started without an
-explicit `--config` reads the `.yml` one. The packaged `dnsdist.service` passes
-no `--config`, so switching a single instance over needs no unit override. The
-templated `dnsdist@.service` is the exception: its `ExecStart` and `ExecStartPre`
-name `/etc/dnsdist/dnsdist-<instance>.conf` outright and there is no `.yml`
-fallback for an explicit path, so an instance in YAML mode needs both overridden:
+Because the parser follows the extension, `yaml` also moves the configuration
+file to `dnsdist.yml`, and `dnsdist_config_location` follows unless it is set
+explicitly. Whether the daemon then finds that file on its own depends on the
+release.
+
+**Auto-detection of `dnsdist.yml` starts with dnsdist 2.1.** Given both
+`dnsdist.conf` and `dnsdist.yml`, a 2.1 started without an explicit `--config`
+reads the `.yml` one. The packaged `dnsdist.service` passes no `--config`, so on
+2.1 and newer switching a single instance over needs no unit override.
+
+**On dnsdist 2.0 it does.** A 2.0 reads `/etc/dnsdist/dnsdist.conf` and never
+looks at the `.yml`, so a 2.0 host left to the packaged unit keeps running the
+packaged Lua configuration and ignores the YAML this role wrote - without an
+error, because both files are valid and the role's configuration check passes
+against the name it chooses. The daemon has to be pointed at the file:
+
+```yaml
+- hosts: all
+  roles:
+    - role: PowerDNS.dnsdist
+      dnsdist_config_format: yaml
+      dnsdist_service_overrides:
+        ExecStartPre: /usr/bin/dnsdist --check-config --config /etc/dnsdist/dnsdist.yml
+        ExecStart: /usr/bin/dnsdist --supervised --disable-syslog --config /etc/dnsdist/dnsdist.yml
+      dnsdist_config_yaml:
+        binds:
+          - listen_address: "127.0.0.1:5300"
+            protocol: Do53
+```
+
+Keep `--supervised` and `--disable-syslog`: the unit is `Type=notify`, and the
+packaged `ExecStart` carries both for that reason.
+
+The templated `dnsdist@.service` needs the same overrides on **every** release,
+2.1 included: its `ExecStart` and `ExecStartPre` name
+`/etc/dnsdist/dnsdist-<instance>.conf` outright, and an explicit path has no
+`.yml` fallback, so an instance in YAML mode needs both overridden:
 
 ```yaml
 - hosts: all

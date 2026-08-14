@@ -172,116 +172,126 @@
     ##
     # The YAML configuration format.
     #
-    # dnsdist picks its parser from the file name extension, so the format also
-    # moves the configuration to dnsdist.yml, and a dnsdist started without an
-    # explicit --config prefers that file over dnsdist.conf. Both halves are
-    # checked here, along with the two things the renderer has to get right:
-    # a value that looks like a number or a boolean becomes one, because the
-    # parser is strictly typed, while a value whose key is in
+    # Only dnsdist 2.1 and newer look for dnsdist.yml on their own. Given both
+    # files a 2.1 reads the .yml; a 2.0 reads /etc/dnsdist/dnsdist.conf and never
+    # looks at the .yml unless --config names it. What this block asserts - that
+    # the daemon ends up running on the configuration the role wrote, with no
+    # unit override - therefore only holds on the releases that auto-detect the
+    # file, so the older ones are left out. YAML on 2.0 works with an ExecStart
+    # and ExecStartPre override and is documented in the README instead.
+    #
+    # Along with the format, the two things the renderer has to get right: a
+    # value that looks like a number or a boolean becomes one, because the parser
+    # is strictly typed, while a value whose key is in
     # dnsdist_config_yaml_string_keys stays a string however it looks.
     ##
-    - name: Configure dnsdist in the YAML format
-      ansible.builtin.include_role:
-        name: powerdns.dnsdist
-      vars:
-        dnsdist_flush_handlers: true
-        dnsdist_config_format: yaml
-        dnsdist_config_yaml:
-          binds:
-            - listen_address: "127.0.0.1:5300"
-              protocol: Do53
-              # Strings on purpose: an inventory value arrives as one.
-              threads: "2"
-              reuseport: "yes"
-          backends:
-            - address: "127.0.0.1:5300"
-              protocol: Do53
-              # Must survive as strings, not become false and 1.
-              name: "no"
-              pools: ["1"]
-              weight: "10"
-          acl: "['127.0.0.0/8']"
-          webserver:
-            listen_addresses:
-              - "127.0.0.1:8083"
-            password: "12345678"
+    - name: Exercise the YAML configuration format
+      # The releases the PowerDNS repositories name, minus the two that do not
+      # auto-detect the file. Naming the exclusions keeps "master" included.
+      when: dnsdist_test_version not in ['19', '20']
+      block:
+        - name: Configure dnsdist in the YAML format
+          ansible.builtin.include_role:
+            name: powerdns.dnsdist
+          vars:
+            dnsdist_flush_handlers: true
+            dnsdist_config_format: yaml
+            dnsdist_config_yaml:
+              binds:
+                - listen_address: "127.0.0.1:5300"
+                  protocol: Do53
+                  # Strings on purpose: an inventory value arrives as one.
+                  threads: "2"
+                  reuseport: "yes"
+              backends:
+                - address: "127.0.0.1:5300"
+                  protocol: Do53
+                  # Must survive as strings, not become false and 1.
+                  name: "no"
+                  pools: ["1"]
+                  weight: "10"
+              acl: "['127.0.0.0/8']"
+              webserver:
+                listen_addresses:
+                  - "127.0.0.1:8083"
+                password: "12345678"
 
-    - name: Read the rendered YAML configuration
-      ansible.builtin.slurp:
-        src: /etc/dnsdist/dnsdist.yml
-      register: _dnsdist_yaml_rendered
+        - name: Read the rendered YAML configuration
+          ansible.builtin.slurp:
+            src: /etc/dnsdist/dnsdist.yml
+          register: _dnsdist_yaml_rendered
 
-    - name: Assert that the YAML configuration carries the right types
-      ansible.builtin.assert:
-        that:
-          # Converted, because the parser wants real types here.
-          - _rendered.binds[0].threads == 2
-          - _rendered.binds[0].reuseport is sameas true
-          - _rendered.backends[0].weight == 10
-          # A stringified list becomes a real one.
-          - _rendered.acl == ['127.0.0.0/8']
-          # Left alone, because their keys are string keys.
-          - _rendered.backends[0].name == 'no'
-          - _rendered.backends[0].pools == ['1']
-          - _rendered.webserver.password == '12345678'
-        fail_msg: "{{ _rendered | to_json }}"
-      vars:
-        _rendered: "{{ _dnsdist_yaml_rendered.content | b64decode | from_yaml }}"
+        - name: Assert that the YAML configuration carries the right types
+          ansible.builtin.assert:
+            that:
+              # Converted, because the parser wants real types here.
+              - _rendered.binds[0].threads == 2
+              - _rendered.binds[0].reuseport is sameas true
+              - _rendered.backends[0].weight == 10
+              # A stringified list becomes a real one.
+              - _rendered.acl == ['127.0.0.0/8']
+              # Left alone, because their keys are string keys.
+              - _rendered.backends[0].name == 'no'
+              - _rendered.backends[0].pools == ['1']
+              - _rendered.webserver.password == '12345678'
+            fail_msg: "{{ _rendered | to_json }}"
+          vars:
+            _rendered: "{{ _dnsdist_yaml_rendered.content | b64decode | from_yaml }}"
 
-    - name: Ask dnsdist which configuration file it reads
-      ansible.builtin.command: dnsdist --check-config
-      register: _dnsdist_yaml_check
-      changed_when: false
+        - name: Ask dnsdist which configuration file it reads
+          ansible.builtin.command: dnsdist --check-config
+          register: _dnsdist_yaml_check
+          changed_when: false
 
-    - name: Assert that dnsdist reads the YAML file and accepts it
-      ansible.builtin.assert:
-        that:
-          - "'/etc/dnsdist/dnsdist.yml' in _dnsdist_yaml_check.stdout"
-          - "'Configuration OK' in _dnsdist_yaml_check.stdout"
-        fail_msg: "{{ _dnsdist_yaml_check.stdout }}"
+        - name: Assert that dnsdist reads the YAML file and accepts it
+          ansible.builtin.assert:
+            that:
+              - "'/etc/dnsdist/dnsdist.yml' in _dnsdist_yaml_check.stdout"
+              - "'Configuration OK' in _dnsdist_yaml_check.stdout"
+            fail_msg: "{{ _dnsdist_yaml_check.stdout }}"
 
-    - name: Read the dnsdist unit in the YAML format
-      ansible.builtin.systemd_service:
-        name: "{{ _unit }}"
-      register: _dnsdist_yaml_unit
-      changed_when: false
+        - name: Read the dnsdist unit in the YAML format
+          ansible.builtin.systemd_service:
+            name: "{{ _unit }}"
+          register: _dnsdist_yaml_unit
+          changed_when: false
 
-    - name: Assert that dnsdist is running on the YAML configuration
-      ansible.builtin.assert:
-        that:
-          - _dnsdist_yaml_unit.status.ActiveState == 'active'
-        fail_msg: "ActiveState={{ _dnsdist_yaml_unit.status.ActiveState }}"
+        - name: Assert that dnsdist is running on the YAML configuration
+          ansible.builtin.assert:
+            that:
+              - _dnsdist_yaml_unit.status.ActiveState == 'active'
+            fail_msg: "ActiveState={{ _dnsdist_yaml_unit.status.ActiveState }}"
 
-    ##
-    # Back to Lua. The YAML file has to go with it: given both, a dnsdist started
-    # without an explicit --config reads the .yml one, so a leftover would keep the
-    # Lua configuration ignored.
-    ##
-    - name: Configure dnsdist back in the Lua format
-      ansible.builtin.include_role:
-        name: powerdns.dnsdist
-      vars:
-        dnsdist_flush_handlers: true
+        ##
+        # Back to Lua. The YAML file has to go with it: on the releases this block
+        # runs on, a dnsdist started without an explicit --config prefers the .yml
+        # over the .conf, so a leftover would keep the Lua configuration ignored.
+        ##
+        - name: Configure dnsdist back in the Lua format
+          ansible.builtin.include_role:
+            name: powerdns.dnsdist
+          vars:
+            dnsdist_flush_handlers: true
 
-    - name: Stat the YAML configuration after the switch back to Lua
-      ansible.builtin.stat:
-        path: /etc/dnsdist/dnsdist.yml
-      register: _dnsdist_yaml_leftover
+        - name: Stat the YAML configuration after the switch back to Lua
+          ansible.builtin.stat:
+            path: /etc/dnsdist/dnsdist.yml
+          register: _dnsdist_yaml_leftover
 
-    - name: Ask dnsdist which configuration file it reads after the switch back
-      ansible.builtin.command: dnsdist --check-config
-      register: _dnsdist_lua_check
-      changed_when: false
+        - name: Ask dnsdist which configuration file it reads after the switch back
+          ansible.builtin.command: dnsdist --check-config
+          register: _dnsdist_lua_check
+          changed_when: false
 
-    - name: Assert that the YAML file is gone and Lua is back in charge
-      ansible.builtin.assert:
-        that:
-          - not _dnsdist_yaml_leftover.stat.exists
-          - "'/etc/dnsdist/dnsdist.conf' in _dnsdist_lua_check.stdout"
-          - "'Configuration OK' in _dnsdist_lua_check.stdout"
-        fail_msg: >-
-          yml_present={{ _dnsdist_yaml_leftover.stat.exists }},
-          check={{ _dnsdist_lua_check.stdout }}
+        - name: Assert that the YAML file is gone and Lua is back in charge
+          ansible.builtin.assert:
+            that:
+              - not _dnsdist_yaml_leftover.stat.exists
+              - "'/etc/dnsdist/dnsdist.conf' in _dnsdist_lua_check.stdout"
+              - "'Configuration OK' in _dnsdist_lua_check.stdout"
+            fail_msg: >-
+              yml_present={{ _dnsdist_yaml_leftover.stat.exists }},
+              check={{ _dnsdist_lua_check.stdout }}
 
     ##
     # Leave the host as the converge left it, for the verifier.

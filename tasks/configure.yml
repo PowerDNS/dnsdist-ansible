@@ -144,10 +144,13 @@
           rm -rf "$d"; exit $rc' _ %s
       notify: Restart dnsdist
 
-    # Given both files, a dnsdist started without an explicit --config reads the
-    # .yml one. So a switch back to Lua would leave the YAML file this role wrote
-    # earlier still in charge, and the Lua configuration silently ignored - the
-    # leftover has to go for the switch to mean anything.
+    # On dnsdist 2.1 and newer, a daemon started without an explicit --config
+    # prefers the .yml over the .conf. So a switch back to Lua would leave the YAML
+    # file this role wrote earlier still in charge, and the Lua configuration
+    # silently ignored - the leftover has to go for the switch to mean anything.
+    # On 2.0 the .conf is read either way and the removal changes nothing, but it
+    # runs there too: a leftover that starts being read on an upgrade to 2.1 is
+    # worse than removing a file the daemon currently ignores.
     #
     # The path is derived from dnsdist_config_location, never from the platform
     # default: with an instance of the templated unit the role manages
@@ -157,9 +160,9 @@
     # managing in that invocation at all.
     #
     # Only this direction removes anything, and only the .yml: the packages ship
-    # dnsdist.conf, so in YAML mode it is a file the role does not own, and
-    # leaving it costs nothing because the .yml already wins. dnsdist.yml is not
-    # packaged - what the packages ship is dnsdist.yml-dist.
+    # dnsdist.conf, so in YAML mode it is a file the role does not own, and on a
+    # 2.1 leaving it costs nothing because the .yml already wins. dnsdist.yml is
+    # not packaged - what the packages ship is dnsdist.yml-dist.
     - name: Remove the YAML configuration left behind by an earlier YAML run
       ansible.builtin.file:
         path: "{{ dnsdist_config_location | regex_replace('\\.[^./]*$', '') }}.yml"

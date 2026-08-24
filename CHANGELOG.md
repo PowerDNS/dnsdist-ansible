@@ -1,4 +1,4 @@
-## v1.7.3 (Unreleased)
+## v1.7.3 (24-08-2026)
 
 NEW FEATURES:
 - Add `dnsdist_config_format` to write the configuration in YAML instead of Lua, and `dnsdist_config_yaml` to hold it. The default stays `lua`, so an existing playbook is unaffected. The dict is submitted as given, without the role interpreting or renaming anything, and a value that arrives as a string is converted to a real number or boolean, because the YAML parser of dnsdist rejects a quoted number where it wants a real one. The two formats are separate inputs: in `yaml` the Lua-shaped variables are ignored, with the console key the one exception, since it is generated once and read back from `console.key` on later runs ([\#199](https://github.com/PowerDNS/dnsdist-ansible/pull/199))
